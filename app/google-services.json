@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "339609078614",
+    "project_id": "epona-5f78e",
+    "storage_bucket": "epona-5f78e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339609078614:android:cbe4ce20c76f56413564f7",
+        "android_client_info": {
+          "package_name": "com.fabriziogo.epona"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvJ4Oy8MKUf01xe2_DwIOTMms-OdofvBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

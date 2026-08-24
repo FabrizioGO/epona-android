@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Photos captured by CameraX -->
+    <cache-path
+        name="camera_photos"
+        path="camera/" />
+
+    <!-- Images picked from gallery -->
+    <external-cache-path
+        name="picked_images"
+        path="images/" />
+
+    <!-- Shared files -->
+    <files-path
+        name="shared_files"
+        path="shared/" />
+</paths>

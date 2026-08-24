@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="species_labels">
+        <item>Dog</item>
+        <item>Cat</item>
+        <item>Bird</item>
+        <item>Rabbit</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="species_values">
+        <item>dog</item>
+        <item>cat</item>
+        <item>bird</item>
+        <item>rabbit</item>
+        <item>other</item>
+    </string-array>
+
+    <string-array name="size_labels">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="gender_labels">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Unknown</item>
+    </string-array>
+
+</resources>

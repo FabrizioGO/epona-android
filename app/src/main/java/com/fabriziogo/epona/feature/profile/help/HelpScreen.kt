@@ -1,0 +1,168 @@
+package com.fabriziogo.epona.feature.profile.help
+
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.core.ui.components.EponaCard
+import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
+import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.core.ui.theme.EponaTypography
+
+private data class FaqItem(val question: String, val answer: String)
+
+private val FAQ_ITEMS = listOf(
+    FaqItem(
+        "How do I report a lost pet?",
+        "From the Home tab, tap the + button to start a new alert, select the pet, add the last seen location, and submit. Nearby users will be notified."
+    ),
+    FaqItem(
+        "How do I report a sighting?",
+        "Open an alert's detail page and tap \"Report Sighting\" to share the location, a note, and photos of where you saw the pet."
+    ),
+    FaqItem(
+        "How do I add or edit my pets?",
+        "Go to Profile > My Pets, then tap the + button to add a new pet, or tap the edit icon on an existing pet to update its details."
+    ),
+    FaqItem(
+        "How do I resolve an alert once the pet is found?",
+        "Open the alert from My Alerts or the alert detail screen and tap \"Mark as Resolved\"."
+    ),
+    FaqItem(
+        "How is my location used?",
+        "Location is used to show nearby alerts and to record where a pet was last seen or spotted. You can adjust your notification radius in Settings."
+    )
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HelpScreen(
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+
+    Scaffold(
+        topBar = {
+            EponaTopAppBar(
+                title = "Help & Support",
+                onBackClick = onNavigateBack
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Frequently Asked Questions",
+                style = EponaTypography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(12.dp))
+
+            FAQ_ITEMS.forEach { faq ->
+                FaqCard(faq)
+                Spacer(Modifier.height(10.dp))
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            EponaCard(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Still need help?",
+                        style = EponaTypography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = "Our support team is happy to help with anything the FAQs didn't cover.",
+                        style = EponaTypography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    EponaOutlinedButton(
+                        text = "Email Support",
+                        icon = Icons.Outlined.Email,
+                        fullWidth = true,
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:support@epona.app")
+                                putExtra(Intent.EXTRA_SUBJECT, "Epona Support Request")
+                            }
+                            context.startActivity(intent)
+                        }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+        }
+    }
+}
+
+@Composable
+private fun FaqCard(faq: FaqItem, modifier: Modifier = Modifier) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    EponaCard(
+        modifier = modifier.fillMaxWidth(),
+        onClick = { expanded = !expanded }
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = faq.question,
+                    style = EponaTypography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = if (expanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (expanded) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = faq.answer,
+                    style = EponaTypography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}

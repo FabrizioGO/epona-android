@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Spacing -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <!-- Content padding -->
+    <dimen name="content_padding_horizontal">16dp</dimen>
+    <dimen name="content_padding_vertical">16dp</dimen>
+    <dimen name="screen_padding_horizontal">20dp</dimen>
+
+    <!-- Components -->
+    <dimen name="avatar_size_sm">40dp</dimen>
+    <dimen name="avatar_size_md">56dp</dimen>
+    <dimen name="avatar_size_lg">88dp</dimen>
+    <dimen name="pet_card_photo_size">56dp</dimen>
+    <dimen name="marker_size">40dp</dimen>
+    <dimen name="marker_size_selected">48dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="icon_size_sm">14dp</dimen>
+    <dimen name="icon_size_md">20dp</dimen>
+    <dimen name="icon_size_lg">24dp</dimen>
+    <dimen name="icon_size_xl">32dp</dimen>
+
+    <!-- Bottom sheet -->
+    <dimen name="sheet_peek_height">280dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="corner_sm">8dp</dimen>
+    <dimen name="corner_md">16dp</dimen>
+    <dimen name="corner_lg">24dp</dimen>
+    <dimen name="corner_xl">32dp</dimen>
+    <dimen name="corner_pill">28dp</dimen>
+
+    <!-- Map -->
+    <dimen name="map_hero_height">260dp</dimen>
+    <dimen name="map_preview_height">140dp</dimen>
+
+</resources>

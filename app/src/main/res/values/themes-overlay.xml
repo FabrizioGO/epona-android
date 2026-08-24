@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Overlay for destructive action buttons (delete, etc.) -->
+    <style name="ThemeOverlay.Epona.Destructive" parent="">
+        <item name="colorPrimary">@color/md_theme_light_error</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onError</item>
+    </style>
+
+</resources>
