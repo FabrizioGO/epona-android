@@ -17,9 +17,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
@@ -46,7 +48,7 @@ fun MyAlertsScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "My Alerts",
+                title = stringResource(R.string.profile_my_alerts),
                 onBackClick = onNavigateBack
             )
         },
@@ -60,8 +62,8 @@ fun MyAlertsScreen(
             state.alerts.isEmpty() -> {
                 EmptyState(
                     icon = Icons.Outlined.Campaign,
-                    title = "No alerts yet",
-                    description = "Alerts you create for lost or found pets will show up here.",
+                    title = stringResource(R.string.my_alerts_empty_title),
+                    description = stringResource(R.string.my_alerts_empty_desc),
                     modifier = Modifier.padding(padding)
                 )
             }

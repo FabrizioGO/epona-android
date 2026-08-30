@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -55,12 +57,17 @@ fun AlertStatsCard(
 
             Column {
                 Text(
-                    text = "$totalAlerts active alerts near you",
+                    text = stringResource(R.string.home_alerts_near_you, totalAlerts),
                     style = EponaTypography.titleSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
-                    text = "Within $radiusKm km · $lostCount lost · $foundCount found",
+                    text = stringResource(
+                        R.string.home_radius_info,
+                        radiusKm,
+                        lostCount,
+                        foundCount
+                    ),
                     style = EponaTypography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(
                         alpha = 0.8f

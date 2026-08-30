@@ -5,14 +5,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EponaConfirmDialog(
     title: String,
     message: String,
-    confirmText: String = "Confirm",
-    dismissText: String = "Cancel",
+    confirmText: String = stringResource(R.string.action_confirm),
+    dismissText: String = stringResource(R.string.action_cancel),
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {

@@ -25,9 +25,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.alert.create.steps.AlertTypeStep
 import com.fabriziogo.epona.feature.alert.create.steps.ContactReviewStep
 import com.fabriziogo.epona.feature.alert.create.steps.PetSelectionStep
@@ -76,7 +78,7 @@ fun CreateAlertScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "Create Alert",
+                title = stringResource(R.string.create_alert_title),
                 onCloseClick = { viewModel.onEvent(CreateAlertEvent.CloseClicked) }
             )
         },
@@ -185,13 +187,13 @@ fun CreateAlertScreen(
             ) {
                 if (state.currentStep > 1) {
                     EponaOutlinedButton(
-                        text = "Back",
+                        text = stringResource(R.string.create_back),
                         onClick = { viewModel.onEvent(CreateAlertEvent.PreviousStep) }
                     )
                 }
                 if (state.currentStep == state.totalSteps) {
                     EponaFilledButton(
-                        text = "🚨 Publish Alert",
+                        text = stringResource(R.string.create_publish),
                         onClick = { viewModel.onEvent(CreateAlertEvent.PublishClicked) },
                         loading = state.isSubmitting,
                         enabled = state.canProceed,
@@ -200,7 +202,7 @@ fun CreateAlertScreen(
                     )
                 } else {
                     EponaFilledButton(
-                        text = "Continue",
+                        text = stringResource(R.string.create_continue),
                         onClick = { viewModel.onEvent(CreateAlertEvent.NextStep) },
                         enabled = state.canProceed,
                         fullWidth = true,

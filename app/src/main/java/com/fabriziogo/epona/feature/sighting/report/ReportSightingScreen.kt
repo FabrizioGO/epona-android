@@ -17,18 +17,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCard
-import com.fabriziogo.epona.feature.sighting.report.components.PhotoCaptureCard
 import com.fabriziogo.epona.feature.sighting.report.components.SightingNoteField
 import com.fabriziogo.epona.feature.sighting.report.components.SubmitSection
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
+import com.fabriziogo.epona.core.ui.media.PhotoThumbnailRow
+import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +54,25 @@ fun ReportSightingScreen(
         onDenied = { viewModel.onEvent(ReportSightingEvent.LocationPermissionDenied) }
     )
     RequestLocationPermissionOnEntry(locationPermission)
+
+    val scope = rememberCoroutineScope()
+    val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
+    val photoPicker = rememberMediaPickerState(
+        remainingSlots = MAX_PHOTOS_PER_ENTITY - state.photos.size,
+        onUrisPicked = { uris -> viewModel.onEvent(ReportSightingEvent.PhotosPicked(uris)) },
+        onCameraDenied = {
+            scope.launch { snackbarHostState.showSnackbar(cameraDeniedMessage) }
+        }
+    )
+
+    if (photoPicker.isSheetVisible) {
+        PhotoSourceSheet(
+            onDismiss = photoPicker::dismiss,
+            onGalleryClick = photoPicker::pickFromGallery,
+            onCameraClick = photoPicker::takePhoto,
+            isCameraAvailable = photoPicker.isCameraAvailable
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -67,7 +93,7 @@ fun ReportSightingScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "Report Sighting",
+                title = stringResource(R.string.sighting_report_title),
                 onCloseClick = { viewModel.onEvent(ReportSightingEvent.BackClicked) }
             )
         },
@@ -85,13 +111,13 @@ fun ReportSightingScreen(
             // Context banner
             if (state.petName.isNotBlank()) {
                 Text(
-                    text = "You spotted ${state.petName}? Help bring them home!",
+                    text = stringResource(R.string.sighting_spotted, state.petName),
                     style = EponaTypography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "Add a photo and pin the location where you saw them.",
+                    text = stringResource(R.string.sighting_add_photo),
                     style = EponaTypography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -100,14 +126,22 @@ fun ReportSightingScreen(
             Spacer(Modifier.height(20.dp))
 
             // Photo capture
-            PhotoCaptureCard(
-                photoUris = state.photoUris,
-                onAddPhoto = { uri ->
-                    viewModel.onEvent(ReportSightingEvent.PhotoAdded(uri))
-                },
-                onRemovePhoto = { index ->
-                    viewModel.onEvent(ReportSightingEvent.PhotoRemoved(index))
-                }
+            Text(
+                text = stringResource(R.string.sighting_photos_title),
+                style = EponaTypography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = stringResource(R.string.sighting_photos_desc),
+                style = EponaTypography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(12.dp))
+            PhotoThumbnailRow(
+                photos = state.photos,
+                onAddClick = photoPicker::open,
+                onRemove = { viewModel.onEvent(ReportSightingEvent.PhotoRemoved(it)) },
+                thumbnailSize = 90.dp
             )
 
             Spacer(Modifier.height(20.dp))

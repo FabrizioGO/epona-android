@@ -29,9 +29,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTextButton
@@ -45,30 +47,30 @@ data class OnboardingPage(
     val description: String
 )
 
-private val pages = listOf(
-    OnboardingPage(
-        emoji = "📢",
-        title = "Alert Your Community",
-        description = "Post a missing pet alert in under 60 seconds. Your neighbors get notified instantly."
-    ),
-    OnboardingPage(
-        emoji = "👁️",
-        title = "Crowdsourced Sightings",
-        description = "Anyone can report a sighting with a photo and location, building a live trail to your pet."
-    ),
-    OnboardingPage(
-        emoji = "🏠",
-        title = "Bring Them Home",
-        description = "Epona has reunited thousands of pets with their families. Join the community that cares."
-    )
-)
-
 @Composable
 fun OnboardingScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pages = listOf(
+        OnboardingPage(
+            emoji = "📢",
+            title = stringResource(R.string.onboarding_title_1),
+            description = stringResource(R.string.onboarding_desc_1)
+        ),
+        OnboardingPage(
+            emoji = "👁️",
+            title = stringResource(R.string.onboarding_title_2),
+            description = stringResource(R.string.onboarding_desc_2)
+        ),
+        OnboardingPage(
+            emoji = "🏠",
+            title = stringResource(R.string.onboarding_title_3),
+            description = stringResource(R.string.onboarding_desc_3)
+        )
+    )
+
     var currentPage by remember { mutableIntStateOf(0) }
 
     Column(
@@ -84,7 +86,7 @@ fun OnboardingScreen(
         ) {
             if (currentPage < pages.lastIndex) {
                 EponaTextButton(
-                    text = "Skip",
+                    text = stringResource(R.string.onboarding_skip),
                     onClick = { currentPage = pages.lastIndex }
                 )
             }
@@ -163,13 +165,13 @@ fun OnboardingScreen(
         // Action buttons
         if (currentPage < pages.lastIndex) {
             EponaFilledButton(
-                text = "Next",
+                text = stringResource(R.string.onboarding_next),
                 onClick = { currentPage++ },
                 fullWidth = true
             )
         } else {
             EponaFilledButton(
-                text = "Get Started",
+                text = stringResource(R.string.onboarding_get_started),
                 onClick = onNavigateToRegister,
                 fullWidth = true
             )
@@ -177,7 +179,7 @@ fun OnboardingScreen(
             Spacer(Modifier.height(12.dp))
 
             EponaOutlinedButton(
-                text = "I already have an account",
+                text = stringResource(R.string.onboarding_has_account),
                 onClick = onNavigateToLogin,
                 fullWidth = true
             )

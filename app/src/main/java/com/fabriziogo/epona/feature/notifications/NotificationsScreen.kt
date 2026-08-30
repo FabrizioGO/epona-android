@@ -23,9 +23,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.notifications.components.NotificationItem
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaLargeTopAppBar
@@ -64,7 +66,7 @@ fun NotificationsScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             EponaLargeTopAppBar(
-                title = "Alerts",
+                title = stringResource(R.string.notifications_title),
                 scrollBehavior = scrollBehavior,
                 actions = {
                     if (state.unreadCount > 0) {
@@ -73,7 +75,7 @@ fun NotificationsScreen(
                         ) {
                             Icon(
                                 Icons.Outlined.DoneAll,
-                                contentDescription = "Mark all as read"
+                                contentDescription = stringResource(R.string.notifications_mark_all_read)
                             )
                         }
                     }
@@ -91,8 +93,8 @@ fun NotificationsScreen(
             state.notifications.isEmpty() -> {
                 EmptyState(
                     icon = Icons.Outlined.Notifications,
-                    title = "No notifications yet",
-                    description = "You'll be notified when there are missing pet alerts near you, sightings on your alerts, and more.",
+                    title = stringResource(R.string.notifications_empty_title),
+                    description = stringResource(R.string.notifications_empty_desc),
                     modifier = Modifier.padding(padding)
                 )
             }

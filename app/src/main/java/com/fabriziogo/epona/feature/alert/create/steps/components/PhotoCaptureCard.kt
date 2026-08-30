@@ -1,4 +1,4 @@
-package com.fabriziogo.epona.feature.sighting.report.components
+package com.fabriziogo.epona.feature.alert.create.steps.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,8 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -39,12 +41,12 @@ fun PhotoCaptureCard(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Photos",
+            text = stringResource(R.string.sighting_photos_title),
             style = EponaTypography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "Add up to 3 photos of the pet you spotted",
+            text = stringResource(R.string.sighting_photos_desc),
             style = EponaTypography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -63,7 +65,7 @@ fun PhotoCaptureCard(
                 ) {
                     AsyncImage(
                         model = uri,
-                        contentDescription = "Photo ${index + 1}",
+                        contentDescription = stringResource(R.string.cd_photo_index, index + 1),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(90.dp)
                     )
@@ -80,7 +82,7 @@ fun PhotoCaptureCard(
                     ) {
                         Icon(
                             Icons.Filled.Close,
-                            contentDescription = "Remove",
+                            contentDescription = stringResource(R.string.cd_remove_photo),
                             modifier = Modifier.size(14.dp),
                             tint = MaterialTheme.colorScheme.onError
                         )
@@ -112,13 +114,13 @@ fun PhotoCaptureCard(
                     ) {
                         Icon(
                             Icons.Outlined.CameraAlt,
-                            contentDescription = "Add photo",
+                            contentDescription = stringResource(R.string.cd_add_photo),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(28.dp)
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = "Add",
+                            text = stringResource(R.string.sighting_add),
                             style = EponaTypography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

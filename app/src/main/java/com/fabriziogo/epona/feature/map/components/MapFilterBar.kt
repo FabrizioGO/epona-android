@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.ui.components.EponaFilterChip
 
@@ -30,12 +32,12 @@ fun MapFilterBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             EponaFilterChip(
-                label = "Lost",
+                label = stringResource(R.string.alert_type_lost),
                 selected = showLost,
                 onClick = { onFilterToggled(AlertType.LOST) }
             )
             EponaFilterChip(
-                label = "Found",
+                label = stringResource(R.string.alert_type_found),
                 selected = showFound,
                 onClick = { onFilterToggled(AlertType.FOUND) }
             )

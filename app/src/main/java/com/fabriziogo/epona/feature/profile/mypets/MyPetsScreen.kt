@@ -18,9 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.profile.mypets.components.MyPetCard
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
@@ -60,10 +62,10 @@ fun MyPetsScreen(
 
     if (state.showDeleteDialog) {
         EponaConfirmDialog(
-            title = "Delete ${state.petToDelete?.name}?",
-            message = "This will permanently remove this pet and all associated alerts. This cannot be undone.",
-            confirmText = "Delete",
-            dismissText = "Cancel",
+            title = stringResource(R.string.my_pets_delete_title, state.petToDelete?.name ?: ""),
+            message = stringResource(R.string.my_pets_delete_message),
+            confirmText = stringResource(R.string.action_delete),
+            dismissText = stringResource(R.string.action_cancel),
             onConfirm = { viewModel.onDeleteConfirmed() },
             onDismiss = { viewModel.onDeleteDismissed() }
         )
@@ -72,7 +74,7 @@ fun MyPetsScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "My Pets",
+                title = stringResource(R.string.my_pets_title),
                 onBackClick = onNavigateBack
             )
         },
@@ -80,7 +82,7 @@ fun MyPetsScreen(
             EponaFAB(
                 onClick = onNavigateToAddPet,
                 icon = Icons.Filled.Add,
-                contentDescription = "Add pet"
+                contentDescription = stringResource(R.string.my_pets_add)
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -93,12 +95,12 @@ fun MyPetsScreen(
             state.pets.isEmpty() -> {
                 EmptyState(
                     icon = Icons.Outlined.Pets,
-                    title = "No pets registered",
-                    description = "Add your pets to quickly create alerts if they ever go missing.",
+                    title = stringResource(R.string.my_pets_empty_title),
+                    description = stringResource(R.string.my_pets_empty_desc),
                     modifier = Modifier.padding(padding),
                     action = {
                         EponaFilledButton(
-                            text = "Add Pet",
+                            text = stringResource(R.string.create_add_pet),
                             onClick = onNavigateToAddPet,
                             icon = Icons.Filled.Add
                         )

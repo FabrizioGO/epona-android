@@ -66,23 +66,8 @@ class StorageService @Inject constructor(
         data = data
     )
 
-    suspend fun uploadPetPhoto(
-        petId: String,
-        data: ByteArray,
-        fileName: String
-    ): String = upload(
-        bucket = BUCKET_PETS,
-        path = "$petId/$fileName",
-        data = data
-    )
-
-    suspend fun uploadSightingPhoto(
-        sightingId: String,
-        data: ByteArray,
-        fileName: String
-    ): String = upload(
-        bucket = BUCKET_SIGHTINGS,
-        path = "$sightingId/$fileName",
-        data = data
-    )
+    // Pet and sighting photos go through PhotoUploader, which owns the
+    // "{userId}/{fileName}" convention the storage policies check. Convenience
+    // wrappers here would be a second place that builds those paths, free to drift
+    // from the policy without anything failing until an upload is refused.
 }

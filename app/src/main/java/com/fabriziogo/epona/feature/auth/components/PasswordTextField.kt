@@ -11,10 +11,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 
 @Composable
@@ -45,8 +47,8 @@ fun PasswordTextField(
                 Icon(
                     imageVector = if (visible) Icons.Outlined.Lock
                         else Icons.Outlined.Lock,
-                    contentDescription = if (visible) "Hide password"
-                        else "Show password"
+                    contentDescription = if (visible) stringResource(R.string.cd_hide_password)
+                        else stringResource(R.string.cd_show_password)
                 )
             }
         },

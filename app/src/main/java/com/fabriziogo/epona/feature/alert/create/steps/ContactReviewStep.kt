@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -36,13 +38,13 @@ fun ContactReviewStep(
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
-            "Contact & Review",
+            stringResource(R.string.create_step_contact_title),
             style = EponaTypography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            "How can people reach you?",
+            stringResource(R.string.create_step_contact_subtitle),
             style = EponaTypography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -51,8 +53,8 @@ fun ContactReviewStep(
         EponaTextField(
             value = phone,
             onValueChange = onPhoneChanged,
-            label = "Contact Phone",
-            placeholder = "+1 (555) 000-0000",
+            label = stringResource(R.string.create_contact_phone),
+            placeholder = stringResource(R.string.create_contact_phone_placeholder),
             keyboardType = KeyboardType.Phone,
             imeAction = ImeAction.Next
         )
@@ -62,9 +64,9 @@ fun ContactReviewStep(
             EponaTextField(
                 value = reward,
                 onValueChange = onRewardChanged,
-                label = "Reward (optional)",
-                placeholder = "e.g. 50",
-                supportingText = "Offering a reward can increase response",
+                label = stringResource(R.string.create_reward),
+                placeholder = stringResource(R.string.create_reward_placeholder),
+                supportingText = stringResource(R.string.create_reward_hint),
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done
             )
@@ -88,19 +90,24 @@ fun ContactReviewStep(
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        "Ready to publish!",
+                        stringResource(R.string.create_ready_title),
                         style = EponaTypography.titleSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
                 Spacer(Modifier.height(8.dp))
+                val typeLabel = if (alertType == AlertType.LOST) {
+                    stringResource(R.string.alert_type_lost)
+                } else {
+                    stringResource(R.string.alert_type_found)
+                }
+                val summaryText = if (address.isNotBlank()) {
+                    stringResource(R.string.create_ready_summary, typeLabel, petName, address)
+                } else {
+                    stringResource(R.string.create_ready_summary_no_location, typeLabel, petName)
+                }
                 Text(
-                    text = buildString {
-                        val label = if (alertType == AlertType.LOST) "Lost" else "Found"
-                        append("$label alert for $petName")
-                        if (address.isNotBlank()) append(" near $address")
-                        append(". Your community will be notified instantly.")
-                    },
+                    text = summaryText,
                     style = EponaTypography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
                 )

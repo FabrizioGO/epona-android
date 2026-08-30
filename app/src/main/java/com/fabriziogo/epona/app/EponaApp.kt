@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.app.navigation.EponaNavHost
@@ -50,7 +51,7 @@ fun EponaApp(
                     items = appState.topLevelDestinations.map { dest ->
                         NavBarItem(
                             route = dest.route,
-                            label = dest.label,
+                            label = stringResource(dest.labelRes),
                             icon = dest.icon,
                             selectedIcon = dest.selectedIcon,
                             badgeCount = if (dest == com.fabriziogo.epona.app.navigation.TopLevelDestination.ALERTS)

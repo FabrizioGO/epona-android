@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -26,13 +28,13 @@ fun AlertTypeStep(
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
-            text = "What happened?",
+            text = stringResource(R.string.create_step_type_title),
             style = EponaTypography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "Select the type of alert you want to create",
+            text = stringResource(R.string.create_step_type_subtitle),
             style = EponaTypography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -64,8 +66,8 @@ fun AlertTypeStep(
                         )
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            text = if (type == AlertType.LOST) "I Lost My Pet"
-                            else "I Found a Pet",
+                            text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost)
+                            else stringResource(R.string.create_type_found),
                             style = EponaTypography.titleMedium,
                             color = if (selected)
                                 MaterialTheme.colorScheme.onPrimaryContainer
@@ -73,8 +75,8 @@ fun AlertTypeStep(
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = if (type == AlertType.LOST) "Alert your community"
-                            else "Help find the owner",
+                            text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost_desc)
+                            else stringResource(R.string.create_type_found_desc),
                             style = EponaTypography.bodySmall,
                             color = if (selected)
                                 MaterialTheme.colorScheme.onPrimaryContainer

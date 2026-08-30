@@ -28,36 +28,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 private data class FaqItem(val question: String, val answer: String)
-
-private val FAQ_ITEMS = listOf(
-    FaqItem(
-        "How do I report a lost pet?",
-        "From the Home tab, tap the + button to start a new alert, select the pet, add the last seen location, and submit. Nearby users will be notified."
-    ),
-    FaqItem(
-        "How do I report a sighting?",
-        "Open an alert's detail page and tap \"Report Sighting\" to share the location, a note, and photos of where you saw the pet."
-    ),
-    FaqItem(
-        "How do I add or edit my pets?",
-        "Go to Profile > My Pets, then tap the + button to add a new pet, or tap the edit icon on an existing pet to update its details."
-    ),
-    FaqItem(
-        "How do I resolve an alert once the pet is found?",
-        "Open the alert from My Alerts or the alert detail screen and tap \"Mark as Resolved\"."
-    ),
-    FaqItem(
-        "How is my location used?",
-        "Location is used to show nearby alerts and to record where a pet was last seen or spotted. You can adjust your notification radius in Settings."
-    )
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,10 +46,33 @@ fun HelpScreen(
 ) {
     val context = LocalContext.current
 
+    val faqItems = listOf(
+        FaqItem(
+            stringResource(R.string.faq_q1_question),
+            stringResource(R.string.faq_q1_answer)
+        ),
+        FaqItem(
+            stringResource(R.string.faq_q2_question),
+            stringResource(R.string.faq_q2_answer)
+        ),
+        FaqItem(
+            stringResource(R.string.faq_q3_question),
+            stringResource(R.string.faq_q3_answer)
+        ),
+        FaqItem(
+            stringResource(R.string.faq_q4_question),
+            stringResource(R.string.faq_q4_answer)
+        ),
+        FaqItem(
+            stringResource(R.string.faq_q5_question),
+            stringResource(R.string.faq_q5_answer)
+        )
+    )
+
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "Help & Support",
+                title = stringResource(R.string.profile_help),
                 onBackClick = onNavigateBack
             )
         }
@@ -83,13 +85,13 @@ fun HelpScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Frequently Asked Questions",
+                text = stringResource(R.string.help_faq_title),
                 style = EponaTypography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(12.dp))
 
-            FAQ_ITEMS.forEach { faq ->
+            faqItems.forEach { faq ->
                 FaqCard(faq)
                 Spacer(Modifier.height(10.dp))
             }
@@ -99,25 +101,26 @@ fun HelpScreen(
             EponaCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Still need help?",
+                        text = stringResource(R.string.help_contact_title),
                         style = EponaTypography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "Our support team is happy to help with anything the FAQs didn't cover.",
+                        text = stringResource(R.string.help_contact_desc),
                         style = EponaTypography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(16.dp))
+                    val emailSubject = stringResource(R.string.help_email_subject)
                     EponaOutlinedButton(
-                        text = "Email Support",
+                        text = stringResource(R.string.help_email_support),
                         icon = Icons.Outlined.Email,
                         fullWidth = true,
                         onClick = {
                             val intent = Intent(Intent.ACTION_SENDTO).apply {
                                 data = Uri.parse("mailto:support@epona.app")
-                                putExtra(Intent.EXTRA_SUBJECT, "Epona Support Request")
+                                putExtra(Intent.EXTRA_SUBJECT, emailSubject)
                             }
                             context.startActivity(intent)
                         }

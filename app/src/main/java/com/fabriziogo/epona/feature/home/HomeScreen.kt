@@ -18,10 +18,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
@@ -94,12 +96,12 @@ fun HomeScreen(
             !state.isLoading && state.alerts.isEmpty() && state.error == null -> {
                 EmptyState(
                     icon = Icons.Outlined.Lock,
-                    title = "No alerts nearby",
-                    description = "There are no missing or found pet alerts in your area right now. That's a good thing!",
+                    title = stringResource(R.string.home_empty_title),
+                    description = stringResource(R.string.home_empty_description),
                     modifier = Modifier.padding(paddingValues),
                     action = {
                         EponaFilledButton(
-                            text = "Create Alert",
+                            text = stringResource(R.string.create_alert_title),
                             onClick = {
                                 viewModel.onEvent(HomeEvent.CreateAlertClicked)
                             }

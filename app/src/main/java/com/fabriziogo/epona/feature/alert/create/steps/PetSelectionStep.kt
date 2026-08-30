@@ -23,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
@@ -41,13 +43,13 @@ fun PetSelectionStep(
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
-            "Which pet?",
+            stringResource(R.string.create_step_pet_title),
             style = EponaTypography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            "Select the pet for this alert",
+            stringResource(R.string.create_step_pet_subtitle),
             style = EponaTypography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -66,17 +68,21 @@ fun PetSelectionStep(
                     Text("🐾", style = EponaTypography.displayLarge)
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        "No pets registered yet",
+                        stringResource(R.string.create_no_pets_title),
                         style = EponaTypography.titleMedium
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Add a pet first to create an alert",
+                        stringResource(R.string.create_no_pets_desc),
                         style = EponaTypography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(20.dp))
-                    EponaOutlinedButton("Add Pet", onClick = onAddNewPet, icon = Icons.Filled.Add)
+                    EponaOutlinedButton(
+                        stringResource(R.string.create_add_pet),
+                        onClick = onAddNewPet,
+                        icon = Icons.Filled.Add
+                    )
                 }
             }
 
@@ -144,7 +150,7 @@ fun PetSelectionStep(
                                 if (isSelected) {
                                     Icon(
                                         Icons.Filled.Check,
-                                        contentDescription = "Selected",
+                                        contentDescription = stringResource(R.string.cd_selected),
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(24.dp)
                                     )
@@ -154,7 +160,7 @@ fun PetSelectionStep(
                     }
                     Spacer(Modifier.height(8.dp))
                     EponaOutlinedButton(
-                        "Add New Pet",
+                        stringResource(R.string.create_add_new_pet),
                         onClick = onAddNewPet,
                         icon = Icons.Filled.Add,
                         fullWidth = true

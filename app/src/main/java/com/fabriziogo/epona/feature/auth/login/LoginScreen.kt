@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -96,15 +97,15 @@ fun LoginContent(
             Spacer(Modifier.height(60.dp))
 
             AuthHeader(
-                title = "Welcome back",
-                subtitle = "Sign in to find and help lost pets in your community"
+                title = stringResource(R.string.auth_welcome_back),
+                subtitle = stringResource(R.string.auth_sign_in_subtitle)
             )
 
             Spacer(Modifier.height(36.dp))
 
             // Google Sign In
             SocialSignInButton(
-                text = "Continue with Google",
+                text = stringResource(R.string.auth_google),
                 isLoading = state.isGoogleLoading,
                 onClick = onLaunchGoogleSignIn
             )
@@ -119,8 +120,8 @@ fun LoginContent(
             EponaTextField(
                 value = state.email,
                 onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
-                label = "Email",
-                placeholder = "you@example.com",
+                label = stringResource(R.string.auth_email),
+                placeholder = stringResource(R.string.auth_email_placeholder),
                 errorText = state.emailError,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -133,7 +134,7 @@ fun LoginContent(
             PasswordTextField(
                 value = state.password,
                 onValueChange = { onEvent(LoginEvent.PasswordChanged(it)) },
-                label = "Password",
+                label = stringResource(R.string.auth_password),
                 errorText = state.passwordError,
                 imeAction = ImeAction.Done,
                 onImeAction = { onEvent(LoginEvent.SignInClicked) }
@@ -147,7 +148,7 @@ fun LoginContent(
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(
-                    "Forgot password?",
+                    stringResource(R.string.auth_forgot_password),
                     style = EponaTypography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -157,7 +158,7 @@ fun LoginContent(
 
             // Sign in button
             EponaFilledButton(
-                text = "Sign In",
+                text = stringResource(R.string.auth_sign_in),
                 onClick = { onEvent(LoginEvent.SignInClicked) },
                 loading = state.isLoading,
                 fullWidth = true,
@@ -171,7 +172,7 @@ fun LoginContent(
                 onClick = { onEvent(LoginEvent.NavigateToRegister) }
             ) {
                 Text(
-                    text = "Don't have an account? Sign up",
+                    text = stringResource(R.string.auth_no_account),
                     style = EponaTypography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center

@@ -25,8 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaSearchBar
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -79,7 +81,7 @@ fun HomeHeader(
                     ) {
                         Icon(
                             Icons.Outlined.Notifications,
-                            contentDescription = "Notifications",
+                            contentDescription = stringResource(R.string.cd_notifications),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -96,7 +98,7 @@ fun HomeHeader(
                     if (userAvatar != null) {
                         AsyncImage(
                             model = userAvatar,
-                            contentDescription = "Profile",
+                            contentDescription = stringResource(R.string.cd_profile),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.size(40.dp)
                         )
@@ -115,18 +117,19 @@ fun HomeHeader(
 
         // Search bar
         EponaSearchBar(
-            placeholder = "Search pets, breeds, locations...",
+            placeholder = stringResource(R.string.home_search_placeholder),
             onClick = onSearchClick,
             onFilterClick = onFilterClick
         )
     }
 }
 
+@Composable
 private fun greetingText(): String {
     val hour = java.time.LocalTime.now().hour
     return when {
-        hour < 12 -> "Good morning 👋"
-        hour < 17 -> "Good afternoon 👋"
-        else -> "Good evening 👋"
+        hour < 12 -> stringResource(R.string.home_greeting_morning)
+        hour < 17 -> stringResource(R.string.home_greeting_afternoon)
+        else -> stringResource(R.string.home_greeting_evening)
     }
 }

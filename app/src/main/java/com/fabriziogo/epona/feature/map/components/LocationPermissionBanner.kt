@@ -16,8 +16,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -51,7 +53,7 @@ fun LocationPermissionBanner(
             Spacer(Modifier.width(10.dp))
 
             Text(
-                text = "Turn on location to see pets near you",
+                text = stringResource(R.string.map_location_banner_message),
                 style = EponaTypography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f)
@@ -59,7 +61,11 @@ fun LocationPermissionBanner(
 
             TextButton(onClick = onEnableClick) {
                 Text(
-                    text = if (isPermanentlyDenied) "Settings" else "Enable",
+                    text = if (isPermanentlyDenied) {
+                        stringResource(R.string.map_location_banner_settings)
+                    } else {
+                        stringResource(R.string.map_location_banner_enable)
+                    },
                     style = EponaTypography.labelLarge
                 )
             }

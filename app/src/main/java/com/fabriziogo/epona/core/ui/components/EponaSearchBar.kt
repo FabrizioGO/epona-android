@@ -15,13 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EponaSearchBar(
-    placeholder: String = "Search pets, breeds, locations...",
+    placeholder: String = stringResource(R.string.home_search_placeholder),
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onFilterClick: (() -> Unit)? = null
@@ -40,7 +42,7 @@ fun EponaSearchBar(
         ) {
             Icon(
                 Icons.Filled.Search,
-                contentDescription = "Search",
+                contentDescription = stringResource(R.string.action_search),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
@@ -54,7 +56,7 @@ fun EponaSearchBar(
             onFilterClick?.let {
                 Icon(
                     Icons.Filled.Settings,
-                    contentDescription = "Filters",
+                    contentDescription = stringResource(R.string.action_filters),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.clickable(onClick = it)
                 )

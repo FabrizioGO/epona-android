@@ -10,6 +10,7 @@ import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 import com.fabriziogo.epona.core.domain.repository.SightingRepository
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.SightingService
+import com.fabriziogo.epona.core.data.media.PhotoUploader
 import com.fabriziogo.epona.core.network.service.StorageService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 class SightingRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val sightingService: SightingService,
-    private val storageService: StorageService,
+    private val photoUploader: PhotoUploader,
     private val sightingDao: SightingDao,
     private val alertDao: AlertDao
 ) : SightingRepository {
@@ -59,12 +60,10 @@ class SightingRepositoryImpl @Inject constructor(
         sighting.copy(id = dto.id ?: "", reporterId = reporterId)
     }
 
-    override suspend fun uploadSightingPhoto(
-        sightingId: String,
-        imageBytes: ByteArray,
-        fileName: String
-    ): Result<String> = runCatching {
-        storageService.uploadSightingPhoto(sightingId, imageBytes, fileName)
+    override suspend fun uploadSightingPhotos(
+        localUris: List<String>
+    ): Result<List<String>> = runCatching {
+        photoUploader.uploadAll(StorageService.BUCKET_SIGHTINGS, localUris)
     }
 
     override suspend fun deleteSighting(sightingId: String): Result<Unit> =

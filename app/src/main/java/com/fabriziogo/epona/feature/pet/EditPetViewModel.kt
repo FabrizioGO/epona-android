@@ -1,14 +1,19 @@
 package com.fabriziogo.epona.feature.pet
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
 import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.domain.usecase.pet.GetPetUseCase
 import com.fabriziogo.epona.core.domain.usecase.pet.UpdatePetUseCase
+import com.fabriziogo.epona.core.media.ImageProcessor
+import com.fabriziogo.epona.core.media.PhotoItem
+import com.fabriziogo.epona.core.media.localUris
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +35,13 @@ data class EditPetUiState(
     val selectedGender: PetGender = PetGender.UNKNOWN,
     val microchipId: String = "",
     val description: String = "",
-    val photoUrls: List<String> = emptyList(),
+    /**
+     * Photos attached so far. Unlike the add screen this list mixes entries already
+     * on the server with newly picked local ones; UpdatePetUseCase uploads only the
+     * latter and substitutes them in place, so the order here is the order saved.
+     */
+    val photos: List<PhotoItem> = emptyList(),
+    val isProcessingPhotos: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
     val nameError: String? = null,
@@ -47,7 +58,8 @@ sealed class EditPetEvent {
     data class GenderChanged(val gender: PetGender) : EditPetEvent()
     data class MicrochipIdChanged(val microchipId: String) : EditPetEvent()
     data class DescriptionChanged(val description: String) : EditPetEvent()
-    data class PhotosSelected(val photoUrls: List<String>) : EditPetEvent()
+    data class PhotosPicked(val uris: List<Uri>) : EditPetEvent()
+    data class PhotoRemoved(val photo: PhotoItem) : EditPetEvent()
     object SavePet : EditPetEvent()
     object ErrorDismissed : EditPetEvent()
 }
@@ -61,7 +73,8 @@ sealed class EditPetNavEvent {
 class EditPetViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getPetUseCase: GetPetUseCase,
-    private val updatePetUseCase: UpdatePetUseCase
+    private val updatePetUseCase: UpdatePetUseCase,
+    private val imageProcessor: ImageProcessor
 ) : ViewModel() {
     private val petId: String = savedStateHandle.get<String>("petId") ?: ""
 
@@ -108,9 +121,8 @@ class EditPetViewModel @Inject constructor(
             is EditPetEvent.DescriptionChanged -> {
                 _state.value = _state.value.copy(description = event.description)
             }
-            is EditPetEvent.PhotosSelected -> {
-                _state.value = _state.value.copy(photoUrls = event.photoUrls)
-            }
+            is EditPetEvent.PhotosPicked -> addPhotos(event.uris)
+            is EditPetEvent.PhotoRemoved -> removePhoto(event.photo)
             is EditPetEvent.SavePet -> {
                 savePet()
             }
@@ -136,7 +148,7 @@ class EditPetViewModel @Inject constructor(
                         selectedGender = pet.gender,
                         microchipId = pet.microchipId ?: "",
                         description = pet.description ?: "",
-                        photoUrls = pet.photoUrls,
+                        photos = pet.photoUrls.map { PhotoItem.Remote(it) },
                         isLoading = false,
                         isFormValid = true
                     )
@@ -153,6 +165,38 @@ class EditPetViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    /**
+     * Decoding happens here rather than in the picker: it is disk work, and a scope
+     * tied to the composition would drop the photos on a rotation mid-decode.
+     */
+    private fun addPhotos(uris: List<Uri>) {
+        val free = MAX_PHOTOS_PER_ENTITY - _state.value.photos.size
+        if (free <= 0 || uris.isEmpty()) return
+
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isProcessingPhotos = true)
+            val wanted = uris.take(free)
+            val added = wanted.mapNotNull { imageProcessor.process(it).getOrNull() }
+            _state.value = _state.value.copy(
+                photos = _state.value.photos + added.map { PhotoItem.Local(it) },
+                isProcessingPhotos = false,
+                // One unreadable pick should not sink the rest of the selection.
+                error = if (added.size < wanted.size) PHOTO_ERROR else _state.value.error
+            )
+        }
+    }
+
+    /**
+     * Removing a remote photo only drops it from this list — the save that follows
+     * writes the shorter array, and the object in the bucket is left alone.
+     */
+    private fun removePhoto(photo: PhotoItem) {
+        if (photo is PhotoItem.Local) imageProcessor.delete(listOf(photo.image.uri))
+        _state.value = _state.value.copy(
+            photos = _state.value.photos.filterNot { it.key == photo.key }
+        )
     }
 
     private fun validateForm() {
@@ -190,10 +234,13 @@ class EditPetViewModel @Inject constructor(
                     gender = current.selectedGender,
                     microchipId = current.microchipId.takeIf { it.isNotBlank() },
                     description = current.description.takeIf { it.isNotBlank() },
-                    photoUrls = current.photoUrls
+                    photoUrls = current.photos.map { it.model }
                 )
                 updatePetUseCase(pet).onSuccess { saved ->
                     Timber.d("EditPet: updated id=%s", saved.id)
+                    // Uploaded and persisted, so the cache copies are dead weight.
+                    // Only on success: a failed save keeps them for the retry.
+                    imageProcessor.delete(current.photos.localUris())
                     _state.value = _state.value.copy(isLoading = false)
                     _navEvents.send(EditPetNavEvent.NavigateToSuccess)
                 }.onFailure { exception ->
@@ -211,5 +258,9 @@ class EditPetViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private companion object {
+        const val PHOTO_ERROR = "Some photos could not be added"
     }
 }

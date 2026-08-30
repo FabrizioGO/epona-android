@@ -12,7 +12,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -31,8 +33,7 @@ fun SubmitSection(
             color = MaterialTheme.colorScheme.primaryContainer
         ) {
             Text(
-                text = "Your sighting will be shared with the pet's owner and " +
-                        "added to the live trail on the map. Every sighting helps!",
+                text = stringResource(R.string.sighting_info),
                 style = EponaTypography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(14.dp)
@@ -42,7 +43,7 @@ fun SubmitSection(
         Spacer(Modifier.height(16.dp))
 
         EponaFilledButton(
-            text = "Submit Sighting",
+            text = stringResource(R.string.sighting_submit),
             onClick = onSubmit,
             icon = Icons.Outlined.Visibility,
             loading = isSubmitting,

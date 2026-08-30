@@ -20,8 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.ui.components.AlertStatusBadge
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
@@ -86,7 +89,7 @@ fun MyAlertCard(
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = alert.lastSeenAddress ?: "Location unknown",
+                    text = alert.lastSeenAddress ?: stringResource(R.string.alert_location_unknown),
                     style = EponaTypography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -102,7 +105,11 @@ fun MyAlertCard(
                     )
                     Spacer(Modifier.width(2.dp))
                     Text(
-                        text = "${alert.sightingCount} sighting${if (alert.sightingCount == 1) "" else "s"}",
+                        text = pluralStringResource(
+                            R.plurals.alert_sighting_count,
+                            alert.sightingCount,
+                            alert.sightingCount
+                        ),
                         style = EponaTypography.labelSmall,
                         color = MaterialTheme.colorScheme.outline
                     )

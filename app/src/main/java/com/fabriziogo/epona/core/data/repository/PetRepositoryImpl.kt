@@ -9,6 +9,7 @@ import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.repository.PetRepository
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.PetService
+import com.fabriziogo.epona.core.data.media.PhotoUploader
 import com.fabriziogo.epona.core.network.service.StorageService
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +24,7 @@ import javax.inject.Singleton
 class PetRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val petService: PetService,
-    private val storageService: StorageService,
+    private val photoUploader: PhotoUploader,
     private val petDao: PetDao
 ) : PetRepository {
 
@@ -91,11 +92,9 @@ class PetRepositoryImpl @Inject constructor(
         petDao.deletePet(petId)
     }
 
-    override suspend fun uploadPetPhoto(
-        petId: String,
-        imageBytes: ByteArray,
-        fileName: String
-    ): Result<String> = runCatching {
-        storageService.uploadPetPhoto(petId, imageBytes, fileName)
+    override suspend fun uploadPetPhotos(
+        localUris: List<String>
+    ): Result<List<String>> = runCatching {
+        photoUploader.uploadAll(StorageService.BUCKET_PETS, localUris)
     }
 }

@@ -8,8 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -21,12 +23,12 @@ fun SightingNoteField(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Note",
+            text = stringResource(R.string.sighting_note_title),
             style = EponaTypography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "Describe what you saw — direction heading, behavior, etc.",
+            text = stringResource(R.string.sighting_note_desc),
             style = EponaTypography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -36,8 +38,8 @@ fun SightingNoteField(
         EponaTextField(
             value = note,
             onValueChange = onNoteChanged,
-            label = "What did you see?",
-            placeholder = "e.g. Heading south toward the park, seemed scared...",
+            label = stringResource(R.string.sighting_note_label),
+            placeholder = stringResource(R.string.sighting_note_placeholder),
             singleLine = false,
             maxLines = 4,
             imeAction = ImeAction.Done,

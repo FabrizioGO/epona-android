@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.auth.components.AuthHeader
 import com.fabriziogo.epona.feature.auth.components.OrDivider
 import com.fabriziogo.epona.feature.auth.components.PasswordTextField
@@ -82,11 +84,10 @@ private fun RegisterContent(
     state.pendingConfirmationEmail?.let { email ->
         AlertDialog(
             onDismissRequest = { onEvent(RegisterEvent.ConfirmationAcknowledged) },
-            title = { Text("Confirm your email") },
+            title = { Text(stringResource(R.string.auth_confirm_email_title)) },
             text = {
                 Text(
-                    text = "We sent a confirmation link to $email. " +
-                        "Open it to finish creating your account, then sign in.",
+                    text = stringResource(R.string.auth_confirm_email_message, email),
                     style = EponaTypography.bodyMedium
                 )
             },
@@ -94,7 +95,7 @@ private fun RegisterContent(
                 TextButton(
                     onClick = { onEvent(RegisterEvent.ConfirmationAcknowledged) }
                 ) {
-                    Text("Go to sign in")
+                    Text(stringResource(R.string.auth_go_to_sign_in))
                 }
             }
         )
@@ -114,15 +115,15 @@ private fun RegisterContent(
             Spacer(Modifier.height(48.dp))
 
             AuthHeader(
-                title = "Create account",
-                subtitle = "Join the community protecting pets in your neighborhood"
+                title = stringResource(R.string.auth_create_account),
+                subtitle = stringResource(R.string.auth_sign_up_subtitle)
             )
 
             Spacer(Modifier.height(32.dp))
 
             // Google Sign In
             SocialSignInButton(
-                text = "Continue with Google",
+                text = stringResource(R.string.auth_google),
                 isLoading = state.isGoogleLoading,
                 onClick = onLaunchGoogleSignIn
             )
@@ -137,8 +138,8 @@ private fun RegisterContent(
             EponaTextField(
                 value = state.displayName,
                 onValueChange = { onEvent(RegisterEvent.NameChanged(it)) },
-                label = "Full Name",
-                placeholder = "How others will see you",
+                label = stringResource(R.string.auth_full_name),
+                placeholder = stringResource(R.string.auth_full_name_placeholder),
                 errorText = state.nameError,
                 imeAction = ImeAction.Next,
                 modifier = Modifier.fillMaxWidth()
@@ -150,8 +151,8 @@ private fun RegisterContent(
             EponaTextField(
                 value = state.email,
                 onValueChange = { onEvent(RegisterEvent.EmailChanged(it)) },
-                label = "Email",
-                placeholder = "you@example.com",
+                label = stringResource(R.string.auth_email),
+                placeholder = stringResource(R.string.auth_email_placeholder),
                 errorText = state.emailError,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -164,7 +165,7 @@ private fun RegisterContent(
             PasswordTextField(
                 value = state.password,
                 onValueChange = { onEvent(RegisterEvent.PasswordChanged(it)) },
-                label = "Password",
+                label = stringResource(R.string.auth_password),
                 errorText = state.passwordError,
                 imeAction = ImeAction.Next
             )
@@ -175,7 +176,7 @@ private fun RegisterContent(
             PasswordTextField(
                 value = state.confirmPassword,
                 onValueChange = { onEvent(RegisterEvent.ConfirmPasswordChanged(it)) },
-                label = "Confirm Password",
+                label = stringResource(R.string.auth_confirm_password),
                 errorText = state.confirmPasswordError,
                 imeAction = ImeAction.Done,
                 onImeAction = { onEvent(RegisterEvent.SignUpClicked) }
@@ -185,7 +186,7 @@ private fun RegisterContent(
 
             // Sign up button
             EponaFilledButton(
-                text = "Create Account",
+                text = stringResource(R.string.auth_sign_up),
                 onClick = { onEvent(RegisterEvent.SignUpClicked) },
                 loading = state.isLoading,
                 fullWidth = true,
@@ -199,7 +200,7 @@ private fun RegisterContent(
 
             // Terms text
             Text(
-                text = "By creating an account, you agree to Epona's Terms of Service and Privacy Policy.",
+                text = stringResource(R.string.auth_terms),
                 style = EponaTypography.bodySmall,
                 color = MaterialTheme.colorScheme.outline,
                 textAlign = TextAlign.Center,
@@ -213,7 +214,7 @@ private fun RegisterContent(
                 onClick = { onEvent(RegisterEvent.NavigateToLogin) }
             ) {
                 Text(
-                    text = "Already have an account? Sign in",
+                    text = stringResource(R.string.auth_has_account),
                     style = EponaTypography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center

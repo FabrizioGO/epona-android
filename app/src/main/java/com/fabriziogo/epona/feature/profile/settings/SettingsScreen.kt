@@ -21,9 +21,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.BuildConfig
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.profile.components.SettingsSection
 import com.fabriziogo.epona.feature.profile.settings.components.RadiusSlider
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
@@ -50,7 +53,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "Settings",
+                title = stringResource(R.string.settings_title),
                 onBackClick = onNavigateBack
             )
         },
@@ -66,13 +69,13 @@ fun SettingsScreen(
             Spacer(Modifier.height(16.dp))
 
             // Alert Radius
-            SettingsSection(title = "Alert Radius") {
+            SettingsSection(title = stringResource(R.string.settings_radius_title)) {
                 RadiusSlider(
                     radiusKm = state.alertRadiusKm,
                     onRadiusChanged = { viewModel.onRadiusChanged(it) }
                 )
                 EponaFilledButton(
-                    text = "Save Radius",
+                    text = stringResource(R.string.settings_radius_save),
                     onClick = { viewModel.onRadiusSaved() },
                     loading = state.isSaving,
                     fullWidth = true
@@ -82,17 +85,17 @@ fun SettingsScreen(
             Spacer(Modifier.height(24.dp))
 
             // Notifications
-            SettingsSection(title = "Notifications") {
+            SettingsSection(title = stringResource(R.string.settings_notifications_title)) {
                 ListItem(
                     headlineContent = {
                         Text(
-                            "Push Notifications",
+                            stringResource(R.string.settings_push_title),
                             style = EponaTypography.bodyLarge
                         )
                     },
                     supportingContent = {
                         Text(
-                            "Receive alerts for missing pets nearby",
+                            stringResource(R.string.settings_push_desc),
                             style = EponaTypography.bodySmall
                         )
                     },
@@ -108,14 +111,14 @@ fun SettingsScreen(
             Spacer(Modifier.height(24.dp))
 
             // About
-            SettingsSection(title = "About") {
+            SettingsSection(title = stringResource(R.string.settings_about_title)) {
                 ListItem(
                     headlineContent = {
-                        Text("Version", style = EponaTypography.bodyLarge)
+                        Text(stringResource(R.string.settings_version), style = EponaTypography.bodyLarge)
                     },
                     trailingContent = {
                         Text(
-                            "1.0.0",
+                            BuildConfig.VERSION_NAME,
                             style = EponaTypography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -123,12 +126,12 @@ fun SettingsScreen(
                 )
                 ListItem(
                     headlineContent = {
-                        Text("Privacy Policy", style = EponaTypography.bodyLarge)
+                        Text(stringResource(R.string.settings_privacy), style = EponaTypography.bodyLarge)
                     }
                 )
                 ListItem(
                     headlineContent = {
-                        Text("Terms of Service", style = EponaTypography.bodyLarge)
+                        Text(stringResource(R.string.settings_terms), style = EponaTypography.bodyLarge)
                     }
                 )
             }

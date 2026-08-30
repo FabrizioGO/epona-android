@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 import com.fabriziogo.epona.core.ui.components.SightingCard
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -30,7 +32,7 @@ fun DetailSightingsSection(
             .padding(vertical = 12.dp)
     ) {
         Text(
-            text = "Sightings (${sightings.size})",
+            text = stringResource(R.string.detail_sightings, sightings.size),
             style = EponaTypography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -54,7 +56,7 @@ fun DetailSightingsSection(
 
             sightings.isEmpty() -> {
                 Text(
-                    text = "No sightings reported yet. Be the first to help!",
+                    text = stringResource(R.string.detail_no_sightings),
                     style = EponaTypography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.padding(vertical = 8.dp)

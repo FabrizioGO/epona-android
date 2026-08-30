@@ -14,7 +14,9 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTonalButton
@@ -43,7 +45,7 @@ fun DetailActionButtons(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 EponaFilledButton(
-                    text = "Contact Owner",
+                    text = stringResource(R.string.detail_contact_owner),
                     onClick = onContactClick,
                     icon = Icons.Outlined.Phone,
                     modifier = Modifier.weight(1f),
@@ -59,7 +61,7 @@ fun DetailActionButtons(
             // Report sighting (for lost pets)
             if (isLost) {
                 EponaTonalButton(
-                    text = "Report a Sighting",
+                    text = stringResource(R.string.detail_report_sighting),
                     onClick = onReportSightingClick,
                     icon = Icons.Outlined.CameraAlt,
                     fullWidth = true
@@ -70,7 +72,7 @@ fun DetailActionButtons(
             if (isOwner) {
                 Spacer(Modifier.height(4.dp))
                 EponaOutlinedButton(
-                    text = "Mark as Reunited",
+                    text = stringResource(R.string.detail_mark_reunited),
                     onClick = onResolveClick,
                     icon = Icons.Filled.CheckCircle,
                     fullWidth = true
@@ -79,7 +81,7 @@ fun DetailActionButtons(
         } else {
             // Resolved state
             EponaTonalButton(
-                text = "Pet has been reunited! 🎉",
+                text = stringResource(R.string.detail_reunited),
                 onClick = {},
                 fullWidth = true
             )

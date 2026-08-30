@@ -34,7 +34,9 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertStatus
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
@@ -96,7 +98,7 @@ fun AlertDetailScreen(
     // Resolve confirmation dialog
     if (state.showResolveDialog) {
         ResolveDialog(
-            petName = state.alertDetail?.pet?.name ?: "this pet",
+            petName = state.alertDetail?.pet?.name ?: stringResource(R.string.resolve_default_pet_name),
             onConfirm = { viewModel.onEvent(AlertDetailEvent.ResolveConfirmed) },
             onDismiss = { viewModel.onEvent(AlertDetailEvent.ResolveDismissed) }
         )
@@ -114,12 +116,12 @@ fun AlertDetailScreen(
             state.alertDetail == null && !state.isLoading -> {
                 EmptyState(
                     icon = Icons.Outlined.Warning,
-                    title = "Alert not found",
-                    description = "This alert may have been removed or is no longer available.",
+                    title = stringResource(R.string.detail_not_found_title),
+                    description = stringResource(R.string.detail_not_found_desc),
                     modifier = Modifier.padding(paddingValues),
                     action = {
                         EponaFilledButton(
-                            text = "Go Back",
+                            text = stringResource(R.string.action_go_back),
                             onClick = { viewModel.onEvent(AlertDetailEvent.BackClicked) }
                         )
                     }
@@ -163,7 +165,7 @@ fun AlertDetailScreen(
                     // Last seen location + time cards
                     item(key = "info_cards") {
                         DetailInfoCards(
-                            lastSeenAddress = alert.lastSeenAddress ?: "Unknown",
+                            lastSeenAddress = alert.lastSeenAddress ?: stringResource(R.string.detail_address_unknown),
                             lastSeenAt = alert.lastSeenAt,
                             sightingCount = alert.sightingCount,
                             modifier = Modifier.padding(horizontal = 20.dp)
@@ -287,7 +289,7 @@ internal fun DetailHeaderContent(
         // Owner info
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "Posted by ${detail.ownerName}",
+            text = stringResource(R.string.detail_posted_by, detail.ownerName),
             style = EponaTypography.bodySmall,
             color = MaterialTheme.colorScheme.outline
         )

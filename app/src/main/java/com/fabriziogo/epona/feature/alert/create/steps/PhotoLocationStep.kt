@@ -8,11 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCard
-import com.fabriziogo.epona.feature.sighting.report.components.PhotoCaptureCard
+import com.fabriziogo.epona.feature.alert.create.steps.components.PhotoCaptureCard
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -33,13 +35,13 @@ fun PhotoLocationStep(
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
-            "Photos & Location",
+            stringResource(R.string.create_step_photo_title),
             style = EponaTypography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            "Help others recognize the pet and know where to look",
+            stringResource(R.string.create_step_photo_subtitle),
             style = EponaTypography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -67,8 +69,8 @@ fun PhotoLocationStep(
         EponaTextField(
             value = description,
             onValueChange = onDescriptionChanged,
-            label = "Description",
-            placeholder = "Collar color, behavior, direction heading, circumstances...",
+            label = stringResource(R.string.create_description),
+            placeholder = stringResource(R.string.create_description_placeholder),
             singleLine = false,
             maxLines = 5,
             imeAction = ImeAction.Done

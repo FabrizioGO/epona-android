@@ -13,9 +13,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
@@ -33,7 +35,7 @@ fun SightingListScreen(
     Scaffold(
         topBar = {
             EponaTopAppBar(
-                title = "Sightings (${state.sightings.size})",
+                title = stringResource(R.string.sighting_list_title, state.sightings.size),
                 onBackClick = onNavigateBack
             )
         }
@@ -46,8 +48,8 @@ fun SightingListScreen(
             state.sightings.isEmpty() -> {
                 EmptyState(
                     icon = Icons.Outlined.Visibility,
-                    title = "No sightings yet",
-                    description = "No one has reported seeing this pet yet. Be the first!",
+                    title = stringResource(R.string.sighting_empty_title),
+                    description = stringResource(R.string.sighting_empty_desc),
                     modifier = Modifier.padding(padding)
                 )
             }

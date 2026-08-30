@@ -23,7 +23,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -39,12 +41,12 @@ fun LocationPickerCard(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Location",
+            text = stringResource(R.string.sighting_location_title),
             style = EponaTypography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "Where did you see the pet?",
+            text = stringResource(R.string.sighting_location_desc),
             style = EponaTypography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -75,7 +77,7 @@ fun LocationPickerCard(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "Getting your location...",
+                            stringResource(R.string.sighting_location_loading),
                             style = EponaTypography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -103,7 +105,7 @@ fun LocationPickerCard(
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = address.ifBlank { "Location set" },
+                            text = address.ifBlank { stringResource(R.string.sighting_location_set) },
                             style = EponaTypography.titleSmall,
                             color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 2
@@ -141,7 +143,7 @@ fun LocationPickerCard(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "Tap to set location on map",
+                            stringResource(R.string.sighting_location_tap),
                             style = EponaTypography.labelLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -172,7 +174,7 @@ fun LocationPickerCard(
             )
             Spacer(Modifier.width(6.dp))
             Text(
-                "Use my current location",
+                stringResource(R.string.sighting_use_current),
                 style = EponaTypography.labelLarge
             )
         }

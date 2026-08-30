@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -26,12 +28,12 @@ fun AlertFeedSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Nearby Alerts",
+            text = stringResource(R.string.home_nearby_alerts),
             style = EponaTypography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "View map",
+            text = stringResource(R.string.home_view_map),
             style = EponaTypography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable(onClick = onViewMapClick)

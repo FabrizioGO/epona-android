@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.repository.UserRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -26,8 +27,6 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
         const val CHANNEL_ID = "epona_alerts"
-        const val CHANNEL_NAME = "Pet Alerts"
-        const val CHANNEL_DESC = "Notifications for missing and found pets near you"
     }
 
     override fun onNewToken(token: String) {
@@ -42,7 +41,7 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
 
         val title = message.notification?.title
             ?: message.data["title"]
-            ?: "Epona Alert"
+            ?: getString(R.string.notification_default_title)
         val body = message.notification?.body
             ?: message.data["body"]
             ?: ""
@@ -57,10 +56,10 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
+                getString(R.string.notification_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = CHANNEL_DESC
+                description = getString(R.string.notification_channel_desc)
                 enableVibration(true)
             }
             val manager = getSystemService(NotificationManager::class.java)

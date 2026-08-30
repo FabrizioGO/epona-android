@@ -12,7 +12,9 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 
 @Composable
 fun MapControls(
@@ -30,7 +32,7 @@ fun MapControls(
         ) {
             Icon(
                 Icons.Outlined.MyLocation,
-                contentDescription = "Recenter map"
+                contentDescription = stringResource(R.string.map_my_location)
             )
         }
 
@@ -53,7 +55,7 @@ fun MapControls(
             Icon(
                 if (showRadiusCircle) Icons.Outlined.RadioButtonChecked
                 else Icons.Outlined.RadioButtonUnchecked,
-                contentDescription = "Toggle radius circle"
+                contentDescription = stringResource(R.string.map_toggle_radius)
             )
         }
     }

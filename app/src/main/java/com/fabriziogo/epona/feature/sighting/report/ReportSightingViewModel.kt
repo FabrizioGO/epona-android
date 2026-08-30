@@ -1,13 +1,18 @@
 package com.fabriziogo.epona.feature.sighting.report
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.domain.model.Sighting
 import com.fabriziogo.epona.core.domain.repository.LocationRepository
 import com.fabriziogo.epona.core.domain.usecase.alert.GetAlertDetailUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.ReportSightingUseCase
+import com.fabriziogo.epona.core.media.ImageProcessor
+import com.fabriziogo.epona.core.media.PhotoItem
+import com.fabriziogo.epona.core.media.localUris
 import com.fabriziogo.epona.feature.sighting.navigation.SIGHTING_ALERT_ID_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +29,8 @@ class ReportSightingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val reportSighting: ReportSightingUseCase,
     private val getAlertDetail: GetAlertDetailUseCase,
-    private val locationRepo: LocationRepository
+    private val locationRepo: LocationRepository,
+    private val imageProcessor: ImageProcessor
 ) : ViewModel() {
 
     private val alertId: String = checkNotNull(savedStateHandle[SIGHTING_ALERT_ID_ARG])
@@ -42,8 +48,8 @@ class ReportSightingViewModel @Inject constructor(
 
     fun onEvent(event: ReportSightingEvent) {
         when (event) {
-            is ReportSightingEvent.PhotoAdded -> addPhoto(event.uri)
-            is ReportSightingEvent.PhotoRemoved -> removePhoto(event.index)
+            is ReportSightingEvent.PhotosPicked -> addPhotos(event.uris)
+            is ReportSightingEvent.PhotoRemoved -> removePhoto(event.photo)
             ReportSightingEvent.UseCurrentLocation -> autoDetectLocation()
             ReportSightingEvent.LocationPermissionDenied -> _state.update {
                 it.copy(
@@ -116,22 +122,42 @@ class ReportSightingViewModel @Inject constructor(
         }
     }
 
-    private fun addPhoto(uri: String) {
-        if (_state.value.photoUris.size >= 3) {
-            _state.update { it.copy(error = "Maximum 3 photos allowed") }
-            return
+    /**
+     * Decoding happens here rather than in the picker: it is disk work, and a scope
+     * tied to the composition would drop the photos on a rotation mid-decode.
+     */
+    private fun addPhotos(uris: List<Uri>) {
+        val free = MAX_PHOTOS_PER_ENTITY - _state.value.photos.size
+        if (free <= 0 || uris.isEmpty()) return
+
+        viewModelScope.launch {
+            _state.update { it.copy(isProcessingPhotos = true) }
+            val wanted = uris.take(free)
+            val added = wanted.mapNotNull { imageProcessor.process(it).getOrNull() }
+            _state.update { s ->
+                s.copy(
+                    photos = s.photos + added.map { PhotoItem.Local(it) },
+                    isProcessingPhotos = false,
+                    // One unreadable pick should not sink the rest of the selection.
+                    error = if (added.size < wanted.size) PHOTO_ERROR else s.error
+                )
+            }
         }
-        _state.update { it.copy(photoUris = it.photoUris + uri) }
     }
 
-    private fun removePhoto(index: Int) {
-        _state.update {
-            it.copy(photoUris = it.photoUris.toMutableList().apply { removeAt(index) })
-        }
+    private fun removePhoto(photo: PhotoItem) {
+        if (photo is PhotoItem.Local) imageProcessor.delete(listOf(photo.image.uri))
+        _state.update { s -> s.copy(photos = s.photos.filterNot { it.key == photo.key }) }
     }
 
     private fun submit() {
         val s = _state.value
+
+        // Submitting now carries up to three uploads, so the window a second tap can
+        // land in went from milliseconds to seconds. canSubmit disables the button;
+        // this covers everything that is not the button.
+        if (s.isSubmitting) return
+
         val loc = s.location
         if (loc == null) {
             _state.update { it.copy(locationError = "Please set the sighting location") }
@@ -145,12 +171,17 @@ class ReportSightingViewModel @Inject constructor(
                 alertId = alertId,
                 location = loc,
                 address = s.address.ifBlank { null },
-                photoUrls = s.photoUris,  // Will be uploaded by repository
+                // Local URIs. ReportSightingUseCase uploads them and substitutes the
+                // public URLs before the create_sighting RPC.
+                photoUrls = s.photos.map { it.model },
                 note = s.note.ifBlank { null }
             )
 
             reportSighting(sighting)
                 .onSuccess {
+                    // Uploaded and persisted, so the cache copies are dead weight.
+                    // Only on success: a failed submit keeps them for the retry.
+                    imageProcessor.delete(s.photos.localUris())
                     _state.update { it.copy(isSubmitting = false, isSuccess = true) }
                     _navEvents.send(SightingNavEvent.NavigateBackWithSuccess)
                 }
@@ -167,5 +198,9 @@ class ReportSightingViewModel @Inject constructor(
 
     private fun emitNav(event: SightingNavEvent) {
         viewModelScope.launch { _navEvents.send(event) }
+    }
+
+    private companion object {
+        const val PHOTO_ERROR = "Some photos could not be added"
     }
 }

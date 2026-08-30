@@ -25,10 +25,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.BuildConfig
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.profile.components.ProfileHeader
 import com.fabriziogo.epona.feature.profile.components.SettingsItem
 import com.fabriziogo.epona.feature.profile.components.SettingsSection
@@ -76,10 +79,10 @@ fun ProfileScreen(
 
     if (state.showSignOutDialog) {
         EponaConfirmDialog(
-            title = "Sign out?",
-            message = "You'll need to sign in again to access your alerts and pets.",
-            confirmText = "Sign Out",
-            dismissText = "Cancel",
+            title = stringResource(R.string.auth_sign_out_title),
+            message = stringResource(R.string.auth_sign_out_message),
+            confirmText = stringResource(R.string.auth_sign_out),
+            dismissText = stringResource(R.string.action_cancel),
             onConfirm = { viewModel.onEvent(ProfileEvent.SignOutConfirmed) },
             onDismiss = { viewModel.onEvent(ProfileEvent.SignOutDismissed) }
         )
@@ -89,7 +92,7 @@ fun ProfileScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             EponaLargeTopAppBar(
-                title = "Profile",
+                title = stringResource(R.string.profile_title),
                 scrollBehavior = scrollBehavior
             )
         },
@@ -110,7 +113,7 @@ fun ProfileScreen(
         ) {
             // Avatar + name + email
             ProfileHeader(
-                displayName = state.user?.displayName ?: "User",
+                displayName = state.user?.displayName ?: stringResource(R.string.profile_default_name),
                 email = state.user?.email ?: "",
                 avatarUrl = state.user?.avatarUrl
             )
@@ -123,17 +126,17 @@ fun ProfileScreen(
             Spacer(Modifier.height(24.dp))
 
             // My Stuff section
-            SettingsSection(title = "My Stuff") {
+            SettingsSection(title = stringResource(R.string.profile_section_my_stuff)) {
                 SettingsItem(
                     icon = Icons.Outlined.Pets,
-                    label = "My Pets",
-                    subtitle = "${state.stats.totalPets} registered",
+                    label = stringResource(R.string.profile_my_pets),
+                    subtitle = stringResource(R.string.profile_pets_registered, state.stats.totalPets),
                     onClick = { viewModel.onEvent(ProfileEvent.MyPetsClicked) }
                 )
                 SettingsItem(
                     icon = Icons.Outlined.Campaign,
-                    label = "My Alerts",
-                    subtitle = "${state.stats.activeAlerts} active",
+                    label = stringResource(R.string.profile_my_alerts),
+                    subtitle = stringResource(R.string.profile_alerts_active, state.stats.activeAlerts),
                     onClick = { viewModel.onEvent(ProfileEvent.MyAlertsClicked) }
                 )
             }
@@ -141,16 +144,16 @@ fun ProfileScreen(
             Spacer(Modifier.height(16.dp))
 
             // App section
-            SettingsSection(title = "App") {
+            SettingsSection(title = stringResource(R.string.profile_section_app)) {
                 SettingsItem(
                     icon = Icons.Outlined.Settings,
-                    label = "Settings",
-                    subtitle = "Notifications, radius, preferences",
+                    label = stringResource(R.string.profile_settings),
+                    subtitle = stringResource(R.string.profile_settings_subtitle),
                     onClick = { viewModel.onEvent(ProfileEvent.SettingsClicked) }
                 )
                 SettingsItem(
                     icon = Icons.AutoMirrored.Outlined.HelpOutline,
-                    label = "Help & Support",
+                    label = stringResource(R.string.profile_help),
                     onClick = { viewModel.onEvent(ProfileEvent.HelpClicked) }
                 )
             }
@@ -158,10 +161,10 @@ fun ProfileScreen(
             Spacer(Modifier.height(16.dp))
 
             // Account section
-            SettingsSection(title = "Account") {
+            SettingsSection(title = stringResource(R.string.profile_section_account)) {
                 SettingsItem(
                     icon = Icons.AutoMirrored.Outlined.Logout,
-                    label = "Sign Out",
+                    label = stringResource(R.string.auth_sign_out),
                     isDestructive = true,
                     showChevron = false,
                     onClick = { viewModel.onEvent(ProfileEvent.SignOutClicked) }
@@ -172,7 +175,7 @@ fun ProfileScreen(
 
             // App version
             androidx.compose.material3.Text(
-                text = "Epona v1.0.0",
+                text = stringResource(R.string.profile_version, BuildConfig.VERSION_NAME),
                 style = EponaTypography.bodySmall,
                 color = androidx.compose.material3.MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(bottom = 24.dp)

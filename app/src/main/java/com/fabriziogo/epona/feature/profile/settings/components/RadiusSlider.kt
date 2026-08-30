@@ -12,7 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -28,7 +30,7 @@ fun RadiusSlider(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "$radiusKm km",
+            text = stringResource(R.string.settings_radius_unit, radiusKm),
             style = EponaTypography.headlineSmall,
             color = MaterialTheme.colorScheme.primary
         )
@@ -36,7 +38,7 @@ fun RadiusSlider(
         Spacer(Modifier.height(4.dp))
 
         Text(
-            text = "Alerts within this radius will notify you",
+            text = stringResource(R.string.settings_radius_desc),
             style = EponaTypography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -62,12 +64,12 @@ fun RadiusSlider(
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
         ) {
             Text(
-                "1 km",
+                stringResource(R.string.settings_radius_min),
                 style = EponaTypography.bodySmall,
                 color = MaterialTheme.colorScheme.outline
             )
             Text(
-                "100 km",
+                stringResource(R.string.settings_radius_max),
                 style = EponaTypography.bodySmall,
                 color = MaterialTheme.colorScheme.outline
             )

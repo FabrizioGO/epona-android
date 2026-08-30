@@ -2,9 +2,11 @@ package com.fabriziogo.epona.app.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.navigation.popBackStackWithMessage
 import com.fabriziogo.epona.feature.alert.navigation.CREATE_ALERT_ROUTE
 import com.fabriziogo.epona.feature.alert.navigation.alertScreens
@@ -13,19 +15,19 @@ import com.fabriziogo.epona.feature.auth.navigation.AUTH_GRAPH_ROUTE
 import com.fabriziogo.epona.feature.auth.navigation.authGraph
 import com.fabriziogo.epona.feature.detail.navigation.detailScreen
 import com.fabriziogo.epona.feature.detail.navigation.navigateToDetail
-import com.fabriziogo.epona.feature.help.navigation.helpScreen
-import com.fabriziogo.epona.feature.help.navigation.navigateToHelp
 import com.fabriziogo.epona.feature.home.navigation.HOME_ROUTE
 import com.fabriziogo.epona.feature.home.navigation.homeScreen
 import com.fabriziogo.epona.feature.map.navigation.mapScreen
 import com.fabriziogo.epona.feature.map.navigation.navigateToMap
-import com.fabriziogo.epona.feature.myalerts.navigation.myAlertsScreen
-import com.fabriziogo.epona.feature.myalerts.navigation.navigateToMyAlerts
 import com.fabriziogo.epona.feature.notifications.navigation.navigateToNotifications
 import com.fabriziogo.epona.feature.notifications.navigation.notificationsScreen
 import com.fabriziogo.epona.feature.pet.navigation.navigateToAddPet
 import com.fabriziogo.epona.feature.pet.navigation.navigateToEditPet
 import com.fabriziogo.epona.feature.pet.navigation.petScreens
+import com.fabriziogo.epona.feature.profile.help.navigation.helpScreen
+import com.fabriziogo.epona.feature.profile.help.navigation.navigateToHelp
+import com.fabriziogo.epona.feature.profile.myalerts.navigation.myAlertsScreen
+import com.fabriziogo.epona.feature.profile.myalerts.navigation.navigateToMyAlerts
 import com.fabriziogo.epona.feature.profile.navigation.profileGraph
 import com.fabriziogo.epona.feature.sighting.navigation.navigateToReportSighting
 import com.fabriziogo.epona.feature.sighting.navigation.sightingScreens
@@ -40,6 +42,10 @@ fun EponaNavHost(
     onDialPhone: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val sightingReportedMessage = stringResource(R.string.sighting_reported_success)
+    val petAddedMessage = stringResource(R.string.pet_added_success)
+    val petUpdatedMessage = stringResource(R.string.pet_updated_success)
+
     val startDestination = if (isAuthenticated) HOME_ROUTE else AUTH_GRAPH_ROUTE
 
     NavHost(
@@ -152,15 +158,15 @@ fun EponaNavHost(
         sightingScreens(
             onNavigateBack = { navController.popBackStack() },
             onNavigateBackWithSuccess = {
-                navController.popBackStackWithMessage("Sighting reported — thank you!")
+                navController.popBackStackWithMessage(sightingReportedMessage)
             }
         )
 
         // ---- Pet Management ----
         petScreens(
             onNavigateBack = { navController.popBackStack() },
-            onPetAdded = { navController.popBackStackWithMessage("Pet added") },
-            onPetUpdated = { navController.popBackStackWithMessage("Changes saved") }
+            onPetAdded = { navController.popBackStackWithMessage(petAddedMessage) },
+            onPetUpdated = { navController.popBackStackWithMessage(petUpdatedMessage) }
         )
 
         // ---- My Alerts ----

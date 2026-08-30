@@ -20,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.formatTimeAgo
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -37,13 +39,13 @@ fun DetailInfoCards(
     ) {
         InfoCard(
             icon = Icons.Outlined.LocationOn,
-            label = "Last seen",
+            label = stringResource(R.string.detail_last_seen),
             value = lastSeenAddress,
             modifier = Modifier.weight(1f)
         )
         InfoCard(
             icon = Icons.Outlined.Schedule,
-            label = "Time",
+            label = stringResource(R.string.detail_time),
             value = formatTimeAgo(lastSeenAt),
             modifier = Modifier.weight(1f)
         )
@@ -57,8 +59,8 @@ fun DetailInfoCards(
         ) {
             InfoCard(
                 icon = Icons.Outlined.Visibility,
-                label = "Sightings",
-                value = "$sightingCount reported",
+                label = stringResource(R.string.detail_sightings_label),
+                value = stringResource(R.string.detail_sightings_reported, sightingCount),
                 modifier = Modifier.fillMaxWidth()
             )
         }

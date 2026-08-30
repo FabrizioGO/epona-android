@@ -73,9 +73,15 @@ fun Pet.toInsertDto(ownerId: String): PetInsertDto = PetInsertDto(
     photoUrls = photoUrls
 )
 
+/**
+ * Blank ids are dropped rather than sent. [Pet] defaults them to "" and the edit
+ * screen never carries an owner, but the columns behind them are uuid — sending
+ * "" fails the update with `invalid input syntax for type uuid`, and an omitted
+ * field simply leaves the stored value alone.
+ */
 fun Pet.toDto(): PetDto = PetDto(
-    id = id,
-    ownerId = ownerId,
+    id = id.takeIf { it.isNotBlank() },
+    ownerId = ownerId.takeIf { it.isNotBlank() },
     name = name,
     species = species.value,
     breed = breed,

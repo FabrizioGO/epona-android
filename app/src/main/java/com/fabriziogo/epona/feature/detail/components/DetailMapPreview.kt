@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -69,7 +71,7 @@ fun DetailMapPreview(
 
             // "View on map" label
             Text(
-                text = "Tap to view on map",
+                text = stringResource(R.string.detail_view_on_map),
                 style = EponaTypography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

@@ -22,7 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
@@ -70,7 +72,7 @@ fun AlertPreviewSheet(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         Icons.Outlined.Close,
-                        contentDescription = "Dismiss",
+                        contentDescription = stringResource(R.string.cd_dismiss),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -117,7 +119,7 @@ fun AlertPreviewSheet(
         item {
             Spacer(Modifier.height(12.dp))
             EponaFilledButton(
-                text = "View Full Details",
+                text = stringResource(R.string.map_view_details),
                 onClick = onViewDetailClick,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -140,7 +142,7 @@ fun AlertPreviewSheet(
                 HorizontalDivider()
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "Sighting trail (${sightings.size})",
+                    text = stringResource(R.string.map_sighting_trail_count, sightings.size),
                     style = EponaTypography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )

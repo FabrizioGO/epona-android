@@ -1,10 +1,12 @@
 package com.fabriziogo.epona.feature.sighting.report
 
+import android.net.Uri
 import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.media.PhotoItem
 
 sealed interface ReportSightingEvent {
-    data class PhotoAdded(val uri: String) : ReportSightingEvent
-    data class PhotoRemoved(val index: Int) : ReportSightingEvent
+    data class PhotosPicked(val uris: List<Uri>) : ReportSightingEvent
+    data class PhotoRemoved(val photo: PhotoItem) : ReportSightingEvent
     data object UseCurrentLocation : ReportSightingEvent
     data object LocationPermissionDenied : ReportSightingEvent
     data class LocationPicked(val location: Location) : ReportSightingEvent

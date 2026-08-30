@@ -1,10 +1,10 @@
 <resources>
     <!-- App -->
-    <string name="app_name">Epona</string>
+    <string name="app_name" translatable="false">Epona</string>
     <string name="app_tagline">Guardian of every lost paw</string>
 
     <!-- Navigation -->
-    <string name="nav_home">Home</string>
+    <string name="nav_home" translatable="false">Home</string>
     <string name="nav_map">Map</string>
     <string name="nav_alerts">Alerts</string>
     <string name="nav_profile">Profile</string>
@@ -19,7 +19,7 @@
     <string name="auth_sign_out">Sign Out</string>
     <string name="auth_google">Continue with Google</string>
     <string name="auth_or">or</string>
-    <string name="auth_email">Email</string>
+    <string name="auth_email" translatable="false">Email</string>
     <string name="auth_email_placeholder">you@example.com</string>
     <string name="auth_password">Password</string>
     <string name="auth_confirm_password">Confirm Password</string>
@@ -31,6 +31,9 @@
     <string name="auth_terms">By creating an account, you agree to Epona\'s Terms of Service and Privacy Policy.</string>
     <string name="auth_sign_out_title">Sign out?</string>
     <string name="auth_sign_out_message">You\'ll need to sign in again to access your alerts and pets.</string>
+    <string name="auth_confirm_email_title">Confirm your email</string>
+    <string name="auth_confirm_email_message">We sent a confirmation link to %1$s. Open it to finish creating your account, then sign in.</string>
+    <string name="auth_go_to_sign_in">Go to sign in</string>
 
     <!-- Validation -->
     <string name="error_email_required">Email is required</string>
@@ -74,6 +77,9 @@
     <string name="home_radius_info">Within %d km · %d lost · %d found</string>
     <string name="home_empty_title">No alerts nearby</string>
     <string name="home_empty_description">There are no missing or found pet alerts in your area right now. That\'s a good thing!</string>
+    <string name="home_filter_all_count">All (%d)</string>
+    <string name="home_filter_lost_count">🔴 Lost (%d)</string>
+    <string name="home_filter_found_count">🟢 Found (%d)</string>
 
     <!-- Alert Types & Status -->
     <string name="alert_type_lost">Lost</string>
@@ -97,7 +103,7 @@
     <string name="create_step_contact_title">Contact &amp; Review</string>
     <string name="create_step_contact_subtitle">How can people reach you?</string>
     <string name="create_contact_phone">Contact Phone</string>
-    <string name="create_contact_phone_placeholder">+1 (555) 000–0000</string>
+    <string name="create_contact_phone_placeholder" translatable="false">+1 (555) 000–0000</string>
     <string name="create_reward">Reward (optional)</string>
     <string name="create_reward_hint">Offering a reward can increase response</string>
     <string name="create_description">Description</string>
@@ -111,6 +117,8 @@
     <string name="create_add_new_pet">Add New Pet</string>
     <string name="create_ready_title">Ready to publish!</string>
     <string name="create_ready_summary">%1$s alert for %2$s near %3$s. Your community will be notified instantly.</string>
+    <string name="create_ready_summary_no_location">%1$s alert for %2$s. Your community will be notified instantly.</string>
+    <string name="create_reward_placeholder" translatable="false">e.g. 50</string>
 
     <!-- Alert Detail -->
     <string name="detail_description">Description</string>
@@ -128,6 +136,11 @@
     <string name="detail_not_found_title">Alert not found</string>
     <string name="detail_not_found_desc">This alert may have been removed or is no longer available.</string>
     <string name="detail_no_phone">No contact number available</string>
+    <string name="detail_sightings_label">Sightings</string>
+    <string name="detail_unknown_location">unknown location</string>
+    <string name="detail_address_unknown">Unknown</string>
+    <string name="resolve_default_pet_name">this pet</string>
+    <string name="share_hashtag_text">Help bring them home! #Epona</string>
 
     <!-- Resolve -->
     <string name="resolve_title">Mark as reunited?</string>
@@ -153,6 +166,7 @@
     <string name="sighting_location_tap">Tap to set location on map</string>
     <string name="sighting_use_current">Use my current location</string>
     <string name="sighting_note_title">Note</string>
+    <string name="sighting_note_label">What did you see?</string>
     <string name="sighting_note_desc">Describe what you saw — direction heading, behavior, etc.</string>
     <string name="sighting_note_placeholder">e.g. Heading south toward the park, seemed scared…</string>
     <string name="sighting_submit">Submit Sighting</string>
@@ -163,12 +177,18 @@
     <string name="sighting_list_title">Sightings (%d)</string>
     <string name="sighting_empty_title">No sightings yet</string>
     <string name="sighting_empty_desc">No one has reported seeing this pet yet. Be the first!</string>
+    <string name="sighting_reported_success">Sighting reported — thank you!</string>
+    <string name="cd_photo_index">Photo %d</string>
 
     <!-- Map -->
     <string name="map_title">Map</string>
     <string name="map_toggle_radius">Toggle radius</string>
     <string name="map_my_location">My location</string>
     <string name="map_view_details">View Full Details</string>
+    <string name="map_location_banner_message">Turn on location to see pets near you</string>
+    <string name="map_location_banner_settings">Settings</string>
+    <string name="map_location_banner_enable">Enable</string>
+    <string name="map_sighting_trail_count">Sighting trail (%d)</string>
 
     <!-- Notifications -->
     <string name="notifications_title">Alerts</string>
@@ -177,6 +197,7 @@
     <string name="notifications_empty_desc">You\'ll be notified when there are missing pet alerts near you, sightings on your alerts, and more.</string>
     <string name="notification_channel_name">Pet Alerts</string>
     <string name="notification_channel_desc">Notifications for missing and found pets near you</string>
+    <string name="notification_default_title">Epona Alert</string>
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
@@ -185,7 +206,7 @@
     <string name="profile_settings">Settings</string>
     <string name="profile_help">Help &amp; Support</string>
     <string name="profile_section_my_stuff">My Stuff</string>
-    <string name="profile_section_app">App</string>
+    <string name="profile_section_app" translatable="false">App</string>
     <string name="profile_section_account">Account</string>
     <string name="profile_pets_registered">%d registered</string>
     <string name="profile_alerts_active">%d active</string>
@@ -193,7 +214,34 @@
     <string name="profile_stat_pets">My Pets</string>
     <string name="profile_stat_alerts">Alerts</string>
     <string name="profile_stat_sightings">Sightings</string>
-    <string name="profile_version">Epona v%s</string>
+    <string name="profile_version" translatable="false">Epona v%s</string>
+    <string name="profile_default_name">User</string>
+
+    <!-- My Alerts -->
+    <string name="my_alerts_empty_title">No alerts yet</string>
+    <string name="my_alerts_empty_desc">Alerts you create for lost or found pets will show up here.</string>
+    <string name="alert_location_unknown">Location unknown</string>
+    <plurals name="alert_sighting_count">
+        <item quantity="one">%d sighting</item>
+        <item quantity="other">%d sightings</item>
+    </plurals>
+
+    <!-- Help & FAQ -->
+    <string name="help_faq_title">Frequently Asked Questions</string>
+    <string name="help_contact_title">Still need help?</string>
+    <string name="help_contact_desc">Our support team is happy to help with anything the FAQs didn\'t cover.</string>
+    <string name="help_email_support">Email Support</string>
+    <string name="help_email_subject">Epona Support Request</string>
+    <string name="faq_q1_question">How do I report a lost pet?</string>
+    <string name="faq_q1_answer">From the Home tab, tap the + button to start a new alert, select the pet, add the last seen location, and submit. Nearby users will be notified.</string>
+    <string name="faq_q2_question">How do I report a sighting?</string>
+    <string name="faq_q2_answer">Open an alert\'s detail page and tap \"Report Sighting\" to share the location, a note, and photos of where you saw the pet.</string>
+    <string name="faq_q3_question">How do I add or edit my pets?</string>
+    <string name="faq_q3_answer">Go to Profile &gt; My Pets, then tap the + button to add a new pet, or tap the edit icon on an existing pet to update its details.</string>
+    <string name="faq_q4_question">How do I resolve an alert once the pet is found?</string>
+    <string name="faq_q4_answer">Open the alert from My Alerts or the alert detail screen and tap \"Mark as Resolved\".</string>
+    <string name="faq_q5_question">How is my location used?</string>
+    <string name="faq_q5_answer">Location is used to show nearby alerts and to record where a pet was last seen or spotted. You can adjust your notification radius in Settings.</string>
 
     <!-- My Pets -->
     <string name="my_pets_title">My Pets</string>
@@ -202,16 +250,51 @@
     <string name="my_pets_empty_desc">Add your pets to quickly create alerts if they ever go missing.</string>
     <string name="my_pets_delete_title">Delete %s?</string>
     <string name="my_pets_delete_message">This will permanently remove this pet and all associated alerts. This cannot be undone.</string>
-    <string name="my_pets_chip_prefix">Chip:</string>
+    <string name="my_pets_chip_prefix" translatable="false">Chip:</string>
+
+    <!-- Pet Management -->
+    <string name="pet_edit_title">Edit Pet</string>
+    <string name="pet_section_info">Pet Information</string>
+    <string name="pet_name_label">Pet Name</string>
+    <string name="pet_name_placeholder" translatable="false">e.g., Buddy, Luna</string>
+    <string name="pet_species_label">Species</string>
+    <string name="pet_breed_label">Breed</string>
+    <string name="pet_breed_placeholder">e.g., Golden Retriever</string>
+    <string name="pet_color_label">Color</string>
+    <string name="pet_color_placeholder">e.g., Brown, White with spots</string>
+    <string name="pet_section_physical_traits">Physical Traits</string>
+    <string name="pet_size_label">Size</string>
+    <string name="pet_age_label">Age (years)</string>
+    <string name="pet_age_placeholder">e.g., 3</string>
+    <string name="pet_gender_label">Gender</string>
+    <string name="pet_section_additional_info">Additional Information</string>
+    <string name="pet_microchip_label">Microchip ID</string>
+    <string name="pet_optional_placeholder">Optional</string>
+    <string name="pet_description_placeholder">Add any distinctive features or markings</string>
+    <string name="pet_save">Save Pet</string>
+    <string name="pet_update">Update Pet</string>
+    <string name="pet_photos_desc">Add photos to help identify your pet</string>
+    <string name="pet_photos_selected_count">%1$d of %2$d photos</string>
+
+    <!-- Photo picker (gallery + camera) -->
+    <string name="pet_photos_title">Photos</string>
+    <string name="photo_source_title">Add a photo</string>
+    <string name="photo_source_gallery">Choose from gallery</string>
+    <string name="photo_source_camera">Take a photo</string>
+    <string name="photo_max_reached">Maximum %1$d photos allowed</string>
+    <string name="photo_error_process">That photo could not be opened. Try another one.</string>
+    <string name="photo_camera_denied">Camera access is needed to take a photo. You can enable it in Settings.</string>
+    <string name="pet_added_success">Pet added</string>
+    <string name="pet_updated_success">Changes saved</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_radius_title">Alert Radius</string>
     <string name="settings_radius_desc">Alerts within this radius will notify you</string>
     <string name="settings_radius_save">Save Radius</string>
-    <string name="settings_radius_unit">%d km</string>
-    <string name="settings_radius_min">1 km</string>
-    <string name="settings_radius_max">100 km</string>
+    <string name="settings_radius_unit" translatable="false">%d km</string>
+    <string name="settings_radius_min" translatable="false">1 km</string>
+    <string name="settings_radius_max" translatable="false">100 km</string>
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_push_title">Push Notifications</string>
     <string name="settings_push_desc">Receive alerts for missing pets nearby</string>
@@ -271,4 +354,13 @@
     <string name="cd_remove_photo">Remove photo</string>
     <string name="cd_selected">Selected</string>
     <string name="cd_create_alert">Create alert</string>
+    <string name="cd_profile">Profile</string>
+    <string name="cd_hide_password">Hide password</string>
+    <string name="cd_show_password">Show password</string>
+    <string name="cd_dismiss">Dismiss</string>
+
+    <!-- Formatting -->
+    <string name="format_distance_meters" translatable="false">%d m</string>
+    <string name="format_distance_km" translatable="false">%.1f km</string>
+    <string name="alert_reward_amount" translatable="false">💰 $%d</string>
 </resources>

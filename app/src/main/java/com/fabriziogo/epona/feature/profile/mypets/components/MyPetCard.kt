@@ -22,8 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -87,7 +89,7 @@ fun MyPetCard(
                 )
                 pet.microchipId?.let {
                     Text(
-                        text = "Chip: $it",
+                        text = "${stringResource(R.string.my_pets_chip_prefix)} $it",
                         style = EponaTypography.bodySmall,
                         color = MaterialTheme.colorScheme.outline
                     )
@@ -99,14 +101,14 @@ fun MyPetCard(
                 IconButton(onClick = onEditClick) {
                     Icon(
                         Icons.Outlined.Edit,
-                        contentDescription = "Edit",
+                        contentDescription = stringResource(R.string.action_edit),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 IconButton(onClick = onDeleteClick) {
                     Icon(
                         Icons.Outlined.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.action_delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

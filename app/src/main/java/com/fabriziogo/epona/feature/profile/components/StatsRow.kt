@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.UserStats
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -27,17 +29,17 @@ fun StatsRow(
     ) {
         StatCard(
             value = stats.totalPets.toString(),
-            label = "My Pets",
+            label = stringResource(R.string.profile_stat_pets),
             modifier = Modifier.weight(1f)
         )
         StatCard(
             value = stats.activeAlerts.toString(),
-            label = "Alerts",
+            label = stringResource(R.string.profile_stat_alerts),
             modifier = Modifier.weight(1f)
         )
         StatCard(
             value = stats.sightingsReported.toString(),
-            label = "Sightings",
+            label = stringResource(R.string.profile_stat_sightings),
             modifier = Modifier.weight(1f)
         )
     }

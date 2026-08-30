@@ -20,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.theme.EponaColors
@@ -79,7 +81,7 @@ fun DetailHero(
         ) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back"
+                contentDescription = stringResource(R.string.action_back)
             )
         }
 
@@ -95,7 +97,7 @@ fun DetailHero(
         ) {
             Icon(
                 Icons.Outlined.Share,
-                contentDescription = "Share"
+                contentDescription = stringResource(R.string.action_share)
             )
         }
     }

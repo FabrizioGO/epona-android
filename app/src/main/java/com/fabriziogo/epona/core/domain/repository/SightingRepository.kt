@@ -12,11 +12,12 @@ interface SightingRepository {
 
     suspend fun reportSighting(sighting: Sighting): Result<Sighting>
 
-    suspend fun uploadSightingPhoto(
-        sightingId: String,
-        imageBytes: ByteArray,
-        fileName: String
-    ): Result<String>  // Returns photo URL
+    /**
+     * Uploads locally picked images and returns their public URLs, in the order
+     * they were given. Runs before the sighting row exists — see
+     * [PetRepository.uploadPetPhotos].
+     */
+    suspend fun uploadSightingPhotos(localUris: List<String>): Result<List<String>>
 
     suspend fun deleteSighting(sightingId: String): Result<Unit>
 }

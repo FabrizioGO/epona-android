@@ -1,11 +1,14 @@
 package com.fabriziogo.epona.feature.sighting.report
 
 import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.media.PhotoItem
 
 data class ReportSightingUiState(
     val alertId: String = "",
     val petName: String = "",
-    val photoUris: List<String> = emptyList(),
+    /** Local picks; ReportSightingUseCase uploads them when the report is sent. */
+    val photos: List<PhotoItem> = emptyList(),
+    val isProcessingPhotos: Boolean = false,
     val location: Location? = null,
     val address: String = "",
     val note: String = "",

@@ -21,11 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
 import com.fabriziogo.epona.core.domain.model.Species
@@ -34,8 +38,11 @@ import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
+import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.feature.pet.components.PhotoPickerSection
 import com.fabriziogo.epona.feature.pet.components.SelectionChips
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +54,27 @@ fun EditPetScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
+
+    // Owned by the screen rather than by the stateless content below, so previews of
+    // the form do not need an ActivityResultRegistry to render.
+    val photoPicker = rememberMediaPickerState(
+        remainingSlots = MAX_PHOTOS_PER_ENTITY - state.photos.size,
+        onUrisPicked = { uris -> viewModel.onEvent(EditPetEvent.PhotosPicked(uris)) },
+        onCameraDenied = {
+            scope.launch { snackbarHostState.showSnackbar(cameraDeniedMessage) }
+        }
+    )
+
+    if (photoPicker.isSheetVisible) {
+        PhotoSourceSheet(
+            onDismiss = photoPicker::dismiss,
+            onGalleryClick = photoPicker::pickFromGallery,
+            onCameraClick = photoPicker::takePhoto,
+            isCameraAvailable = photoPicker.isCameraAvailable
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -68,7 +96,7 @@ fun EditPetScreen(
         modifier = modifier,
         topBar = {
             EponaTopAppBar(
-                title = "Edit Pet",
+                title = stringResource(R.string.pet_edit_title),
                 onCloseClick = onNavigateBack
             )
         },
@@ -84,7 +112,8 @@ fun EditPetScreen(
             state = state,
             paddingValues = paddingValues,
             onEvent = { viewModel.onEvent(it) },
-            onCancel = onNavigateBack
+            onCancel = onNavigateBack,
+            onAddPhotoClick = photoPicker::open
         )
     }
 }
@@ -94,7 +123,8 @@ fun EditPetScreenContent(
     state: EditPetUiState,
     paddingValues: PaddingValues,
     onEvent: (EditPetEvent) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    onAddPhotoClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -109,7 +139,7 @@ fun EditPetScreenContent(
         ) {
             // ---- Basic Info Section ----
             Text(
-                text = "Pet Information",
+                text = stringResource(R.string.pet_section_info),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
@@ -118,8 +148,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.petName,
                 onValueChange = { onEvent(EditPetEvent.NameChanged(it)) },
-                label = "Pet Name",
-                placeholder = "e.g., Buddy, Luna",
+                label = stringResource(R.string.pet_name_label),
+                placeholder = stringResource(R.string.pet_name_placeholder),
                 errorText = state.nameError,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,7 +158,7 @@ fun EditPetScreenContent(
 
             // Species selection
             Text(
-                text = "Species",
+                text = stringResource(R.string.pet_species_label),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -145,8 +175,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.breed,
                 onValueChange = { onEvent(EditPetEvent.BreedChanged(it)) },
-                label = "Breed",
-                placeholder = "e.g., Golden Retriever",
+                label = stringResource(R.string.pet_breed_label),
+                placeholder = stringResource(R.string.pet_breed_placeholder),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
@@ -156,8 +186,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.color,
                 onValueChange = { onEvent(EditPetEvent.ColorChanged(it)) },
-                label = "Color",
-                placeholder = "e.g., Brown, White with spots",
+                label = stringResource(R.string.pet_color_label),
+                placeholder = stringResource(R.string.pet_color_placeholder),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
@@ -167,14 +197,14 @@ fun EditPetScreenContent(
 
             // ---- Physical Traits Section ----
             Text(
-                text = "Physical Traits",
+                text = stringResource(R.string.pet_section_physical_traits),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
             // Size selection
             Text(
-                text = "Size",
+                text = stringResource(R.string.pet_size_label),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -191,8 +221,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.ageYears,
                 onValueChange = { onEvent(EditPetEvent.AgeChanged(it)) },
-                label = "Age (years)",
-                placeholder = "e.g., 3",
+                label = stringResource(R.string.pet_age_label),
+                placeholder = stringResource(R.string.pet_age_placeholder),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
@@ -200,7 +230,7 @@ fun EditPetScreenContent(
 
             // Gender selection
             Text(
-                text = "Gender",
+                text = stringResource(R.string.pet_gender_label),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -217,7 +247,7 @@ fun EditPetScreenContent(
 
             // ---- Additional Info Section ----
             Text(
-                text = "Additional Information",
+                text = stringResource(R.string.pet_section_additional_info),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
@@ -226,8 +256,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.microchipId,
                 onValueChange = { onEvent(EditPetEvent.MicrochipIdChanged(it)) },
-                label = "Microchip ID",
-                placeholder = "Optional",
+                label = stringResource(R.string.pet_microchip_label),
+                placeholder = stringResource(R.string.pet_optional_placeholder),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp)
@@ -237,8 +267,8 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.description,
                 onValueChange = { onEvent(EditPetEvent.DescriptionChanged(it)) },
-                label = "Description",
-                placeholder = "Add any distinctive features or markings",
+                label = stringResource(R.string.create_description),
+                placeholder = stringResource(R.string.pet_description_placeholder),
                 singleLine = false,
                 maxLines = 4,
                 modifier = Modifier
@@ -250,16 +280,15 @@ fun EditPetScreenContent(
 
             // ---- Photos Section ----
             PhotoPickerSection(
-                photoUrls = state.photoUrls,
-                onPhotosSelected = { urls ->
-                    onEvent(EditPetEvent.PhotosSelected(urls))
-                },
+                photos = state.photos,
+                onAddClick = onAddPhotoClick,
+                onRemove = { onEvent(EditPetEvent.PhotoRemoved(it)) },
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
             // ---- Action Buttons ----
             EponaFilledButton(
-                text = "Update Pet",
+                text = stringResource(R.string.pet_update),
                 onClick = { onEvent(EditPetEvent.SavePet) },
                 enabled = state.isFormValid,
                 modifier = Modifier
@@ -268,7 +297,7 @@ fun EditPetScreenContent(
             )
 
             EponaOutlinedButton(
-                text = "Cancel",
+                text = stringResource(R.string.action_cancel),
                 onClick = onCancel,
                 modifier = Modifier.fillMaxWidth()
             )
