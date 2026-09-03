@@ -230,6 +230,4 @@
     <string name="photo_error_process">No se pudo abrir esa foto. Prueba con otra.</string>
     <string name="photo_camera_denied">Se necesita acceso a la cámara para hacer una foto. Puedes activarlo en Ajustes.</string>
     <string name="map_view_details">Ver Detalles</string>
-    <string name="map_view_details">Ver Detalles</string>
-    <string name="map_view_details">Ver Detalles</string>
 </resources>
