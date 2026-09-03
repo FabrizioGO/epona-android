@@ -13,8 +13,11 @@ import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.realtime
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import javax.inject.Inject
@@ -99,11 +102,24 @@ class AlertService @Inject constructor(
     /**
      * Observe realtime changes to the alerts table.
      * Returns a Flow of PostgresAction (INSERT, UPDATE, DELETE).
+     *
+     * The channel has to be joined for anything to arrive, and it can only be joined once
+     * the change flow exists -- `subscribe()` is what sends the server the set of
+     * postgres_changes bindings registered on the channel so far. Both are tied to the
+     * lifetime of the collector, so the channel is torn down when collection stops.
      */
-    fun observeAlertChanges(): Flow<PostgresAction> {
+    fun observeAlertChanges(): Flow<PostgresAction> = flow {
         val channel = supabase.client.realtime.channel("alerts-realtime")
-        return channel.postgresChangeFlow<PostgresAction>(schema = "public") {
+        val changes = channel.postgresChangeFlow<PostgresAction>(schema = "public") {
             table = "alerts"
+        }
+        channel.subscribe()
+        try {
+            emitAll(changes)
+        } finally {
+            withContext(NonCancellable) {
+                supabase.client.realtime.removeChannel(channel)
+            }
         }
     }
 }

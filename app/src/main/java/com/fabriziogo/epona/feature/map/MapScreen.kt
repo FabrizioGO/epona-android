@@ -1,8 +1,14 @@
 package com.fabriziogo.epona.feature.map
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
@@ -30,6 +36,7 @@ import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
+import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -66,6 +73,12 @@ fun MapScreen(
         onGranted = { viewModel.onEvent(MapEvent.LocationPermissionGranted) }
     )
     RequestLocationPermissionOnEntry(locationPermission)
+
+    val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
+    // Google Maps renders light tiles in either theme, so the glyphs over it stay dark
+    // even when enableEdgeToEdge would have picked white ones for the dark theme.
+    StatusBarIcons(darkIcons = true)
 
     if (state.isLoading) {
         LoadingIndicator()
@@ -171,7 +184,10 @@ fun MapScreen(
                     mapToolbarEnabled = false
                 ),
                 onMapClick = { viewModel.onEvent(MapEvent.SheetDismissed) },
-                onMapLoaded = { isMapLoaded = true }
+                onMapLoaded = { isMapLoaded = true },
+                // The map itself is full-bleed; this keeps the SDK's own compass and
+                // attribution, plus the camera target, clear of the status bar.
+                contentPadding = PaddingValues(top = statusBarHeight)
             ) {
                 // Radius circle overlay
                 if (state.showRadiusCircle) {
@@ -214,6 +230,7 @@ fun MapScreen(
                     onEnableClick = { locationPermission.requestOrOpenAppSettings() },
                     modifier = Modifier
                         .align(Alignment.TopCenter)
+                        .statusBarsPadding()
                         .padding(top = 72.dp, start = 16.dp, end = 16.dp)
                 )
             }
@@ -225,6 +242,7 @@ fun MapScreen(
                 onFilterToggled = { viewModel.onEvent(MapEvent.FilterToggled(it)) },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
+                    .statusBarsPadding()
                     .padding(top = 16.dp, start = 16.dp, end = 72.dp)
             )
 
@@ -235,6 +253,7 @@ fun MapScreen(
                 onToggleRadius = { viewModel.onEvent(MapEvent.ToggleRadiusCircle) },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
+                    .statusBarsPadding()
                     .padding(top = 16.dp, end = 16.dp)
             )
 
@@ -243,6 +262,7 @@ fun MapScreen(
                 onClick = { viewModel.onEvent(MapEvent.CreateAlertClicked) },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
+                    .navigationBarsPadding()
                     .padding(bottom = 16.dp, end = 16.dp)
             )
         }

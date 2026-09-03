@@ -1,11 +1,10 @@
 package com.fabriziogo.epona.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import com.fabriziogo.epona.core.database.entity.AlertEntity
 import com.fabriziogo.epona.core.database.entity.AlertWithPetEntity
 import kotlinx.coroutines.flow.Flow
@@ -72,10 +71,13 @@ interface AlertDao {
     @Query("SELECT * FROM alerts WHERE id = :alertId LIMIT 1")
     suspend fun getAlert(alertId: String): AlertEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // Upsert rather than INSERT OR REPLACE: `alerts` is the parent of `sightings` with
+    // ON DELETE CASCADE, and REPLACE deletes the conflicting row before re-inserting it,
+    // so re-caching an alert wiped its sighting trail.
+    @Upsert
     suspend fun insertAlert(alert: AlertEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun insertAlerts(alerts: List<AlertEntity>)
 
     @Update

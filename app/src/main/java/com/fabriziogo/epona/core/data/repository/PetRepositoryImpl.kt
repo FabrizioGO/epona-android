@@ -28,9 +28,7 @@ class PetRepositoryImpl @Inject constructor(
     private val petDao: PetDao
 ) : PetRepository {
 
-    private fun currentUserId(): String =
-        authService.getCurrentUserId()
-            ?: throw IllegalStateException("Not authenticated")
+    private suspend fun currentUserId(): String = authService.requireUserId()
 
     /**
      * Cached pets for the signed-in owner, kept fresh from the server.
@@ -66,6 +64,7 @@ class PetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPet(petId: String): Result<Pet> = runCatching {
+        authService.awaitReady()
         val dto = petService.getPet(petId)
         petDao.insertPet(dto.toEntity())
         dto.toDomain()

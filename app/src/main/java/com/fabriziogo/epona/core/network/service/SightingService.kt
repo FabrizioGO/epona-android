@@ -10,7 +10,11 @@ import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.realtime
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import javax.inject.Inject
@@ -43,12 +47,24 @@ class SightingService @Inject constructor(
 
     /**
      * Observe realtime sighting inserts for a specific alert.
+     *
+     * The change flow has to be built before `subscribe()`, which is what registers the
+     * postgres_changes bindings with the server; without that call nothing is ever
+     * delivered. The channel lives as long as the collector.
      */
-    fun observeSightings(alertId: String): Flow<PostgresAction> {
+    fun observeSightings(alertId: String): Flow<PostgresAction> = flow {
         val channel = supabase.client.realtime.channel("sightings-$alertId")
-        return channel.postgresChangeFlow<PostgresAction>(schema = "public") {
+        val changes = channel.postgresChangeFlow<PostgresAction>(schema = "public") {
             table = "sightings"
             //filter = "alert_id=eq.$alertId"
+        }
+        channel.subscribe()
+        try {
+            emitAll(changes)
+        } finally {
+            withContext(NonCancellable) {
+                supabase.client.realtime.removeChannel(channel)
+            }
         }
     }
 }

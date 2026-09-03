@@ -2,6 +2,8 @@ package com.fabriziogo.epona.core.data.mapper
 
 import com.fabriziogo.epona.core.database.entity.AlertEntity
 import com.fabriziogo.epona.core.database.entity.AlertWithPetEntity
+import com.fabriziogo.epona.core.database.entity.PetEntity
+import com.fabriziogo.epona.core.database.entity.UserEntity
 import com.fabriziogo.epona.core.domain.model.Alert
 import com.fabriziogo.epona.core.domain.model.AlertStatus
 import com.fabriziogo.epona.core.domain.model.AlertType
@@ -93,6 +95,37 @@ fun AlertDetailDto.toAlertEntity(): AlertEntity = AlertEntity(
     sightingCount = sightingCount,
     resolvedAt = resolvedAt?.toEpochMillis(),
     createdAt = createdAt?.toEpochMillis() ?: System.currentTimeMillis()
+)
+
+/**
+ * The detail RPC arrives denormalised, but the cache is relational: `alerts` carries
+ * foreign keys onto `pets` and `users`, both enforced by Room. These two mappers exist so
+ * the parent rows can be written first -- without them the alert insert fails outright.
+ */
+fun AlertDetailDto.toPetEntity(): PetEntity = PetEntity(
+    id = petId,
+    ownerId = ownerId,
+    name = petName,
+    species = species,
+    breed = breed,
+    color = color,
+    size = size,
+    gender = gender,
+    microchipId = microchipId,
+    description = petDescription,
+    photoUrls = petPhotos
+)
+
+/**
+ * A placeholder for an owner whose profile we have never fetched: the RPC carries only
+ * their name and avatar, so `email` is left blank. Written with `UserDao.insertUserIfAbsent`
+ * so it can never overwrite a real profile.
+ */
+fun AlertDetailDto.toOwnerEntity(): UserEntity = UserEntity(
+    id = ownerId,
+    displayName = ownerName,
+    email = "",
+    avatarUrl = ownerAvatar
 )
 
 fun AlertWithPetEntity.toDomain(): AlertWithDetails = AlertWithDetails(

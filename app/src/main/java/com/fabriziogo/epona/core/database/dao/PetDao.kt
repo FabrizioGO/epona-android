@@ -1,10 +1,9 @@
 package com.fabriziogo.epona.core.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.fabriziogo.epona.core.database.entity.PetEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -23,10 +22,13 @@ interface PetDao {
     @Query("SELECT * FROM pets WHERE id = :petId LIMIT 1")
     fun observePet(petId: String): Flow<PetEntity?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // Upsert rather than INSERT OR REPLACE: `pets` is the parent of `alerts` with
+    // ON DELETE CASCADE, and REPLACE deletes the conflicting row before re-inserting it,
+    // which silently dropped every cached alert for the pet being refreshed.
+    @Upsert
     suspend fun insertPet(pet: PetEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun insertPets(pets: List<PetEntity>)
 
     @Update

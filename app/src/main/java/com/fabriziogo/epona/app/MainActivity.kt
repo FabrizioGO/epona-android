@@ -1,9 +1,11 @@
 package com.fabriziogo.epona.app
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +37,15 @@ import timber.log.Timber
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // No scrim on the status bar in either theme: screens such as the alert detail
+        // hero and the map draw their own content all the way up behind it and pick the
+        // glyph colour themselves via StatusBarIcons.
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = Color.TRANSPARENT,
+                darkScrim = Color.TRANSPARENT
+            )
+        )
 
         // Handle deep link from notification
         val deepLinkAlertId = intent?.getStringExtra("alert_id")

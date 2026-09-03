@@ -10,6 +10,16 @@ interface AuthRepository {
 
     val currentUserId: String?
 
+    /**
+     * The signed-in user id, waiting out session restoration first.
+     *
+     * [currentUserId] reports whatever the session holds at that instant, and at cold
+     * start that is null until the stored session has been loaded. Anything that gates a
+     * network read on the user id has to wait, or it reports a signed-in user as
+     * unauthenticated for the first moments after launch.
+     */
+    suspend fun awaitUserId(): String?
+
     fun observeAuthState(): Flow<Boolean>
 
     suspend fun signInWithEmail(

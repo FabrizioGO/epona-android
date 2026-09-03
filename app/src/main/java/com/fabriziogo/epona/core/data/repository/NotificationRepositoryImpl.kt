@@ -19,9 +19,7 @@ class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao
 ) : NotificationRepository {
 
-    private fun currentUserId(): String =
-        authService.getCurrentUserId()
-            ?: throw IllegalStateException("Not authenticated")
+    private suspend fun currentUserId(): String = authService.requireUserId()
 
     override fun observeNotifications(userId: String): Flow<List<Notification>> =
         notificationDao.observeNotifications(userId).map { list ->

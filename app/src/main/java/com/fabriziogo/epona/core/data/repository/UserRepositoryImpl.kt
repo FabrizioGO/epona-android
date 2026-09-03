@@ -11,6 +11,8 @@ import com.fabriziogo.epona.core.network.dto.UserUpdateDto
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.UserService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,15 +24,15 @@ class UserRepositoryImpl @Inject constructor(
     private val userDao: UserDao
 ) : UserRepository {
 
-    private fun currentUserId(): String =
-        authService.getCurrentUserId()
-            ?: throw IllegalStateException("Not authenticated")
+    private suspend fun currentUserId(): String = authService.requireUserId()
 
-    override fun observeCurrentUser(): Flow<User?> =
-        userDao.observeUser(currentUserId()).map { it?.toDomain() }
+    override fun observeCurrentUser(): Flow<User?> = flow {
+        emitAll(userDao.observeUser(currentUserId()).map { it?.toDomain() })
+    }
 
     override suspend fun getUser(userId: String): Result<User> =
         runCatching {
+            authService.awaitReady()
             val dto = userService.getUser(userId)
             userDao.insertUser(dto.toEntity())
             dto.toDomain()

@@ -23,6 +23,11 @@ class AuthRepositoryImpl @Inject constructor(
     override val currentUserId: String?
         get() = authService.getCurrentUserId()
 
+    override suspend fun awaitUserId(): String? {
+        authService.awaitReady()
+        return authService.getCurrentUserId()
+    }
+
     override fun observeAuthState(): Flow<Boolean> =
         authService.observeAuthState()
 

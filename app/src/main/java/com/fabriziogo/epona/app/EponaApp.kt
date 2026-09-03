@@ -3,6 +3,8 @@ package com.fabriziogo.epona.app
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -41,6 +43,11 @@ fun EponaApp(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        // Every screen owns its own insets. Some of them (alert detail, map) deliberately
+        // draw under the transparent status bar, and the rest already pad themselves
+        // through their own Scaffold or TopAppBar, so padding the NavHost here as well
+        // would add the status-bar height to each of them a second time.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             AnimatedVisibility(
                 visible = appState.shouldShowBottomBar,
@@ -76,7 +83,11 @@ fun EponaApp(
             onLaunchGoogleSignIn = onLaunchGoogleSignIn,
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone,
-            modifier = Modifier.padding(padding)
+            // The bottom bar carries the navigation-bar inset, so consuming its height here
+            // keeps screens from padding for that bar on top of it.
+            modifier = Modifier
+                .padding(padding)
+                .consumeWindowInsets(padding)
         )
     }
 }

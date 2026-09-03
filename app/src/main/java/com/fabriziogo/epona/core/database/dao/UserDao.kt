@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.fabriziogo.epona.core.database.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -17,8 +18,20 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
     fun observeUser(userId: String): Flow<UserEntity?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // Upsert rather than INSERT OR REPLACE: `users` is the parent of `pets`, which is in
+    // turn the parent of `alerts`, both ON DELETE CASCADE. REPLACE deletes the conflicting
+    // row before re-inserting it, so simply refreshing a profile took that user's cached
+    // pets and alerts down with it.
+    @Upsert
     suspend fun insertUser(user: UserEntity)
+
+    /**
+     * Records an alert owner we only know from a denormalised RPC payload, so the foreign
+     * key on `alerts.user_id` is satisfiable. IGNORE on conflict: a stub like this must
+     * never overwrite a profile that was fetched in full.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUserIfAbsent(user: UserEntity)
 
     @Update
     suspend fun updateUser(user: UserEntity)

@@ -22,6 +22,29 @@ class AuthService @Inject constructor(
     val isAuthenticated: Boolean
         get() = auth.currentSessionOrNull() != null
 
+    /**
+     * Suspends until the stored session has finished loading.
+     *
+     * `autoLoadFromStorage` restores the session off the main thread, and until it lands
+     * the status is [SessionStatus.Initializing]: there is no access token, so Postgrest
+     * falls back to the anon key. An RLS-protected read made in that window comes back as
+     * an empty result set rather than an error, which the UI cannot tell apart from "there
+     * is nothing here" -- hence a feed that looks empty until something happens to retry it.
+     *
+     * Returns immediately once initialisation is done, so it is safe on every call path.
+     */
+    suspend fun awaitReady() = auth.awaitInitialization()
+
+    /**
+     * The signed-in user id, waiting out session restoration first so a cold start does
+     * not report a signed-in user as unauthenticated.
+     */
+    suspend fun requireUserId(): String {
+        awaitReady()
+        return getCurrentUserId()
+            ?: throw IllegalStateException("Not authenticated")
+    }
+
     fun observeAuthState(): Flow<Boolean> =
         auth.sessionStatus.map { status ->
             status is SessionStatus.Authenticated

@@ -10,7 +10,7 @@ class GetCurrentUserUseCase @Inject constructor(
     private val userRepo: UserRepository
 ) {
     suspend operator fun invoke(): Result<User> {
-        val userId = authRepo.currentUserId
+        val userId = authRepo.awaitUserId()
             ?: return Result.failure(IllegalStateException("Not authenticated"))
         return userRepo.getUser(userId)
     }

@@ -2,13 +2,17 @@ package com.fabriziogo.epona.feature.detail
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -105,12 +109,21 @@ fun AlertDetailScreen(
     }
 
     Scaffold(
+        // The hero image runs all the way up behind the transparent status bar, so only
+        // the sides and the bottom are padded here; the floating back and share buttons
+        // pad themselves in DetailHero.
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets
+            .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
 
         when {
             state.isLoading -> {
-                LoadingIndicator(modifier = Modifier.padding(paddingValues))
+                LoadingIndicator(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .statusBarsPadding()
+                )
             }
 
             state.alertDetail == null && !state.isLoading -> {
@@ -118,7 +131,9 @@ fun AlertDetailScreen(
                     icon = Icons.Outlined.Warning,
                     title = stringResource(R.string.detail_not_found_title),
                     description = stringResource(R.string.detail_not_found_desc),
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .statusBarsPadding(),
                     action = {
                         EponaFilledButton(
                             text = stringResource(R.string.action_go_back),
@@ -135,10 +150,13 @@ fun AlertDetailScreen(
                 val isResolved = alert.status == AlertStatus.RESOLVED
 
                 LazyColumn(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentPadding = PaddingValues(bottom = 32.dp)
+                    modifier = modifier.fillMaxSize(),
+                    // Bottom inset lives in the content padding rather than the modifier
+                    // so the list scrolls under the navigation bar instead of stopping
+                    // short of it.
+                    contentPadding = PaddingValues(
+                        bottom = paddingValues.calculateBottomPadding() + 32.dp
+                    )
                 ) {
                     // Hero image with back/share buttons
                     item(key = "hero") {
