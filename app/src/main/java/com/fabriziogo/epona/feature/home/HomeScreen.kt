@@ -1,14 +1,23 @@
 package com.fabriziogo.epona.feature.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Pets
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,11 +37,12 @@ import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
-import com.fabriziogo.epona.core.ui.components.PetCard
+import com.fabriziogo.epona.core.ui.theme.EponaTealDark
+import com.fabriziogo.epona.core.ui.theme.EponaTheme
+import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.home.components.AlertFeedSection
-import com.fabriziogo.epona.feature.home.components.AlertFilterChips
-import com.fabriziogo.epona.feature.home.components.AlertStatsCard
-import com.fabriziogo.epona.feature.home.components.HomeHeader
+import com.fabriziogo.epona.feature.home.components.AlertGridCard
+import com.fabriziogo.epona.feature.home.components.HomeHero
 
 @Composable
 fun HomeScreen(
@@ -47,6 +57,8 @@ fun HomeScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // White glyphs read against the teal hero regardless of the app theme.
+    StatusBarIcons(darkIcons = false)
 
     // Handle navigation events
     LaunchedEffect(Unit) {
@@ -76,6 +88,8 @@ fun HomeScreen(
 
     Scaffold(
         modifier = modifier,
+        // The hero draws its own status-bar padding so it can sit under the transparent bar.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             EponaFAB(
@@ -83,166 +97,209 @@ fun HomeScreen(
             )
         }
     ) { paddingValues ->
-
-        when {
-            // Loading state
-            state.isLoading -> {
-                LoadingIndicator(
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
-
-            // Empty state
-            !state.isLoading && state.alerts.isEmpty() && state.error == null -> {
-                EmptyState(
-                    icon = Icons.Outlined.Lock,
-                    title = stringResource(R.string.home_empty_title),
-                    description = stringResource(R.string.home_empty_description),
-                    modifier = Modifier.padding(paddingValues),
-                    action = {
-                        EponaFilledButton(
-                            text = stringResource(R.string.create_alert_title),
-                            onClick = {
-                                viewModel.onEvent(HomeEvent.CreateAlertClicked)
-                            }
-                        )
-                    }
-                )
-            }
-
-            // Content
-            else -> {
-                HomeScreenContent(
-                    state = state,
-                    paddingValues = paddingValues,
-                    onEvent = {
-                        viewModel.onEvent(it)
-                    }
-                )
-            }
-        }
+        HomeScreenContent(
+            state = state,
+            paddingValues = paddingValues,
+            onEvent = { viewModel.onEvent(it) }
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(state : HomeUiState, paddingValues : PaddingValues,onEvent: (HomeEvent) -> Unit){
-
-    val listState = rememberLazyListState()
+fun HomeScreenContent(
+    state: HomeUiState,
+    paddingValues: PaddingValues,
+    onEvent: (HomeEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val gridState = rememberLazyGridState()
 
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = { onEvent(HomeEvent.Refresh) },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp,
-                top = 0.dp,
-                bottom = 88.dp // Space for FAB + nav bar
-            )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            state = gridState,
+            contentPadding = PaddingValues(bottom = 96.dp) // space for FAB + nav bar
         ) {
-            // Header: greeting + avatar + search bar
-            item(key = "header") {
-                HomeHeader(
+            // Hero: greeting + avatar, notifications/map shortcuts, headline, search, categories
+            item(span = { GridItemSpan(maxLineSpan) }, key = "hero") {
+                HomeHero(
                     userName = state.userName,
                     userAvatar = state.userAvatar,
                     unreadCount = state.unreadNotificationCount,
-                    onSearchClick = {
-                        onEvent(HomeEvent.SearchClicked)
-                    },
-                    onNotificationsClick = {
-                        onEvent(HomeEvent.NotificationsClicked)
-                    },
-                    onFilterClick = {}
-                )
-            }
-
-            // Filter chips
-            item(key = "filters") {
-                AlertFilterChips(
+                    searchQuery = state.searchQuery,
                     selectedFilter = state.selectedFilter,
-                    lostCount = state.lostCount,
-                    foundCount = state.foundCount,
                     totalCount = state.totalActiveAlerts,
-                    onFilterSelected = { filter ->
-                        onEvent(
-                            HomeEvent.FilterChanged(filter)
-                        )
-                    }
-                )
-            }
-
-            // Stats banner
-            item(key = "stats") {
-                AlertStatsCard(
-                    totalAlerts = state.totalActiveAlerts,
                     lostCount = state.lostCount,
                     foundCount = state.foundCount,
-                    radiusKm = state.alertRadiusKm
+                    onSearchQueryChanged = { onEvent(HomeEvent.SearchQueryChanged(it)) },
+                    onFilterSelected = { onEvent(HomeEvent.FilterChanged(it)) },
+                    onNotificationsClick = { onEvent(HomeEvent.NotificationsClicked) },
+                    onMapClick = { onEvent(HomeEvent.ViewMapClicked) }
                 )
             }
 
-            // Section header
-            item(key = "section_header") {
-                AlertFeedSection(
-                    onViewMapClick = {
-                        onEvent(HomeEvent.ViewMapClicked)
-                    }
-                )
-            }
-
-            // Alert cards
-            items(
-                items = state.filteredAlerts,
-                key = { it.alert.id }
-            ) { alertWithDetails ->
-                PetCard(
-                    alertWithDetails = alertWithDetails,
-                    onClick = {
-                        onEvent(
-                            HomeEvent.AlertClicked(
-                                alertWithDetails.alert.id
+            // Rounded-top sheet transition + section header. Teal peeks behind the corners.
+            item(span = { GridItemSpan(maxLineSpan) }, key = "sheet_header") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(EponaTealDark)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
                             )
+                            .padding(top = 20.dp)
+                    ) {
+                        AlertFeedSection(
+                            onViewMapClick = { onEvent(HomeEvent.ViewMapClicked) }
                         )
-                    },
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                    }
+                }
+            }
+
+            when {
+                state.isLoading -> item(span = { GridItemSpan(maxLineSpan) }, key = "loading") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(240.dp)
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        LoadingIndicator()
+                    }
+                }
+
+                state.alerts.isEmpty() -> item(span = { GridItemSpan(maxLineSpan) }, key = "empty") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        EmptyState(
+                            icon = Icons.Outlined.Pets,
+                            title = stringResource(R.string.home_empty_title),
+                            description = stringResource(R.string.home_empty_description),
+                            action = {
+                                EponaFilledButton(
+                                    text = stringResource(R.string.create_alert_title),
+                                    onClick = { onEvent(HomeEvent.CreateAlertClicked) }
+                                )
+                            }
+                        )
+                    }
+                }
+
+                state.filteredAlerts.isEmpty() -> item(
+                    span = { GridItemSpan(maxLineSpan) },
+                    key = "no_matches"
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        EmptyState(
+                            icon = Icons.Outlined.Pets,
+                            title = stringResource(R.string.home_no_matches_title),
+                            description = stringResource(R.string.home_no_matches_description)
+                        )
+                    }
+                }
+
+                else -> itemsIndexed(
+                    items = state.filteredAlerts,
+                    key = { _, item -> item.alert.id }
+                ) { index, alertWithDetails ->
+                    AlertGridCard(
+                        alertWithDetails = alertWithDetails,
+                        onClick = {
+                            onEvent(HomeEvent.AlertClicked(alertWithDetails.alert.id))
+                        },
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(
+                                start = if (index % 2 == 0) 16.dp else 6.dp,
+                                end = if (index % 2 == 0) 6.dp else 16.dp,
+                                bottom = 12.dp
+                            )
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0x0FFFFFF)
+@Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
-    HomeScreenContent(
-        state = HomeUiState(),
-        paddingValues = PaddingValues(),
-        onEvent = {}
-    )
+private fun HomeScreenPreview() {
+    EponaTheme(dynamicColor = false) {
+        HomeScreenContent(
+            state = HomeUiState(
+                isLoading = false,
+                alerts = sampleAlerts,
+                filteredAlerts = sampleAlerts,
+                totalActiveAlerts = sampleAlerts.size,
+                lostCount = 2,
+                foundCount = 2,
+                userName = "Fabrizio",
+                unreadNotificationCount = 3
+            ),
+            paddingValues = PaddingValues(),
+            onEvent = {}
+        )
+    }
 }
 
-@Preview(showBackground = true, backgroundColor = 0x0FFFFFF)
+@Preview(showBackground = true)
 @Composable
-fun HomeScreenLoadingPreview() {
-    HomeScreenContent(
-        state = HomeUiState().copy(isLoading = true),
-        paddingValues = PaddingValues(),
-        onEvent = {}
-    )
+private fun HomeScreenLoadingPreview() {
+    EponaTheme(dynamicColor = false) {
+        HomeScreenContent(
+            state = HomeUiState(isLoading = true, userName = "Fabrizio"),
+            paddingValues = PaddingValues(),
+            onEvent = {}
+        )
+    }
 }
 
-@Preview(showBackground = true, backgroundColor = 0x0FFFFFF)
+@Preview(showBackground = true)
 @Composable
-fun HomeScreenEmptyPreview() {
-    HomeScreenContent(
-        state = HomeUiState().copy(isLoading = false, alerts = emptyList(), error = null),
-        paddingValues = PaddingValues(),
-        onEvent = {}
-    )
+private fun HomeScreenEmptyPreview() {
+    EponaTheme(dynamicColor = false) {
+        HomeScreenContent(
+            state = HomeUiState(isLoading = false, alerts = emptyList(), userName = "Fabrizio"),
+            paddingValues = PaddingValues(),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenNoMatchesPreview() {
+    EponaTheme(dynamicColor = false) {
+        HomeScreenContent(
+            state = HomeUiState(
+                isLoading = false,
+                alerts = sampleAlerts,
+                filteredAlerts = emptyList(),
+                searchQuery = "zzz",
+                userName = "Fabrizio"
+            ),
+            paddingValues = PaddingValues(),
+            onEvent = {}
+        )
+    }
 }

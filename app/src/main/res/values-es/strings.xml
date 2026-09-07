@@ -64,6 +64,10 @@
     <string name="auth_welcome_back">Bienvenido de vuelta</string>
     <string name="home_nearby_alerts">Alertas Cercanas</string>
     <string name="home_view_map">Ver mapa</string>
+    <string name="home_hero_greeting">Hola, %1$s</string>
+    <string name="home_hero_headline">Encuentra una mascota cerca de ti</string>
+    <string name="home_no_matches_title">Sin resultados</string>
+    <string name="home_no_matches_description">Prueba con otra búsqueda o filtro.</string>
     <string name="home_filter_found_count">🟢 Encontrado (%d)</string>
     <string name="alert_type_lost">Perdido</string>
     <string name="alert_type_found">Encontrado</string>
@@ -230,4 +234,101 @@
     <string name="photo_error_process">No se pudo abrir esa foto. Prueba con otra.</string>
     <string name="photo_camera_denied">Se necesita acceso a la cámara para hacer una foto. Puedes activarlo en Ajustes.</string>
     <string name="map_view_details">Ver Detalles</string>
+
+    <!-- App -->
+    <string name="app_tagline">El guardián de cada patita perdida</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_2">Avistamientos colaborativos</string>
+    <string name="onboarding_desc_2">Cualquiera puede reportar un avistamiento con foto y ubicación, creando un rastro en vivo hasta tu mascota.</string>
+    <string name="onboarding_title_3">Llévalos a casa</string>
+    <string name="onboarding_desc_3">Epona ya ha reunido miles de mascotas con sus familias. Únete a la comunidad que se preocupa.</string>
+
+    <!-- Create Alert -->
+    <string name="create_ready_summary_no_location">%1$s alerta para %2$s. Tu comunidad será notificada instantáneamente.</string>
+
+    <!-- Alert Detail -->
+    <string name="detail_sightings">Avistamientos (%d)</string>
+    <string name="detail_no_sightings">Aún no hay avistamientos reportados. ¡Sé el primero en ayudar!</string>
+    <string name="detail_report_sighting">Reportar avistamiento</string>
+    <string name="share_hashtag_text">¡Ayuda a llevarlos a casa! #Epona</string>
+
+    <!-- Resolve -->
+    <string name="resolve_success_message">¡%s ha sido marcado como reunido! Tu comunidad ha sido notificada del final feliz.</string>
+
+    <!-- Sighting -->
+    <string name="sighting_report_title">Reportar avistamiento</string>
+    <string name="sighting_spotted">¿Viste a %s? ¡Ayuda a que regrese a casa!</string>
+    <string name="sighting_add_photo">Agrega una foto y marca la ubicación donde lo viste.</string>
+    <string name="sighting_photos_desc">Agrega hasta 3 fotos de la mascota que viste</string>
+    <string name="sighting_add">Agregar</string>
+    <string name="sighting_location_desc">¿Dónde viste a la mascota?</string>
+    <string name="sighting_location_loading">Obteniendo tu ubicación…</string>
+    <string name="sighting_location_set">Ubicación establecida</string>
+    <string name="sighting_location_tap">Toca para establecer la ubicación en el mapa</string>
+    <string name="sighting_note_label">¿Qué viste?</string>
+    <string name="sighting_note_desc">Describe lo que viste — dirección, comportamiento, etc.</string>
+    <string name="sighting_note_placeholder">ej. Iba hacia el sur al parque, parecía asustado…</string>
+    <string name="sighting_submit">Enviar avistamiento</string>
+    <string name="sighting_info">Tu avistamiento será compartido con el dueño de la mascota y agregado al rastro en vivo en el mapa. ¡Cada avistamiento ayuda!</string>
+    <string name="sighting_max_photos">Máximo 3 fotos permitidas</string>
+    <string name="sighting_location_error">No se pudo obtener la ubicación. Establécela manualmente.</string>
+    <string name="sighting_location_required">Por favor establece la ubicación del avistamiento</string>
+    <string name="sighting_list_title">Avistamientos (%d)</string>
+    <string name="sighting_reported_success">Avistamiento reportado — ¡gracias!</string>
+
+    <!-- Map -->
+    <string name="map_toggle_radius">Alternar radio</string>
+    <string name="map_sighting_trail_count">Rastro de avistamientos (%d)</string>
+
+    <!-- Profile -->
+    <string name="profile_settings_subtitle">Notificaciones, radio, preferencias</string>
+
+    <!-- My Alerts -->
+    <string name="my_alerts_empty_desc">Las alertas que crees de mascotas perdidas o encontradas aparecerán aquí.</string>
+    <string name="alert_location_unknown">Ubicación desconocida</string>
+    <plurals name="alert_sighting_count">
+        <item quantity="one">%d avistamiento</item>
+        <item quantity="other">%d avistamientos</item>
+    </plurals>
+
+    <!-- Help &amp; FAQ -->
+    <string name="help_faq_title">Preguntas frecuentes</string>
+    <string name="help_contact_title">¿Aún necesitas ayuda?</string>
+    <string name="help_contact_desc">Nuestro equipo de soporte está encantado de ayudarte con lo que las preguntas frecuentes no cubrieron.</string>
+    <string name="help_email_support">Soporte por email</string>
+    <string name="help_email_subject">Solicitud de soporte Epona</string>
+    <string name="faq_q1_question">¿Cómo reporto una mascota perdida?</string>
+    <string name="faq_q1_answer">Desde la pestaña Home, toca el botón + para crear una nueva alerta, selecciona la mascota, agrega la última ubicación vista y envíala. Los usuarios cercanos serán notificados.</string>
+    <string name="faq_q2_question">¿Cómo reporto un avistamiento?</string>
+    <string name="faq_q2_answer">Abre el detalle de la alerta y toca «Reportar avistamiento» para compartir la ubicación, una nota y fotos de donde viste a la mascota.</string>
+    <string name="faq_q3_question">¿Cómo agrego o edito mis mascotas?</string>
+    <string name="faq_q3_answer">Ve a Perfil &gt; Mis Mascotas, luego toca el botón + para agregar una nueva mascota, o toca el icono de editar en una mascota existente para actualizar sus datos.</string>
+    <string name="faq_q4_question">¿Cómo resuelvo una alerta cuando aparece la mascota?</string>
+    <string name="faq_q4_answer">Abre la alerta desde Mis Alertas o desde el detalle de la alerta y toca «Marcar como resuelto».</string>
+    <string name="faq_q5_question">¿Cómo se usa mi ubicación?</string>
+    <string name="faq_q5_answer">La ubicación se usa para mostrar alertas cercanas y para registrar dónde se vio la mascota por última vez o dónde fue avistada. Puedes ajustar tu radio de notificación en Configuración.</string>
+
+    <!-- My Pets -->
+    <string name="my_pets_empty_title">No hay mascotas registradas</string>
+    <string name="my_pets_empty_desc">Agrega tus mascotas para crear alertas rápidamente si alguna vez se pierden.</string>
+    <string name="my_pets_delete_message">Esto eliminará permanentemente esta mascota y todas sus alertas asociadas. Esta acción no se puede deshacer.</string>
+
+    <!-- Pet Management -->
+    <string name="pet_color_placeholder">ej., Marrón, blanco con manchas</string>
+    <string name="pet_section_physical_traits">Características físicas</string>
+    <string name="pet_section_additional_info">Información adicional</string>
+    <string name="pet_microchip_label">ID de microchip</string>
+    <string name="pet_description_placeholder">Agrega rasgos distintivos o marcas particulares</string>
+
+    <!-- Settings -->
+    <string name="settings_radius_desc">Las alertas dentro de este radio te notificarán</string>
+    <string name="settings_radius_save">Guardar radio</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_hide_password">Ocultar contraseña</string>
+    <string name="cd_show_password">Mostrar contraseña</string>
+    <string name="cd_dismiss">Descartar</string>
+    <string name="cd_clear_search">Borrar búsqueda</string>
+    <string name="cd_view_map">Ver mapa</string>
 </resources>

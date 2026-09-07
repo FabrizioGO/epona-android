@@ -2,6 +2,7 @@ package com.fabriziogo.epona.feature.home
 
 sealed interface HomeEvent {
     data class FilterChanged(val filter: AlertFilter) : HomeEvent
+    data class SearchQueryChanged(val query: String) : HomeEvent
     data object Refresh : HomeEvent
     data object RetryLoad : HomeEvent
     data object SearchClicked : HomeEvent

@@ -66,13 +66,7 @@ fun PetCard(
                     )
                 } else {
                     Text(
-                        text = when (pet.species.value) {
-                            "dog" -> "🐕"
-                            "cat" -> "🐈"
-                            "bird" -> "🐦"
-                            "rabbit" -> "🐇"
-                            else -> "🐾"
-                        },
+                        text = pet.species.emoji(),
                         style = EponaTypography.headlineSmall
                     )
                 }

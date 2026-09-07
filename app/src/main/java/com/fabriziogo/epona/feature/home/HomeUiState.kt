@@ -10,6 +10,7 @@ data class HomeUiState(
     val alerts: List<AlertWithDetails> = emptyList(),
     val filteredAlerts: List<AlertWithDetails> = emptyList(),
     val selectedFilter: AlertFilter = AlertFilter.ALL,
+    val searchQuery: String = "",
     val userLocation: Location? = null,
     val alertRadiusKm: Int = 10,
     val totalActiveAlerts: Int = 0,

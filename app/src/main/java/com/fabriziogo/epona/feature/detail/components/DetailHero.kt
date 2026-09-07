@@ -30,6 +30,7 @@ import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.Pet
+import com.fabriziogo.epona.core.ui.components.emoji
 import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
@@ -71,13 +72,7 @@ fun DetailHero(
             )
         } else {
             Text(
-                text = when (pet.species.value) {
-                    "dog" -> "🐕"
-                    "cat" -> "🐈"
-                    "bird" -> "🐦"
-                    "rabbit" -> "🐇"
-                    else -> "🐾"
-                },
+                text = pet.species.emoji(),
                 style = EponaTypography.displayLarge.copy(
                     fontSize = EponaTypography.displayLarge.fontSize * 2
                 )

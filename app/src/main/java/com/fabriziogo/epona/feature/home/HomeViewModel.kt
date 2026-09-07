@@ -44,6 +44,7 @@ class HomeViewModel @Inject constructor(
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.FilterChanged -> applyFilter(event.filter)
+            is HomeEvent.SearchQueryChanged -> applySearchQuery(event.query)
             is HomeEvent.Refresh -> refreshAlerts()
             is HomeEvent.RetryLoad -> loadInitialData()
             is HomeEvent.SearchClicked -> emitNav(HomeNavigationEvent.NavigateToSearch)
@@ -113,6 +114,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun fetchAlerts(location: Location) {
         val radiusMeters = _state.value.alertRadiusKm * 1000
         val filter = _state.value.selectedFilter
+        val query = _state.value.searchQuery
 
         getNearbyAlerts(
             latitude = location.latitude,
@@ -127,7 +129,7 @@ class HomeViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     alerts = alerts,
-                    filteredAlerts = applyFilterToList(alerts, filter),
+                    filteredAlerts = applyFilters(alerts, filter, query),
                     totalActiveAlerts = alerts.size,
                     lostCount = lostCount,
                     foundCount = foundCount,
@@ -153,13 +155,14 @@ class HomeViewModel @Inject constructor(
                 radiusMeters = radiusMeters
             ).collect { alerts ->
                 val filter = _state.value.selectedFilter
+                val query = _state.value.searchQuery
                 val lostCount = alerts.count { it.alert.type == AlertType.LOST }
                 val foundCount = alerts.count { it.alert.type == AlertType.FOUND }
 
                 _state.update {
                     it.copy(
                         alerts = alerts,
-                        filteredAlerts = applyFilterToList(alerts, filter),
+                        filteredAlerts = applyFilters(alerts, filter, query),
                         totalActiveAlerts = alerts.size,
                         lostCount = lostCount,
                         foundCount = foundCount
@@ -173,18 +176,42 @@ class HomeViewModel @Inject constructor(
         _state.update {
             it.copy(
                 selectedFilter = filter,
-                filteredAlerts = applyFilterToList(it.alerts, filter)
+                filteredAlerts = applyFilters(it.alerts, filter, it.searchQuery)
             )
         }
     }
 
-    private fun applyFilterToList(
+    private fun applySearchQuery(query: String) {
+        _state.update {
+            it.copy(
+                searchQuery = query,
+                filteredAlerts = applyFilters(it.alerts, it.selectedFilter, query)
+            )
+        }
+    }
+
+    private fun applyFilters(
         alerts: List<AlertWithDetails>,
-        filter: AlertFilter
-    ) = when (filter) {
-        AlertFilter.ALL -> alerts
-        AlertFilter.LOST -> alerts.filter { it.alert.type == AlertType.LOST }
-        AlertFilter.FOUND -> alerts.filter { it.alert.type == AlertType.FOUND }
+        filter: AlertFilter,
+        query: String
+    ): List<AlertWithDetails> {
+        val byType = when (filter) {
+            AlertFilter.ALL -> alerts
+            AlertFilter.LOST -> alerts.filter { it.alert.type == AlertType.LOST }
+            AlertFilter.FOUND -> alerts.filter { it.alert.type == AlertType.FOUND }
+        }
+
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) return byType
+
+        return byType.filter { details ->
+            listOfNotNull(
+                details.pet.name,
+                details.pet.breed,
+                details.pet.color,
+                details.alert.lastSeenAddress
+            ).any { it.contains(trimmedQuery, ignoreCase = true) }
+        }
     }
 
     private fun emitNav(event: HomeNavigationEvent) {

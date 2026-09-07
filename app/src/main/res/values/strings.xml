@@ -67,6 +67,8 @@
     <string name="home_greeting_morning">Good morning 👋</string>
     <string name="home_greeting_afternoon">Good afternoon 👋</string>
     <string name="home_greeting_evening">Good evening 👋</string>
+    <string name="home_hero_greeting">Hi, %1$s</string>
+    <string name="home_hero_headline">Find a pet near you</string>
     <string name="home_search_placeholder">Search pets, breeds, locations…</string>
     <string name="home_filter_all">All</string>
     <string name="home_filter_lost">Lost</string>
@@ -77,6 +79,8 @@
     <string name="home_radius_info">Within %d km · %d lost · %d found</string>
     <string name="home_empty_title">No alerts nearby</string>
     <string name="home_empty_description">There are no missing or found pet alerts in your area right now. That\'s a good thing!</string>
+    <string name="home_no_matches_title">No matches</string>
+    <string name="home_no_matches_description">Try a different search or filter.</string>
     <string name="home_filter_all_count">All (%d)</string>
     <string name="home_filter_lost_count">🔴 Lost (%d)</string>
     <string name="home_filter_found_count">🟢 Found (%d)</string>
@@ -358,6 +362,8 @@
     <string name="cd_hide_password">Hide password</string>
     <string name="cd_show_password">Show password</string>
     <string name="cd_dismiss">Dismiss</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_view_map">View map</string>
 
     <!-- Formatting -->
     <string name="format_distance_meters" translatable="false">%d m</string>
