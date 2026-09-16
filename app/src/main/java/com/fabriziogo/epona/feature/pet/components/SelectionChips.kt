@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.domain.model.Species
@@ -22,7 +23,7 @@ import com.fabriziogo.epona.core.ui.theme.EponaTheme
 fun <T : Enum<T>> SelectionChips(
     options: List<T>,
     selected: T,
-    label: (T) -> String,
+    label: @Composable (T) -> String,
     onSelected: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -48,7 +49,7 @@ fun SelectionChipsPreview() {
         SelectionChips(
             options = Species.entries,
             selected = Species.DOG,
-            label = { it.label },
+            label = { stringResource(it.label) },
             onSelected = {}
         )
     }

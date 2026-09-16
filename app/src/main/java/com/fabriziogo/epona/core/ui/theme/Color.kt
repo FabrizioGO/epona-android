@@ -11,12 +11,13 @@ val EponaAmberLight = Color(0xFFEFAA5D)
 val EponaAmberDark = Color(0xFFC97520)
 val EponaCream = Color(0xFFFFF8F0)
 val EponaRose = Color(0xFFE8A0A0)
+val EponaCharcoal = Color(0xFF1C1B1A)
 
 // M3 Light Scheme — mapped from Epona brand
 val md_theme_light_primary = EponaTeal
 val md_theme_light_onPrimary = Color.White
-val md_theme_light_primaryContainer = Color(0xFFA7F3D0)
-val md_theme_light_onPrimaryContainer = Color(0xFF00201A)
+val md_theme_light_primaryContainer = EponaTealDark
+val md_theme_light_onPrimaryContainer = Color.White
 val md_theme_light_secondary = EponaAmber
 val md_theme_light_onSecondary = Color.White
 val md_theme_light_secondaryContainer = Color(0xFFFFDDB3)

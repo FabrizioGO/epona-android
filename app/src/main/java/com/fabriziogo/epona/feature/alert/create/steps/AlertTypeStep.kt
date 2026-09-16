@@ -3,8 +3,10 @@ package com.fabriziogo.epona.feature.alert.create.steps
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
@@ -41,14 +44,18 @@ fun AlertTypeStep(
         Spacer(Modifier.height(28.dp))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AlertType.entries.forEach { type ->
                 val selected = selectedType == type
                 Surface(
                     onClick = { onTypeSelected(type) },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
                     shape = MaterialTheme.shapes.medium,
                     color = if (selected) MaterialTheme.colorScheme.primaryContainer
                     else MaterialTheme.colorScheme.surfaceContainerLow,
@@ -68,16 +75,16 @@ fun AlertTypeStep(
                         Text(
                             text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost)
                             else stringResource(R.string.create_type_found),
-                            style = EponaTypography.titleMedium,
+                            style = EponaTypography.titleMedium.copy(textAlign = TextAlign.Center),
                             color = if (selected)
                                 MaterialTheme.colorScheme.onPrimaryContainer
-                            else MaterialTheme.colorScheme.onSurface
+                            else MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost_desc)
                             else stringResource(R.string.create_type_found_desc),
-                            style = EponaTypography.bodySmall,
+                            style = EponaTypography.bodySmall.copy(textAlign = TextAlign.Center),
                             color = if (selected)
                                 MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSurfaceVariant

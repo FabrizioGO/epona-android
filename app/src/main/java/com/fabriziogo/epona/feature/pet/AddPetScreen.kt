@@ -166,7 +166,7 @@ fun AddPetScreenContent(
             SelectionChips(
                 options = Species.entries,
                 selected = state.selectedSpecies,
-                label = { it.label },
+                label = { stringResource(it.label) },
                 onSelected = { onEvent(AddPetEvent.SpeciesChanged(it)) },
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -212,7 +212,7 @@ fun AddPetScreenContent(
             SelectionChips(
                 options = PetSize.entries,
                 selected = state.selectedSize,
-                label = { it.label },
+                label = { stringResource(it.label) },
                 onSelected = { onEvent(AddPetEvent.SizeChanged(it)) },
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -238,7 +238,7 @@ fun AddPetScreenContent(
             SelectionChips(
                 options = PetGender.entries,
                 selected = state.selectedGender,
-                label = { it.label },
+                label = { stringResource(it.label) },
                 onSelected = { onEvent(AddPetEvent.GenderChanged(it)) },
                 modifier = Modifier.padding(bottom = 16.dp)
             )

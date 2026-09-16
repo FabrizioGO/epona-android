@@ -139,7 +139,11 @@ fun PetSelectionStep(
                                         else MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        listOfNotNull(pet.breed, pet.species.label, pet.color)
+                                        listOfNotNull(
+                                            pet.breed,
+                                            stringResource(pet.species.label),
+                                            pet.color
+                                        )
                                             .joinToString(" · "),
                                         style = EponaTypography.bodySmall,
                                         color = if (isSelected)

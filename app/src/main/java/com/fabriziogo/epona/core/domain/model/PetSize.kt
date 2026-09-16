@@ -1,9 +1,11 @@
 package com.fabriziogo.epona.core.domain.model
 
-enum class PetSize(val value: String, val label: String) {
-    SMALL("small", "Small"),
-    MEDIUM("medium", "Medium"),
-    LARGE("large", "Large");
+import com.fabriziogo.epona.R
+
+enum class PetSize(val value: String, val label: Int) {
+    SMALL("small", R.string.size_small),
+    MEDIUM("medium", R.string.size_medium),
+    LARGE("large", R.string.size_large);
 
     companion object {
         fun fromValue(v: String): PetSize =

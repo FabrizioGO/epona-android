@@ -297,7 +297,7 @@ internal fun DetailHeaderContent(
         Text(
             text = listOfNotNull(
                 pet.breed,
-                pet.size.label,
+                stringResource(pet.size.label),
                 pet.color
             ).joinToString(" · "),
             style = EponaTypography.bodyLarge,

@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTealDark
 
 @Composable
 fun EponaFAB(
@@ -22,8 +21,8 @@ fun EponaFAB(
     FloatingActionButton(
         onClick = onClick,
         modifier = modifier,
-        containerColor = EponaTealDark,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         shape = MaterialTheme.shapes.medium
     ) {
         Icon(icon, contentDescription = contentDescription)

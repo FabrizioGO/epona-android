@@ -7,9 +7,9 @@
     <string name="auth_sign_in_subtitle">Registrate para encontrar y ayudar mascotas en tu comunidad</string>
     <string name="auth_create_account">Crear cuenta</string>
     <string name="auth_sign_up_subtitle">Unete a la comunidad protegiendo mascotas en tu localidad</string>
-    <string name="auth_sign_in">Registrate</string>
+    <string name="auth_sign_in">Iniciar Sesión</string>
     <string name="auth_sign_up">Crear Cuenta</string>
-    <string name="auth_sign_out">Cerrar Sesion</string>
+    <string name="auth_sign_out">Cerrar Sesión</string>
     <string name="auth_google">Continuar con Google</string>
     <string name="auth_or">o</string>
     <string name="auth_email_placeholder">tu@ejemplo.com</string>

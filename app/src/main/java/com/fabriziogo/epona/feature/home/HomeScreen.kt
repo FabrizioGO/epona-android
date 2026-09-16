@@ -151,7 +151,7 @@ fun HomeScreenContent(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(EponaTealDark)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Box(
                         modifier = Modifier

@@ -2,9 +2,9 @@
 <resources>
 
     <string-array name="species_labels">
-        <item>Dog</item>
-        <item>Cat</item>
-        <item>Other</item>
+        <item>Perro</item>
+        <item>Gato</item>
+        <item>Otros</item>
     </string-array>
 
     <string-array name="species_values">
@@ -14,15 +14,15 @@
     </string-array>
 
     <string-array name="size_labels">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Large</item>
+        <item>Pequeño</item>
+        <item>Mediano</item>
+        <item>Grande</item>
     </string-array>
 
     <string-array name="gender_labels">
-        <item>Male</item>
-        <item>Female</item>
-        <item>Unknown</item>
+        <item>Macho</item>
+        <item>Hembra</item>
+        <item>Desconocido</item>
     </string-array>
 
 </resources>

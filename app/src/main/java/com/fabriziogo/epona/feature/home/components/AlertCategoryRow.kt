@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Pets
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.extensions.pressScale
+import com.fabriziogo.epona.core.ui.theme.EponaAmber
 import com.fabriziogo.epona.core.ui.theme.EponaTeal
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -70,7 +72,7 @@ fun AlertCategoryRow(
                     modifier = Modifier
                         .size(56.dp)
                         .clip(CircleShape)
-                        .background(if (selected) EponaTeal else Color.White.copy(alpha = 0.12f))
+                        .background(if (selected) MaterialTheme.colorScheme.secondary else Color.White.copy(alpha = 0.12f))
                         .pressScale(onClick = { onFilterSelected(category.filter) }),
                     contentAlignment = Alignment.Center
                 ) {

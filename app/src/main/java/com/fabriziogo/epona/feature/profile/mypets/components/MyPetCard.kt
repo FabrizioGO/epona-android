@@ -81,7 +81,7 @@ fun MyPetCard(
                 Text(
                     text = listOfNotNull(
                         pet.breed,
-                        pet.species.label,
+                        stringResource(pet.species.label),
                         pet.color
                     ).joinToString(" · "),
                     style = EponaTypography.bodySmall,

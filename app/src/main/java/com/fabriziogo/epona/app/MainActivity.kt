@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val deepLinkAlertId = intent?.getStringExtra("alert_id")
 
         setContent {
-            EponaTheme {
+            EponaTheme(dynamicColor = false) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

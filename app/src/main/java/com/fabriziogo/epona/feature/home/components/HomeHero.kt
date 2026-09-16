@@ -18,6 +18,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -60,7 +61,7 @@ fun HomeHero(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(EponaTealDark)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
             .padding(horizontal = 20.dp)
             .padding(top = 8.dp, bottom = 24.dp)
@@ -118,7 +119,7 @@ fun HomeHero(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
             containerColor = Color.White,
-            contentColor = EponaTealDark
+            contentColor = MaterialTheme.colorScheme.primaryContainer
         )
 
         Spacer(Modifier.height(20.dp))
@@ -154,7 +155,7 @@ private fun HeroIconButton(
                 }
             }
         ) {
-            Icon(icon, contentDescription = contentDescription, tint = EponaTealDark)
+            Icon(icon, contentDescription = contentDescription, tint = MaterialTheme.colorScheme.primaryContainer)
         }
     }
 }
