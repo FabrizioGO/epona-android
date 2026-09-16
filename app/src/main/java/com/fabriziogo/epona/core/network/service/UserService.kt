@@ -29,6 +29,11 @@ class UserService @Inject constructor(
     ): UserDto =
         table.update(update) {
             filter { eq("id", userId) }
+            // Without this the request goes out as return=minimal, PostgREST answers
+            // with an empty body, and decodeSingle fails with
+            // "Expected start of the array '[', but had 'EOF' instead".
+            // Same pattern as PetService.updatePet.
+            select()
         }.decodeSingle()
 
     suspend fun updateLocation(

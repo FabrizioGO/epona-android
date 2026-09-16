@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -32,6 +33,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.BuildConfig
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
+import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.feature.profile.components.ProfileHeader
 import com.fabriziogo.epona.feature.profile.components.SettingsItem
 import com.fabriziogo.epona.feature.profile.components.SettingsSection
@@ -40,6 +43,7 @@ import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.EponaLargeTopAppBar
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,9 +58,33 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState()
     )
+
+    // Owned by the screen rather than by the stateless header below, so previews
+    // of the header do not need an ActivityResultRegistry to render. Single slot:
+    // a profile holds one avatar, and the single-select contract covers it.
+    val avatarPicker = rememberMediaPickerState(
+        remainingSlots = 1,
+        onUrisPicked = { uris ->
+            uris.firstOrNull()?.let { viewModel.onEvent(ProfileEvent.AvatarPicked(it)) }
+        },
+        onCameraDenied = {
+            scope.launch { snackbarHostState.showSnackbar(cameraDeniedMessage) }
+        }
+    )
+
+    if (avatarPicker.isSheetVisible) {
+        PhotoSourceSheet(
+            onDismiss = avatarPicker::dismiss,
+            onGalleryClick = avatarPicker::pickFromGallery,
+            onCameraClick = avatarPicker::takePhoto,
+            isCameraAvailable = avatarPicker.isCameraAvailable
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -115,7 +143,10 @@ fun ProfileScreen(
             ProfileHeader(
                 displayName = state.user?.displayName ?: stringResource(R.string.profile_default_name),
                 email = state.user?.email ?: "",
-                avatarUrl = state.user?.avatarUrl
+                avatarUrl = state.user?.avatarUrl,
+                previewUri = state.avatarPreviewUri,
+                isUploading = state.isUploadingAvatar,
+                onAvatarClick = avatarPicker::open
             )
 
             Spacer(Modifier.height(20.dp))

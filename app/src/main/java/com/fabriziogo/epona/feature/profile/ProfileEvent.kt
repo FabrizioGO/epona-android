@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile
 
+import android.net.Uri
+
 sealed interface ProfileEvent {
     data object MyPetsClicked : ProfileEvent
     data object MyAlertsClicked : ProfileEvent
@@ -8,6 +10,7 @@ sealed interface ProfileEvent {
     data object SignOutClicked : ProfileEvent
     data object SignOutConfirmed : ProfileEvent
     data object SignOutDismissed : ProfileEvent
+    data class AvatarPicked(val uri: Uri) : ProfileEvent
     data object Refresh : ProfileEvent
     data object ErrorDismissed : ProfileEvent
 }

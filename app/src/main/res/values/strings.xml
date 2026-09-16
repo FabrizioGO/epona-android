@@ -220,6 +220,7 @@
     <string name="profile_stat_sightings">Sightings</string>
     <string name="profile_version" translatable="false">Epona v%s</string>
     <string name="profile_default_name">User</string>
+    <string name="profile_change_photo">Change profile photo</string>
 
     <!-- My Alerts -->
     <string name="my_alerts_empty_title">No alerts yet</string>
