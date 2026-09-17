@@ -15,7 +15,8 @@
     <string name="auth_email_placeholder">tu@ejemplo.com</string>
     <string name="auth_password">Contraseña</string>
     <string name="auth_confirm_password">Confirmar Contraseña</string>
-    <string name="auth_full_name">Nombre Completo</string>
+    <string name="auth_first_name">Nombre</string>
+    <string name="auth_last_name">Apellido</string>
     <string name="sighting_use_current">Usar mi ubicación actual</string>
     <string name="sighting_note_title">Nota</string>
     <string name="notifications_title">Alertas</string>
@@ -83,7 +84,6 @@
     <string name="home_filter_all">Todos</string>
     <string name="home_filter_lost">Perdidos</string>
     <string name="home_filter_found">Encontrados</string>
-    <string name="auth_full_name_placeholder">Como los demas te verán</string>
     <string name="auth_forgot_password">¿Olvidó su contraseña?</string>
     <string name="home_radius_info">Alrededor de %d km · %d perdidos · %d encontrados</string>
     <string name="home_empty_title">No hay alertas cerca</string>

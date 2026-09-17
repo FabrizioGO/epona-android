@@ -1,11 +1,13 @@
 package com.fabriziogo.epona.feature.auth.register
 
 data class RegisterUiState(
-    val displayName: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
-    val nameError: String? = null,
+    val firstNameError: String? = null,
+    val lastNameError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
     val confirmPasswordError: String? = null,

@@ -1,7 +1,8 @@
 package com.fabriziogo.epona.feature.auth.register
 
 sealed interface RegisterEvent {
-    data class NameChanged(val name: String) : RegisterEvent
+    data class FirstNameChanged(val name: String) : RegisterEvent
+    data class LastNameChanged(val name: String) : RegisterEvent
     data class EmailChanged(val email: String) : RegisterEvent
     data class PasswordChanged(val password: String) : RegisterEvent
     data class ConfirmPasswordChanged(val password: String) : RegisterEvent

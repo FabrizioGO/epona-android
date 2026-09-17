@@ -33,8 +33,11 @@ class RegisterViewModel @Inject constructor(
 
     fun onEvent(event: RegisterEvent) {
         when (event) {
-            is RegisterEvent.NameChanged -> {
-                _state.update { it.copy(displayName = event.name, nameError = null) }
+            is RegisterEvent.FirstNameChanged -> {
+                _state.update { it.copy(firstName = event.name, firstNameError = null) }
+            }
+            is RegisterEvent.LastNameChanged -> {
+                _state.update { it.copy(lastName = event.name, lastNameError = null) }
             }
             is RegisterEvent.EmailChanged -> {
                 _state.update { it.copy(email = event.email, emailError = null) }
@@ -65,7 +68,8 @@ class RegisterViewModel @Inject constructor(
 
     private fun signUpWithEmail() {
         val s = _state.value
-        val nameErr = validateDisplayName(s.displayName)
+        val firstNameErr = validateDisplayName(s.firstName)
+        val lastNameErr = validateDisplayName(s.lastName)
         val emailErr = validateEmail(s.email)
         val passErr = validatePassword(s.password)
         val confirmErr = when {
@@ -74,10 +78,13 @@ class RegisterViewModel @Inject constructor(
             else -> null
         }
 
-        if (nameErr != null || emailErr != null || passErr != null || confirmErr != null) {
+        if (firstNameErr != null || lastNameErr != null || emailErr != null ||
+            passErr != null || confirmErr != null
+        ) {
             _state.update {
                 it.copy(
-                    nameError = nameErr,
+                    firstNameError = firstNameErr,
+                    lastNameError = lastNameErr,
                     emailError = emailErr,
                     passwordError = passErr,
                     confirmPasswordError = confirmErr
@@ -86,9 +93,11 @@ class RegisterViewModel @Inject constructor(
             return
         }
 
+        val displayName = "${s.firstName.trim()} ${s.lastName.trim()}".trim()
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            signUp(s.email, s.password, s.displayName)
+            signUp(s.email, s.password, displayName)
                 .onSuccess { result ->
                     _state.update { it.copy(isLoading = false) }
                     when (result) {
