@@ -412,3 +412,9 @@ enabled = true
 # declarative_schema_path = "./schemas"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+[functions.push-notification]
+enabled = true
+# Authenticated by the x-epona-push-key header instead: JWT verification here would
+# accept the anon key, which ships inside the Android APK.
+verify_jwt = false

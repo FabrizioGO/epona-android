@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DoneAll
 import androidx.compose.material.icons.outlined.Notifications
@@ -85,28 +87,33 @@ fun NotificationsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
 
-        when {
-            state.isLoading -> {
-                LoadingIndicator(modifier = Modifier.padding(padding))
-            }
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { viewModel.onEvent(NotificationsEvent.Refresh) },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            when {
+                state.isLoading -> {
+                    LoadingIndicator()
+                }
 
-            state.notifications.isEmpty() -> {
-                EmptyState(
-                    icon = Icons.Outlined.Notifications,
-                    title = stringResource(R.string.notifications_empty_title),
-                    description = stringResource(R.string.notifications_empty_desc),
-                    modifier = Modifier.padding(padding)
-                )
-            }
+                // Inside the refresh box, not beside it: an empty cache is the one
+                // state where the user most wants to pull, and it was the only state
+                // where pulling did nothing.
+                state.notifications.isEmpty() -> {
+                    EmptyState(
+                        icon = Icons.Outlined.Notifications,
+                        title = stringResource(R.string.notifications_empty_title),
+                        description = stringResource(R.string.notifications_empty_desc),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    )
+                }
 
-            else -> {
-                PullToRefreshBox(
-                    isRefreshing = state.isRefreshing,
-                    onRefresh = { viewModel.onEvent(NotificationsEvent.Refresh) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                ) {
+                else -> {
                     LazyColumn(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {

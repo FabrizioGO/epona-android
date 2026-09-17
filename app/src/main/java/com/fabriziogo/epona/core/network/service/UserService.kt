@@ -58,6 +58,14 @@ class UserService @Inject constructor(
         }
     }
 
+    suspend fun updateLocale(userId: String, locale: String) {
+        table.update(
+            UserUpdateDto(locale = locale)
+        ) {
+            filter { eq("id", userId) }
+        }
+    }
+
     suspend fun getUserStats(userId: String): UserStatsDto =
         supabase.client.postgrest.rpc(
             "get_user_stats",

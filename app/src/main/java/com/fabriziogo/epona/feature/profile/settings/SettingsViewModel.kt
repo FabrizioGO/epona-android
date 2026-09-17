@@ -52,10 +52,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onNotificationsToggle(enabled: Boolean) {
-        _state.update { it.copy(notificationsEnabled = enabled) }
-    }
-
     fun onErrorDismissed() {
         _state.update { it.copy(error = null) }
     }

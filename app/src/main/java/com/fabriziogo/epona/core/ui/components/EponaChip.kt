@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.core.ui.components
 
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon

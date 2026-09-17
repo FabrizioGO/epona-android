@@ -36,7 +36,6 @@ import com.fabriziogo.epona.feature.sighting.navigation.sightingScreens
 fun EponaNavHost(
     navController: NavHostController,
     isAuthenticated: Boolean,
-    deepLinkAlertId: String?,
     onLaunchGoogleSignIn: () -> Unit,
     onShareAlert: (String, String) -> Unit,
     onDialPhone: (String) -> Unit,

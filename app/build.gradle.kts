@@ -89,6 +89,9 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
+    // Firebase versions come from the BOM below; never pin a Firebase artifact by hand.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -97,8 +100,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
     implementation(libs.timber)
     implementation(libs.material)
 }

@@ -13,18 +13,15 @@ class GetNotificationsUseCase @Inject constructor(
     private val authRepo: AuthRepository,
     private val notifRepo: NotificationRepository
 ) {
+    /**
+     * Restarts on every sign-in and sign-out. The user id is resolved inside the
+     * repository, behind `awaitReady()`: reading the non-suspend `currentUserId` here
+     * instead is not ordered against `observeAuthState()` emitting true, so a cold start
+     * could see null and yield an empty list forever.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<List<Notification>> =
         authRepo.observeAuthState().flatMapLatest { isAuthenticated ->
-            if (isAuthenticated) {
-                val userId = authRepo.currentUserId
-                if (userId != null) {
-                    notifRepo.observeNotifications(userId)
-                } else {
-                    flowOf(emptyList())
-                }
-            } else {
-                flowOf(emptyList())
-            }
+            if (isAuthenticated) notifRepo.observeNotifications() else flowOf(emptyList())
         }
 }

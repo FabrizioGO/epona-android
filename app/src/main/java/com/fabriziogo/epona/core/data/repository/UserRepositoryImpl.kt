@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.core.data.repository
 
+import android.content.Context
+import androidx.core.os.ConfigurationCompat
 import com.fabriziogo.epona.core.data.mapper.toDomain
 import com.fabriziogo.epona.core.data.mapper.toEntity
 import com.fabriziogo.epona.core.data.media.PhotoUploader
@@ -12,19 +14,28 @@ import com.fabriziogo.epona.core.network.dto.UserUpdateDto
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.StorageService
 import com.fabriziogo.epona.core.network.service.UserService
+import com.google.android.gms.tasks.Task
+import com.google.firebase.messaging.FirebaseMessaging
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val userService: UserService,
     private val photoUploader: PhotoUploader,
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val firebaseMessaging: FirebaseMessaging,
+    @ApplicationContext private val context: Context
 ) : UserRepository {
 
     private suspend fun currentUserId(): String = authService.requireUserId()
@@ -91,6 +102,39 @@ class UserRepositoryImpl @Inject constructor(
             userService.updateFcmToken(userId, token)
             userDao.updateFcmToken(userId, token)
         }
+
+    override suspend fun syncFcmToken(): Result<Unit> = runCatching {
+        val userId = currentUserId()
+        val token = firebaseMessaging.token.await()
+        userService.updateFcmToken(userId, token)
+        userDao.updateFcmToken(userId, token)
+    }
+
+    override suspend fun syncLocale(): Result<Unit> = runCatching {
+        userService.updateLocale(currentUserId(), deviceLanguage())
+    }
+
+    /**
+     * The app's own resolved language rather than the raw system default, so a
+     * per-app language override is honoured. Bare subtag, not a full tag: the server
+     * matches "es", not "es-419".
+     */
+    private fun deviceLanguage(): String =
+        ConfigurationCompat.getLocales(context.resources.configuration)
+            .get(0)
+            ?.language
+            ?.takeIf { it.isNotBlank() }
+            ?: Locale.getDefault().language
+
+    /**
+     * Play Services Tasks, awaited the way [LocationRepositoryImpl] does it -- the
+     * project does not depend on kotlinx-coroutines-play-services.
+     */
+    private suspend fun <T> Task<T>.await(): T = suspendCancellableCoroutine { cont ->
+        addOnSuccessListener { cont.resume(it) }
+        addOnFailureListener { cont.resumeWithException(it) }
+        addOnCanceledListener { cont.cancel() }
+    }
 
     override suspend fun uploadAvatar(localUri: String): Result<String> = runCatching {
         photoUploader.uploadAll(StorageService.BUCKET_AVATARS, listOf(localUri)).first()

@@ -31,6 +31,7 @@ import com.fabriziogo.epona.feature.profile.components.SettingsSection
 import com.fabriziogo.epona.feature.profile.settings.components.RadiusSlider
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.core.ui.permission.rememberNotificationPermissionState
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +43,7 @@ fun SettingsScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val notificationPermission = rememberNotificationPermissionState()
 
     LaunchedEffect(state.error) {
         state.error?.let {
@@ -101,8 +103,18 @@ fun SettingsScreen(
                     },
                     trailingContent = {
                         Switch(
-                            checked = state.notificationsEnabled,
-                            onCheckedChange = { viewModel.onNotificationsToggle(it) }
+                            checked = notificationPermission.isGranted,
+                            // The app cannot grant or revoke this itself; both directions
+                            // are a trip to the system. `requestOrOpenAppSettings` shows
+                            // the dialog while the system still will, and falls through
+                            // to the settings page once it will not.
+                            onCheckedChange = { wantsOn ->
+                                if (wantsOn) {
+                                    notificationPermission.requestOrOpenAppSettings()
+                                } else {
+                                    notificationPermission.openAppSettings()
+                                }
+                            }
                         )
                     }
                 )

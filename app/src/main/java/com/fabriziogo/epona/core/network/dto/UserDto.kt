@@ -32,7 +32,9 @@ data class UserUpdateDto(
     @SerialName("alert_radius_km")
     val alertRadiusKm: Int? = null,
     @SerialName("fcm_token")
-    val fcmToken: String? = null
+    val fcmToken: String? = null,
+    /** BCP-47 language subtag ("en", "es"). Rendered into notification text by the triggers. */
+    val locale: String? = null
 )
 
 /**

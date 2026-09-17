@@ -20,10 +20,13 @@ import com.fabriziogo.epona.app.navigation.rememberEponaAppState
 import com.fabriziogo.epona.feature.detail.navigation.navigateToDetail
 import com.fabriziogo.epona.core.ui.components.EponaNavigationBar
 import com.fabriziogo.epona.core.ui.components.NavBarItem
+import com.fabriziogo.epona.core.ui.permission.RequestNotificationPermissionOnceSignedIn
+import com.fabriziogo.epona.core.ui.permission.rememberNotificationPermissionState
 
 @Composable
 fun EponaApp(
     deepLinkAlertId: String?,
+    onDeepLinkHandled: () -> Unit,
     onLaunchGoogleSignIn: () -> Unit,
     onShareAlert: (String, String) -> Unit,
     onDialPhone: (String) -> Unit,
@@ -34,11 +37,18 @@ fun EponaApp(
     val authState by appViewModel.authState.collectAsStateWithLifecycle()
     val unreadCount by appViewModel.unreadCount.collectAsStateWithLifecycle()
 
-    // Handle deep link on first composition
-    LaunchedEffect(deepLinkAlertId) {
-        if (deepLinkAlertId != null && authState) {
-            appState.navController.navigateToDetail(deepLinkAlertId)
-        }
+    val notificationPermission = rememberNotificationPermissionState()
+    RequestNotificationPermissionOnceSignedIn(notificationPermission, authState)
+
+    // Keyed on the session too. Snapshotting `authState` once would miss it: at cold
+    // start that is the `false` initial value of a WhileSubscribed StateFlow, so a tap
+    // that launched the app from dead would silently drop the navigation. Re-keying
+    // makes the deep link wait for the session instead.
+    LaunchedEffect(deepLinkAlertId, authState) {
+        val alertId = deepLinkAlertId ?: return@LaunchedEffect
+        if (!authState) return@LaunchedEffect
+        appState.navController.navigateToDetail(alertId)
+        onDeepLinkHandled()
     }
 
     Scaffold(
@@ -79,7 +89,6 @@ fun EponaApp(
         EponaNavHost(
             navController = appState.navController,
             isAuthenticated = authState,
-            deepLinkAlertId = deepLinkAlertId,
             onLaunchGoogleSignIn = onLaunchGoogleSignIn,
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone,

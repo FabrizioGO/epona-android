@@ -9,32 +9,27 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    /**
+     * The alert a notification tap asked for, or null.
+     *
+     * Compose state rather than a value read once in [onCreate]: the activity is
+     * `singleTop`, so a tap while the app is already running arrives at [onNewIntent] --
+     * long after the composition was built around whatever the original intent held.
+     */
+    private var deepLinkAlertId by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // No scrim on the status bar in either theme: screens such as the alert detail
@@ -47,8 +42,7 @@ class MainActivity : ComponentActivity() {
             )
         )
 
-        // Handle deep link from notification
-        val deepLinkAlertId = intent?.getStringExtra("alert_id")
+        deepLinkAlertId = intent?.consumeAlertId()
 
         setContent {
             EponaTheme(dynamicColor = false) {
@@ -58,6 +52,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     EponaApp(
                         deepLinkAlertId = deepLinkAlertId,
+                        onDeepLinkHandled = { deepLinkAlertId = null },
                         onLaunchGoogleSignIn = { launchGoogleSignIn() },
                         onShareAlert = { text, url -> shareAlert(text, url) },
                         onDialPhone = { phone -> dialPhone(phone) }
@@ -69,20 +64,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        // Handle notification tap when app is already open
-        val alertId = intent.getStringExtra("alert_id")
-        if (alertId != null) {
-            Timber.d("Deep link received: alert_id=$alertId")
-            // Navigation handled via EponaAppState
-        }
+        // Keeps getIntent() in step with what was actually delivered, so a later
+        // recreation does not resurrect the intent this activity was started with.
+        setIntent(intent)
+        intent.consumeAlertId()?.let { deepLinkAlertId = it }
     }
+
+    /**
+     * Reads the extra and strips it. Without the strip, every configuration change
+     * re-runs onCreate against the same Intent and navigates to the alert all over again.
+     */
+    private fun Intent.consumeAlertId(): String? =
+        getStringExtra(EXTRA_ALERT_ID)?.also { removeExtra(EXTRA_ALERT_ID) }
 
     private fun launchGoogleSignIn() {
         // TODO: Implement Credential Manager / Google Sign-In
         // 1. Create GoogleSignInRequest via CredentialManager
         // 2. Launch sign-in flow
         // 3. Pass idToken back to AuthViewModel
-        Timber.d("Google Sign-In launched")
     }
 
     private fun shareAlert(text: String, url: String) {
@@ -100,60 +99,9 @@ class MainActivity : ComponentActivity() {
         }
         startActivity(dialIntent)
     }
-}
 
-@PreviewScreenSizes
-@Composable
-fun EponaApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
-            }
-        }
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = "Android",
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
-    }
-}
-
-enum class AppDestinations(
-    val label: String,
-    val icon: ImageVector,
-) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EponaTheme {
-        Greeting("Android")
+    companion object {
+        const val EXTRA_ALERT_ID = "alert_id"
+        const val EXTRA_NOTIFICATION_TYPE = "notification_type"
     }
 }

@@ -5,14 +5,24 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
 
-    fun observeNotifications(userId: String): Flow<List<Notification>>
+    /**
+     * The signed-in user's notifications, newest first, kept fresh from the server.
+     *
+     * Reads Room, refreshes on first collection, and re-fetches whenever the realtime
+     * channel reports a change. Emits an empty list rather than failing when there is
+     * no session: three UI surfaces collect the unread count app-wide and none of them
+     * can survive an exception on this flow.
+     */
+    fun observeNotifications(): Flow<List<Notification>>
 
-    fun observeUnreadCount(userId: String): Flow<Int>
+    /**
+     * Unread count straight from Room. Deliberately does *not* open a realtime channel
+     * or hit the network -- see the KDoc on the implementation.
+     */
+    fun observeUnreadCount(): Flow<Int>
 
-    suspend fun getNotifications(
-        limit: Int = 50,
-        offset: Int = 0
-    ): Result<List<Notification>>
+    /** Pulls the server list into Room. For pull-to-refresh and push-triggered sync. */
+    suspend fun refreshNotifications(): Result<Unit>
 
     suspend fun markAllAsRead(): Result<Unit>
 

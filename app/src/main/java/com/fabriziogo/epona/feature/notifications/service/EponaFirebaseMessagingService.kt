@@ -7,7 +7,9 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.app.MainActivity
 import com.fabriziogo.epona.core.domain.repository.UserRepository
+import com.fabriziogo.epona.core.domain.usecase.notification.RefreshNotificationsUseCase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,6 +26,14 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var userRepository: UserRepository
 
+    @Inject
+    lateinit var refreshNotifications: RefreshNotificationsUseCase
+
+    /**
+     * Deliberately not cancelled in `onDestroy`. The work has to outlive the service
+     * instance -- the system tears the service down as soon as `onMessageReceived`
+     * returns, and cancelling here would abort the refresh mid-flight.
+     */
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     companion object {
@@ -50,6 +61,18 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
 
         createNotificationChannel()
         showNotification(title, body, alertId, type)
+
+        // The tray is only half of it. The in-app list and all three unread badges read
+        // Room, and while the app is backgrounded nothing else writes it -- the realtime
+        // channel only exists while the notifications screen is collecting.
+        //
+        // A re-fetch rather than an insert from the payload: the payload carries no row
+        // id or created_at, so an insert would need a synthetic primary key and would
+        // duplicate the row on the next refresh.
+        serviceScope.launch {
+            refreshNotifications()
+                .onFailure { Timber.w(it, "Push-triggered notification refresh failed") }
+        }
     }
 
     private fun createNotificationChannel() {
@@ -73,10 +96,17 @@ class EponaFirebaseMessagingService : FirebaseMessagingService() {
         alertId: String?,
         type: String
     ) {
-        val intent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            alertId?.let { putExtra("alert_id", it) }
-            putExtra("notification_type", type)
+        // Explicit component, not `getLaunchIntentForPackage`. That returns an
+        // ACTION_MAIN + CATEGORY_LAUNCHER intent, and when the task already exists the
+        // system treats it as "tapped the launcher icon": it brings the task forward and
+        // drops the extras, so `alert_id` never reaches onNewIntent. Fixing onNewIntent
+        // without this fixes nothing.
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+            alertId?.let { putExtra(MainActivity.EXTRA_ALERT_ID, it) }
+            putExtra(MainActivity.EXTRA_NOTIFICATION_TYPE, type)
         }
 
         val pendingIntent = PendingIntent.getActivity(

@@ -15,15 +15,6 @@ class ObserveUnreadCountUseCase @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Int> =
         authRepo.observeAuthState().flatMapLatest { isAuthenticated ->
-            if (isAuthenticated) {
-                val userId = authRepo.currentUserId
-                if (userId != null) {
-                    notifRepo.observeUnreadCount(userId)
-                } else {
-                    flowOf(0)
-                }
-            } else {
-                flowOf(0)
-            }
+            if (isAuthenticated) notifRepo.observeUnreadCount() else flowOf(0)
         }
 }
