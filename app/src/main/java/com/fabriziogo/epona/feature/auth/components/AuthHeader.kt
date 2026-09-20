@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
@@ -36,7 +39,11 @@ fun AuthHeader(
                 .background(Color.White.copy(alpha = 0.18f)),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "🐾", style = EponaTypography.headlineSmall)
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = null,
+                modifier = Modifier.size(56.dp)
+            )
         }
 
         Spacer(Modifier.height(20.dp))
