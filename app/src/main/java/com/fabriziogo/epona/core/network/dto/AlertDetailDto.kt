@@ -32,7 +32,7 @@ data class AlertDetailDto(
     @SerialName("pet_id")
     val petId: String,
     @SerialName("pet_name")
-    val petName: String,
+    val petName: String? = null,
     val species: String,
     val breed: String? = null,
     val color: String? = null,
@@ -44,6 +44,8 @@ data class AlertDetailDto(
     val petDescription: String? = null,
     @SerialName("pet_photos")
     val petPhotos: List<String> = emptyList(),
+    @SerialName("pet_owner_id")
+    val petOwnerId: String? = null,
     @SerialName("owner_id")
     val ownerId: String,
     @SerialName("owner_name")

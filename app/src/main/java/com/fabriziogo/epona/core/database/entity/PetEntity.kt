@@ -24,10 +24,15 @@ data class PetEntity(
     @PrimaryKey
     val id: String,
 
+    // Nullable since the found-pet flow caches ownerless strays. SQLite does not
+    // enforce a foreign key whose child value is NULL, so the FK above stays.
+    // PetDao.observeMyPets/getMyPets use WHERE owner_id = :ownerId, which never
+    // matches NULL — ownerless pets stay out of My Pets by construction.
     @ColumnInfo(name = "owner_id")
-    val ownerId: String,
+    val ownerId: String?,
 
-    val name: String,
+    @ColumnInfo(name = "name")
+    val name: String?,
 
     val species: String = "dog",
 

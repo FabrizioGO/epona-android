@@ -30,6 +30,7 @@ import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.SightingCard
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -58,7 +59,7 @@ fun AlertPreviewSheet(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = pet.name,
+                        text = petDisplayName(pet),
                         style = EponaTypography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )

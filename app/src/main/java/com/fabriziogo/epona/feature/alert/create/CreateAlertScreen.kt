@@ -24,20 +24,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.AlertType
+import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.feature.alert.create.steps.AlertTypeStep
 import com.fabriziogo.epona.feature.alert.create.steps.ContactReviewStep
+import com.fabriziogo.epona.feature.alert.create.steps.FoundPetStep
+import com.fabriziogo.epona.feature.alert.create.steps.LocationStep
+import com.fabriziogo.epona.feature.alert.create.steps.MatchesStep
 import com.fabriziogo.epona.feature.alert.create.steps.PetSelectionStep
-import com.fabriziogo.epona.feature.alert.create.steps.PhotoLocationStep
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
+import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,17 +53,39 @@ fun CreateAlertScreen(
     onNavigateBack: () -> Unit,
     onNavigateToAddPet: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
+    onNavigateToMatch: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateAlertViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
 
     // Asked when the user reaches for their location, not when the wizard opens.
     val locationPermission = rememberLocationPermissionState(
         onGranted = { viewModel.onEvent(CreateAlertEvent.UseCurrentLocation) },
         onDenied = { viewModel.onEvent(CreateAlertEvent.LocationPermissionDenied) }
     )
+
+    // Owned by the screen rather than by FoundPetStep, so previews of the step
+    // do not need an ActivityResultRegistry to render.
+    val photoPicker = rememberMediaPickerState(
+        remainingSlots = MAX_PHOTOS_PER_ENTITY - state.foundPet.photos.size,
+        onUrisPicked = { uris -> viewModel.onEvent(CreateAlertEvent.FoundPhotosPicked(uris)) },
+        onCameraDenied = {
+            scope.launch { snackbarHostState.showSnackbar(cameraDeniedMessage) }
+        }
+    )
+
+    if (photoPicker.isSheetVisible) {
+        PhotoSourceSheet(
+            onDismiss = photoPicker::dismiss,
+            onGalleryClick = photoPicker::pickFromGallery,
+            onCameraClick = photoPicker::takePhoto,
+            isCameraAvailable = photoPicker.isCameraAvailable
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -64,6 +94,8 @@ fun CreateAlertScreen(
                 CreateAlertNavEvent.NavigateToAddPet -> onNavigateToAddPet()
                 is CreateAlertNavEvent.NavigateToSuccess ->
                     onNavigateToSuccess(event.alertId)
+                is CreateAlertNavEvent.NavigateToMatch ->
+                    onNavigateToMatch(event.alertId)
             }
         }
     }
@@ -124,30 +156,48 @@ fun CreateAlertScreen(
                             viewModel.onEvent(CreateAlertEvent.AlertTypeSelected(it))
                         }
                     )
-                    2 -> PetSelectionStep(
-                        pets = state.myPets,
-                        selectedPet = state.selectedPet,
-                        isLoading = state.isLoadingPets,
-                        onPetSelected = {
-                            viewModel.onEvent(CreateAlertEvent.PetSelected(it))
-                        },
-                        onAddNewPet = {
-                            viewModel.onEvent(CreateAlertEvent.AddNewPetClicked)
-                        }
-                    )
-                    3 -> PhotoLocationStep(
-                        photoUris = state.photoUris,
+                    2 -> if (state.alertType == AlertType.LOST) {
+                        PetSelectionStep(
+                            pets = state.myPets,
+                            selectedPet = state.selectedPet,
+                            isLoading = state.isLoadingPets,
+                            onPetSelected = {
+                                viewModel.onEvent(CreateAlertEvent.PetSelected(it))
+                            },
+                            onAddNewPet = {
+                                viewModel.onEvent(CreateAlertEvent.AddNewPetClicked)
+                            }
+                        )
+                    } else {
+                        FoundPetStep(
+                            form = state.foundPet,
+                            onSpeciesChanged = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPetSpeciesChanged(it))
+                            },
+                            onBreedChanged = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPetBreedChanged(it))
+                            },
+                            onColorChanged = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPetColorChanged(it))
+                            },
+                            onSizeChanged = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPetSizeChanged(it))
+                            },
+                            onDescriptionChanged = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPetDescriptionChanged(it))
+                            },
+                            onAddPhotosClick = { photoPicker.open() },
+                            onPhotoRemove = {
+                                viewModel.onEvent(CreateAlertEvent.FoundPhotoRemoved(it))
+                            }
+                        )
+                    }
+                    3 -> LocationStep(
                         location = state.location,
                         address = state.address,
                         description = state.description,
                         isLoadingLocation = state.isLoadingLocation,
                         locationError = state.locationError,
-                        onPhotoAdded = {
-                            viewModel.onEvent(CreateAlertEvent.PhotoAdded(it))
-                        },
-                        onPhotoRemoved = {
-                            viewModel.onEvent(CreateAlertEvent.PhotoRemoved(it))
-                        },
                         onUseCurrentLocation = {
                             if (locationPermission.isGranted) {
                                 viewModel.onEvent(CreateAlertEvent.UseCurrentLocation)
@@ -162,11 +212,28 @@ fun CreateAlertScreen(
                             viewModel.onEvent(CreateAlertEvent.DescriptionChanged(it))
                         }
                     )
-                    4 -> ContactReviewStep(
+                    4 -> MatchesStep(
+                        matches = state.matches,
+                        isLoading = state.isLoadingMatches,
+                        error = state.matchesError,
+                        lookingFor = if (state.alertType == AlertType.LOST) {
+                            AlertType.FOUND
+                        } else {
+                            AlertType.LOST
+                        },
+                        onMatchClick = {
+                            viewModel.onEvent(CreateAlertEvent.MatchSelected(it))
+                        }
+                    )
+                    5 -> ContactReviewStep(
                         phone = state.contactPhone,
                         reward = state.reward,
                         alertType = state.alertType,
-                        petName = state.selectedPet?.name ?: "",
+                        petName = if (state.alertType == AlertType.LOST) {
+                            state.selectedPet?.name ?: ""
+                        } else {
+                            stringResource(state.foundPet.species.foundLabel)
+                        },
                         address = state.address,
                         onPhoneChanged = {
                             viewModel.onEvent(CreateAlertEvent.PhoneChanged(it))
@@ -193,7 +260,13 @@ fun CreateAlertScreen(
                 }
                 if (state.currentStep == state.totalSteps) {
                     EponaFilledButton(
-                        text = stringResource(R.string.create_publish),
+                        text = stringResource(
+                            if (state.alertType == AlertType.FOUND) {
+                                R.string.create_found_publish
+                            } else {
+                                R.string.create_publish
+                            }
+                        ),
                         onClick = { viewModel.onEvent(CreateAlertEvent.PublishClicked) },
                         loading = state.isSubmitting,
                         enabled = state.canProceed,

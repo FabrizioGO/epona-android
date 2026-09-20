@@ -3,7 +3,7 @@ package com.fabriziogo.epona.core.domain.model
 data class Pet(
     val id: String = "",
     val ownerId: String = "",
-    val name: String,
+    val name: String = "",
     val species: Species = Species.DOG,
     val breed: String? = null,
     val color: String? = null,

@@ -37,6 +37,7 @@ import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.RewardBadge
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.components.emoji
 import com.fabriziogo.epona.core.ui.components.formatDistance
 import com.fabriziogo.epona.core.ui.extensions.pressScale
@@ -69,7 +70,7 @@ fun AlertGridCard(
         if (pet.photoUrls.isNotEmpty()) {
             AsyncImage(
                 model = pet.photoUrls.first(),
-                contentDescription = pet.name,
+                contentDescription = petDisplayName(pet),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -122,7 +123,7 @@ fun AlertGridCard(
                 .padding(10.dp)
         ) {
             Text(
-                text = pet.name,
+                text = petDisplayName(pet),
                 style = EponaTypography.titleMedium,
                 color = Color.White,
                 maxLines = 1,

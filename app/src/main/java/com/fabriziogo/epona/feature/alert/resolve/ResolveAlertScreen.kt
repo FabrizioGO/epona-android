@@ -53,7 +53,10 @@ fun ResolveAlertScreen(
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            stringResource(R.string.resolve_success_message, state.petName),
+            stringResource(
+                R.string.resolve_success_message,
+                state.petName.ifBlank { stringResource(R.string.resolve_default_pet_name) }
+            ),
             style = EponaTypography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center

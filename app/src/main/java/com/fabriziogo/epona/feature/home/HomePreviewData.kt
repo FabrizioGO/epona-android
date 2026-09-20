@@ -78,13 +78,14 @@ internal val sampleAlerts: List<AlertWithDetails> = listOf(
         color = "Golden",
         address = "Central Park West",
         reward = 100.0,
+
         sightingCount = 7,
         distanceMeters = 320.0
     ),
     previewAlertWithDetails(
         id = "preview-4",
         name = "Coco",
-        species = Species.RABBIT,
+        species = Species.DOG,
         type = AlertType.FOUND,
         breed = null,
         color = "White",

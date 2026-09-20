@@ -13,6 +13,7 @@ import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.network.dto.AlertDetailDto
 import com.fabriziogo.epona.core.network.dto.AlertDto
 import com.fabriziogo.epona.core.network.dto.AlertInsertParams
+import com.fabriziogo.epona.core.network.dto.FoundAlertInsertParams
 import com.fabriziogo.epona.core.network.dto.NearbyAlertDto
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
@@ -35,7 +36,7 @@ fun NearbyAlertDto.toDomain(): AlertWithDetails = AlertWithDetails(
         createdAt = createdAt?.toEpochMillis() ?: 0L
     ),
     pet = Pet(
-        name = petName,
+        name = petName ?: "",
         species = Species.fromValue(species),
         breed = breed,
         color = color,
@@ -64,8 +65,8 @@ fun AlertDetailDto.toDomain(): AlertWithDetails = AlertWithDetails(
     ),
     pet = Pet(
         id = petId,
-        ownerId = ownerId,
-        name = petName,
+        ownerId = petOwnerId ?: "",
+        name = petName ?: "",
         species = Species.fromValue(species),
         breed = breed,
         color = color,
@@ -104,7 +105,7 @@ fun AlertDetailDto.toAlertEntity(): AlertEntity = AlertEntity(
  */
 fun AlertDetailDto.toPetEntity(): PetEntity = PetEntity(
     id = petId,
-    ownerId = ownerId,
+    ownerId = petOwnerId,
     name = petName,
     species = species,
     breed = breed,
@@ -160,6 +161,31 @@ fun Alert.toInsertParams(userId: String): AlertInsertParams = AlertInsertParams(
     description = description,
     reward = reward,
     contactPhone = contactPhone
+)
+
+/**
+ * Params for the create_found_alert RPC, which inserts the ownerless pet and
+ * the FOUND alert in one transaction. The pet carries no id, owner or name;
+ * the alert carries no pet id yet — the server links them.
+ */
+fun toFoundAlertInsertParams(
+    pet: Pet,
+    alert: Alert,
+    userId: String
+): FoundAlertInsertParams = FoundAlertInsertParams(
+    userId = userId,
+    species = pet.species.value,
+    lat = alert.lastSeenLocation.latitude,
+    lng = alert.lastSeenLocation.longitude,
+    breed = pet.breed,
+    color = pet.color,
+    size = pet.size.value,
+    petDescription = pet.description,
+    photoUrls = pet.photoUrls,
+    address = alert.lastSeenAddress,
+    lastSeenAt = null,  // Server will use NOW()
+    alertDescription = alert.description,
+    contactPhone = alert.contactPhone
 )
 
 fun AlertDto.toEntity(

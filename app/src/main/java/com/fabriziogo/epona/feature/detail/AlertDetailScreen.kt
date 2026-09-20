@@ -50,6 +50,7 @@ import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.components.RewardBadge
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +103,8 @@ fun AlertDetailScreen(
     // Resolve confirmation dialog
     if (state.showResolveDialog) {
         ResolveDialog(
-            petName = state.alertDetail?.pet?.name ?: stringResource(R.string.resolve_default_pet_name),
+            petName = state.alertDetail?.pet?.name?.takeIf { it.isNotBlank() }
+                ?: stringResource(R.string.resolve_default_pet_name),
             onConfirm = { viewModel.onEvent(AlertDetailEvent.ResolveConfirmed) },
             onDismiss = { viewModel.onEvent(AlertDetailEvent.ResolveDismissed) }
         )
@@ -273,7 +275,7 @@ internal fun DetailHeaderContent(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = pet.name,
+                    text = petDisplayName(pet),
                     style = EponaTypography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )

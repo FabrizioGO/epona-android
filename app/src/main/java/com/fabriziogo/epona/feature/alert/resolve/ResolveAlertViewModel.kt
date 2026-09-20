@@ -30,7 +30,8 @@ class ResolveAlertViewModel @Inject constructor(
                     _state.update { it.copy(isLoading = false, petName = detail.pet.name) }
                 }
                 .onFailure {
-                    _state.update { it.copy(isLoading = false, petName = "Your pet") }
+                    // Blank so the screen falls back to resolve_default_pet_name.
+                    _state.update { it.copy(isLoading = false, petName = "") }
                 }
         }
     }

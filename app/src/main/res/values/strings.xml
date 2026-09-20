@@ -123,6 +123,19 @@
     <string name="create_ready_summary">%1$s alert for %2$s near %3$s. Your community will be notified instantly.</string>
     <string name="create_ready_summary_no_location">%1$s alert for %2$s. Your community will be notified instantly.</string>
     <string name="create_reward_placeholder" translatable="false">e.g. 50</string>
+    <string name="create_step_found_pet_title">What does the pet look like?</string>
+    <string name="create_step_found_pet_subtitle">Species, appearance and photos help the owner recognize them</string>
+    <string name="create_found_description_placeholder">Collar, markings, size, behavior, condition…</string>
+    <string name="create_step_location_title">Where was the pet?</string>
+    <string name="create_step_location_subtitle">Pin the location so others know where to look</string>
+    <string name="create_step_matches_title">Is this the pet?</string>
+    <string name="create_step_matches_subtitle">These nearby posts could be a match — tap one to see the full post</string>
+    <string name="create_matches_empty_title">No matches nearby</string>
+    <string name="create_matches_empty_desc">Nobody has posted a similar pet nearby yet. Continue to publish your alert.</string>
+    <string name="create_matches_hint">Is this the pet you found? Tap to see the full post and report a sighting</string>
+    <string name="create_matches_hint_lost">Is this your pet? Tap to see the full post</string>
+    <string name="create_matches_none">None of these? Press Continue to publish your alert anyway</string>
+    <string name="create_found_publish">📢 Publish Found Alert</string>
 
     <!-- Alert Detail -->
     <string name="detail_description">Description</string>
@@ -311,9 +324,12 @@
     <!-- Species -->
     <string name="species_dog">Dog</string>
     <string name="species_cat">Cat</string>
-    <string name="species_bird">Bird</string>
-    <string name="species_rabbit">Rabbit</string>
     <string name="species_other">Other</string>
+    <string name="species_dog_found">Found dog</string>
+    <string name="species_cat_found">Found cat</string>
+    <string name="species_bird_found">Found bird</string>
+    <string name="species_rabbit_found">Found rabbit</string>
+    <string name="species_other_found">Found pet</string>
 
     <!-- Pet Size -->
     <string name="size_small">Small</string>

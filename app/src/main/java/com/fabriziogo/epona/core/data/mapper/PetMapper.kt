@@ -11,7 +11,7 @@ import com.fabriziogo.epona.core.network.dto.PetInsertDto
 fun PetDto.toDomain(): Pet = Pet(
     id = id ?: "",
     ownerId = ownerId ?: "",
-    name = name,
+    name = name ?: "",
     species = Species.fromValue(species),
     breed = breed,
     color = color,
@@ -27,7 +27,7 @@ fun PetDto.toDomain(): Pet = Pet(
 
 fun PetDto.toEntity(): PetEntity = PetEntity(
     id = id ?: "",
-    ownerId = ownerId ?: "",
+    ownerId = ownerId,
     name = name,
     species = species,
     breed = breed,
@@ -44,8 +44,8 @@ fun PetDto.toEntity(): PetEntity = PetEntity(
 
 fun PetEntity.toDomain(): Pet = Pet(
     id = id,
-    ownerId = ownerId,
-    name = name,
+    ownerId = ownerId ?: "",
+    name = name ?: "",
     species = Species.fromValue(species),
     breed = breed,
     color = color,
@@ -61,7 +61,7 @@ fun PetEntity.toDomain(): Pet = Pet(
 
 fun Pet.toInsertDto(ownerId: String): PetInsertDto = PetInsertDto(
     ownerId = ownerId,
-    name = name,
+    name = name.takeIf { it.isNotBlank() } ?: "",
     species = species.value,
     breed = breed,
     color = color,
@@ -82,7 +82,7 @@ fun Pet.toInsertDto(ownerId: String): PetInsertDto = PetInsertDto(
 fun Pet.toDto(): PetDto = PetDto(
     id = id.takeIf { it.isNotBlank() },
     ownerId = ownerId.takeIf { it.isNotBlank() },
-    name = name,
+    name = name.takeIf { it.isNotBlank() },
     species = species.value,
     breed = breed,
     color = color,

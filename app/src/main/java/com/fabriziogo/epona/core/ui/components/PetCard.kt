@@ -60,7 +60,7 @@ fun PetCard(
                 if (pet.photoUrls.isNotEmpty()) {
                     AsyncImage(
                         model = pet.photoUrls.first(),
-                        contentDescription = pet.name,
+                        contentDescription = petDisplayName(pet),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(56.dp)
                     )
@@ -81,7 +81,7 @@ fun PetCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = pet.name,
+                        text = petDisplayName(pet),
                         style = EponaTypography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )

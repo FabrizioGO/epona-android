@@ -27,13 +27,15 @@ fun NavGraphBuilder.alertScreens(
     onNavigateBack: () -> Unit,
     onNavigateToAddPet: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
+    onNavigateToMatch: (String) -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     composable(route = CREATE_ALERT_ROUTE) {
         CreateAlertScreen(
             onNavigateBack = onNavigateBack,
             onNavigateToAddPet = onNavigateToAddPet,
-            onNavigateToSuccess = onNavigateToSuccess
+            onNavigateToSuccess = onNavigateToSuccess,
+            onNavigateToMatch = onNavigateToMatch
         )
     }
 

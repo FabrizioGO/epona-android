@@ -31,6 +31,7 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.emoji
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
@@ -66,7 +67,7 @@ fun DetailHero(
         if (pet.photoUrls.isNotEmpty()) {
             AsyncImage(
                 model = pet.photoUrls.first(),
-                contentDescription = pet.name,
+                contentDescription = petDisplayName(pet),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )

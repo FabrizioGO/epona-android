@@ -4,6 +4,7 @@ import com.fabriziogo.epona.core.network.SupabaseProvider
 import com.fabriziogo.epona.core.network.dto.AlertDetailDto
 import com.fabriziogo.epona.core.network.dto.AlertDto
 import com.fabriziogo.epona.core.network.dto.AlertInsertParams
+import com.fabriziogo.epona.core.network.dto.FoundAlertInsertParams
 import com.fabriziogo.epona.core.network.dto.NearbyAlertDto
 import com.fabriziogo.epona.core.network.dto.UserToNotifyDto
 import io.github.jan.supabase.postgrest.postgrest
@@ -66,6 +67,12 @@ class AlertService @Inject constructor(
     suspend fun createAlert(params: AlertInsertParams): AlertDto =
         supabase.client.postgrest.rpc(
             "create_alert",
+            params
+        ).decodeSingle()
+
+    suspend fun createFoundAlert(params: FoundAlertInsertParams): AlertDto =
+        supabase.client.postgrest.rpc(
+            "create_found_alert",
             params
         ).decodeSingle()
 

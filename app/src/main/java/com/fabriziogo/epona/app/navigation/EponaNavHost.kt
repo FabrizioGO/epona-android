@@ -146,6 +146,12 @@ fun EponaNavHost(
                     navOptions { popUpTo(CREATE_ALERT_ROUTE) { inclusive = true } }
                 )
             },
+            onNavigateToMatch = { alertId ->
+                navController.navigateToDetail(
+                    alertId,
+                    navOptions { popUpTo(CREATE_ALERT_ROUTE) { inclusive = true } }
+                )
+            },
             onNavigateToHome = {
                 navController.navigate(HOME_ROUTE) {
                     popUpTo(0) { inclusive = true }

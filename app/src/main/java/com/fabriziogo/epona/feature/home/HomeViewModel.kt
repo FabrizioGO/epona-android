@@ -207,6 +207,7 @@ class HomeViewModel @Inject constructor(
         return byType.filter { details ->
             listOfNotNull(
                 details.pet.name,
+                details.pet.species.value,
                 details.pet.breed,
                 details.pet.color,
                 details.alert.lastSeenAddress

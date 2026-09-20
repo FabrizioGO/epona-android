@@ -8,7 +8,7 @@ data class PetDto(
     val id: String? = null,
     @SerialName("owner_id")
     val ownerId: String? = null,
-    val name: String,
+    val name: String? = null,
     val species: String = "dog",
     val breed: String? = null,
     val color: String? = null,

@@ -3,6 +3,7 @@ package com.fabriziogo.epona.core.domain.repository
 import com.fabriziogo.epona.core.domain.model.Alert
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.Pet
 import kotlinx.coroutines.flow.Flow
 
 interface AlertRepository {
@@ -28,6 +29,13 @@ interface AlertRepository {
     suspend fun getMyAlerts(): Result<List<AlertWithDetails>>
 
     suspend fun createAlert(alert: Alert): Result<Alert>
+
+    /**
+     * Publishes a FOUND alert backed by an ownerless pet row (no owner id, no
+     * name). The pet's photos must already be remote URLs; see
+     * CreateFoundAlertUseCase, which uploads them first.
+     */
+    suspend fun createFoundAlert(pet: Pet, alert: Alert): Result<Alert>
 
     suspend fun resolveAlert(alertId: String): Result<Unit>
 

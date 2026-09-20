@@ -25,7 +25,7 @@ data class NearbyAlertDto(
     @SerialName("distance_meters")
     val distanceMeters: Double = 0.0,
     @SerialName("pet_name")
-    val petName: String,
+    val petName: String? = null,
     val species: String,
     val breed: String? = null,
     val color: String? = null,

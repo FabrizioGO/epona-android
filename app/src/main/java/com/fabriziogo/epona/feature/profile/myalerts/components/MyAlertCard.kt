@@ -30,6 +30,7 @@ import com.fabriziogo.epona.core.ui.components.AlertStatusBadge
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.components.formatTimeAgo
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -56,7 +57,7 @@ fun MyAlertCard(
                 if (pet.photoUrls.isNotEmpty()) {
                     AsyncImage(
                         model = pet.photoUrls.first(),
-                        contentDescription = pet.name,
+                        contentDescription = petDisplayName(pet),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(56.dp)
                     )
@@ -79,7 +80,7 @@ fun MyAlertCard(
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = pet.name,
+                        text = petDisplayName(pet),
                         style = EponaTypography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f, fill = false)

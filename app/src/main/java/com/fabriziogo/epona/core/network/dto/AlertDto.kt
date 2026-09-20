@@ -41,6 +41,36 @@ data class AlertDto(
  * because Postgrest can't directly insert geography types.
  */
 @Serializable
+data class FoundAlertInsertParams(
+    @SerialName("p_user_id")
+    val userId: String,
+    @SerialName("p_species")
+    val species: String,
+    @SerialName("p_lat")
+    val lat: Double,
+    @SerialName("p_lng")
+    val lng: Double,
+    @SerialName("p_breed")
+    val breed: String? = null,
+    @SerialName("p_color")
+    val color: String? = null,
+    @SerialName("p_size")
+    val size: String? = null,
+    @SerialName("p_pet_description")
+    val petDescription: String? = null,
+    @SerialName("p_photo_urls")
+    val photoUrls: List<String> = emptyList(),
+    @SerialName("p_address")
+    val address: String? = null,
+    @SerialName("p_last_seen_at")
+    val lastSeenAt: String? = null,
+    @SerialName("p_alert_description")
+    val alertDescription: String? = null,
+    @SerialName("p_contact_phone")
+    val contactPhone: String? = null
+)
+
+@Serializable
 data class AlertInsertParams(
     @SerialName("p_pet_id")
     val petId: String,

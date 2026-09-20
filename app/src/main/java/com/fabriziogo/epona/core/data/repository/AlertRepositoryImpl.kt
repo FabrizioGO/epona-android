@@ -3,15 +3,18 @@ package com.fabriziogo.epona.core.data.repository
 import com.fabriziogo.epona.core.data.mapper.toAlertEntity
 import com.fabriziogo.epona.core.data.mapper.toDomain
 import com.fabriziogo.epona.core.data.mapper.toEntity
+import com.fabriziogo.epona.core.data.mapper.toFoundAlertInsertParams
 import com.fabriziogo.epona.core.data.mapper.toInsertParams
 import com.fabriziogo.epona.core.data.mapper.toOwnerEntity
 import com.fabriziogo.epona.core.data.mapper.toPetEntity
 import com.fabriziogo.epona.core.database.dao.AlertDao
 import com.fabriziogo.epona.core.database.dao.PetDao
 import com.fabriziogo.epona.core.database.dao.UserDao
+import com.fabriziogo.epona.core.database.entity.PetEntity
 import com.fabriziogo.epona.core.domain.model.Alert
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.repository.AlertRepository
 import com.fabriziogo.epona.core.network.dto.AlertDetailDto
 import com.fabriziogo.epona.core.network.service.AlertService
@@ -127,6 +130,43 @@ class AlertRepositoryImpl @Inject constructor(
                 )
             }
             alert.copy(id = dto.id ?: "")
+        }
+
+    override suspend fun createFoundAlert(pet: Pet, alert: Alert): Result<Alert> =
+        runCatching {
+            val userId = currentUserId()
+            val dto = alertService.createFoundAlert(
+                toFoundAlertInsertParams(pet, alert, userId)
+            )
+            // Cache the ownerless pet first: alerts.pet_id is an enforced foreign
+            // key, and unlike the LOST path the pet is not already in the cache.
+            // A null owner_id skips SQLite foreign-key enforcement, so this never
+            // adopts the stray into anyone's My Pets (observeMyPets matches
+            // WHERE owner_id = :ownerId, which never matches NULL).
+            cache {
+                petDao.insertPet(
+                    PetEntity(
+                        id = dto.petId,
+                        ownerId = null,
+                        name = null,
+                        species = pet.species.value,
+                        breed = pet.breed,
+                        color = pet.color,
+                        size = pet.size.value,
+                        gender = pet.gender.value,
+                        microchipId = null,
+                        description = pet.description,
+                        photoUrls = pet.photoUrls
+                    )
+                )
+                alertDao.insertAlert(
+                    dto.toEntity(
+                        lat = alert.lastSeenLocation.latitude,
+                        lng = alert.lastSeenLocation.longitude
+                    )
+                )
+            }
+            alert.copy(id = dto.id ?: "", petId = dto.petId)
         }
 
     override suspend fun resolveAlert(alertId: String): Result<Unit> =
