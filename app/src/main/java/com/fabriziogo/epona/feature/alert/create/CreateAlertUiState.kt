@@ -2,6 +2,7 @@ package com.fabriziogo.epona.feature.alert.create
 
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.PetSize
@@ -44,6 +45,8 @@ data class CreateAlertUiState(
     val description: String = "",
     val isLoadingLocation: Boolean = false,
     val locationError: String? = null,
+    /** FOUND only: where the pet is now. No default — the finder has to answer. */
+    val custody: FoundCustody? = null,
 
     // Step 4 (shared) — nearby alerts that might be the same animal
     val matches: List<AlertWithDetails> = emptyList(),
@@ -63,7 +66,8 @@ data class CreateAlertUiState(
         get() = when (currentStep) {
             1 -> true
             2 -> if (alertType == AlertType.LOST) selectedPet != null else true
-            3 -> location != null
+            3 -> location != null &&
+                    (alertType == AlertType.LOST || custody != null)
             4 -> true
             5 -> !isSubmitting
             else -> false

@@ -2,6 +2,7 @@ package com.fabriziogo.epona.feature.alert.create
 
 import android.net.Uri
 import com.fabriziogo.epona.core.domain.model.AlertType
+import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.PetSize
@@ -32,6 +33,9 @@ sealed interface CreateAlertEvent {
     data object LocationPermissionDenied : CreateAlertEvent
     data class LocationPicked(val location: Location) : CreateAlertEvent
     data class DescriptionChanged(val text: String) : CreateAlertEvent
+
+    /** FOUND only: where the pet is now, which decides whether it accepts sightings. */
+    data class CustodySelected(val custody: FoundCustody) : CreateAlertEvent
 
     // Step 4 — a nearby post that might be the same animal
     data class MatchSelected(val alertId: String) : CreateAlertEvent

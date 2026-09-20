@@ -35,7 +35,9 @@ import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
+import com.fabriziogo.epona.core.ui.components.InSafeHandsBadge
 import com.fabriziogo.epona.core.ui.components.RewardBadge
 import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.components.emoji
@@ -100,12 +102,17 @@ fun AlertGridCard(
                 )
         )
 
-        AlertTypeBadge(
-            type = alert.type,
+        Row(
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(8.dp)
-        )
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AlertTypeBadge(type = alert.type)
+            // "FOUND" alone leaves a reader wondering whether to go and look.
+            if (!alert.acceptsSightings) InSafeHandsBadge()
+        }
 
         alert.reward?.let { reward ->
             RewardBadge(

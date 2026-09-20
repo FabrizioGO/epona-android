@@ -31,6 +31,11 @@ fun DetailInfoCards(
     lastSeenAddress: String,
     lastSeenAt: Long,
     sightingCount: Int,
+    /**
+     * The column is last_seen_* for both types, but on a found post that copy
+     * reads as if the finder lost the animal. Only the labels differ.
+     */
+    isFound: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -39,13 +44,15 @@ fun DetailInfoCards(
     ) {
         InfoCard(
             icon = Icons.Outlined.LocationOn,
-            label = stringResource(R.string.detail_last_seen),
+            label = if (isFound) stringResource(R.string.detail_found_at)
+            else stringResource(R.string.detail_last_seen),
             value = lastSeenAddress,
             modifier = Modifier.weight(1f)
         )
         InfoCard(
             icon = Icons.Outlined.Schedule,
-            label = stringResource(R.string.detail_time),
+            label = if (isFound) stringResource(R.string.detail_found_time)
+            else stringResource(R.string.detail_time),
             value = formatTimeAgo(lastSeenAt),
             modifier = Modifier.weight(1f)
         )

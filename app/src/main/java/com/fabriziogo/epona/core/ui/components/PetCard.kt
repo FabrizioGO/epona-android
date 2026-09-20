@@ -21,10 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -94,6 +97,18 @@ fun PetCard(
                     style = EponaTypography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                // What tapping this row leads to differs: an animal still out
+                // there takes a sighting, one already in someone's care takes a
+                // phone call. Saying so here keeps the promise honest.
+                if (!alert.acceptsSightings) {
+                    Text(
+                        text = stringResource(R.string.create_matches_hint_custody),
+                        style = EponaTypography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(14.dp),

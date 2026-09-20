@@ -9,6 +9,9 @@ data class NearbyAlertDto(
     @SerialName("alert_id")
     val alertId: String,
     val type: String,
+    /** Lets the feed and map mark a found pet that is already in safe hands. */
+    @SerialName("found_custody")
+    val foundCustody: String? = null,
     // Nullable so the feed still decodes against an older get_nearby_alerts that
     // does not select these; the mapper then falls back as before.
     @SerialName("last_seen_lat")

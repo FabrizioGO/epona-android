@@ -210,6 +210,11 @@ fun CreateAlertScreen(
                         },
                         onDescriptionChanged = {
                             viewModel.onEvent(CreateAlertEvent.DescriptionChanged(it))
+                        },
+                        showCustody = state.alertType == AlertType.FOUND,
+                        custody = state.custody,
+                        onCustodySelected = {
+                            viewModel.onEvent(CreateAlertEvent.CustodySelected(it))
                         }
                     )
                     4 -> MatchesStep(
@@ -235,6 +240,7 @@ fun CreateAlertScreen(
                             stringResource(state.foundPet.species.foundLabel)
                         },
                         address = state.address,
+                        custody = state.custody,
                         onPhoneChanged = {
                             viewModel.onEvent(CreateAlertEvent.PhoneChanged(it))
                         },

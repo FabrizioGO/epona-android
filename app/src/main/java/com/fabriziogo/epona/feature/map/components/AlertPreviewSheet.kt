@@ -27,8 +27,10 @@ import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
+import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
+import com.fabriziogo.epona.core.ui.components.InSafeHandsBadge
 import com.fabriziogo.epona.core.ui.components.SightingCard
 import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -70,6 +72,7 @@ fun AlertPreviewSheet(
                     )
                 }
                 AlertTypeBadge(type = alert.type)
+                if (!alert.acceptsSightings) InSafeHandsBadge()
                 IconButton(onClick = onDismiss) {
                     Icon(
                         Icons.Outlined.Close,

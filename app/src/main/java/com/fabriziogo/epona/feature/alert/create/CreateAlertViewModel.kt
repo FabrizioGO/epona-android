@@ -53,8 +53,13 @@ class CreateAlertViewModel @Inject constructor(
             CreateAlertEvent.CloseClicked ->
                 emitNav(CreateAlertNavEvent.NavigateBack)
 
-            is CreateAlertEvent.AlertTypeSelected ->
-                _state.update { it.copy(alertType = event.type) }
+            // Changing the type drops the custody answer: it belongs to a found
+            // report, and left behind it would claim on the review step that a
+            // lost pet is safe at someone's house.
+            is CreateAlertEvent.AlertTypeSelected -> _state.update {
+                if (it.alertType == event.type) it
+                else it.copy(alertType = event.type, custody = null)
+            }
 
             is CreateAlertEvent.PetSelected ->
                 _state.update { it.copy(selectedPet = event.pet) }
@@ -83,6 +88,9 @@ class CreateAlertViewModel @Inject constructor(
                 )
             }
             is CreateAlertEvent.LocationPicked -> setLocation(event.location)
+            is CreateAlertEvent.CustodySelected ->
+                _state.update { it.copy(custody = event.custody) }
+
             is CreateAlertEvent.DescriptionChanged ->
                 _state.update { it.copy(description = event.text) }
 
@@ -311,6 +319,7 @@ class CreateAlertViewModel @Inject constructor(
                 )
                 val alert = Alert(
                     type = AlertType.FOUND,
+                    foundCustody = s.custody,
                     lastSeenLocation = loc,
                     lastSeenAddress = s.address.ifBlank { null },
                     description = s.description.ifBlank { null },

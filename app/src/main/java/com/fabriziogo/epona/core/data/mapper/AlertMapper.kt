@@ -8,6 +8,7 @@ import com.fabriziogo.epona.core.domain.model.Alert
 import com.fabriziogo.epona.core.domain.model.AlertStatus
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.network.dto.AlertDetailDto
@@ -24,6 +25,7 @@ fun NearbyAlertDto.toDomain(): AlertWithDetails = AlertWithDetails(
         id = alertId,
         type = AlertType.fromValue(type),
         status = AlertStatus.ACTIVE,
+        foundCustody = FoundCustody.fromValue(foundCustody),
         lastSeenLocation = Location(
             latitude = lastSeenLat ?: 0.0,
             longitude = lastSeenLng ?: 0.0,
@@ -53,6 +55,7 @@ fun AlertDetailDto.toDomain(): AlertWithDetails = AlertWithDetails(
         userId = ownerId,
         type = AlertType.fromValue(type),
         status = AlertStatus.fromValue(status),
+        foundCustody = FoundCustody.fromValue(foundCustody),
         lastSeenLocation = Location(lastSeenLat, lastSeenLng, lastSeenAddress),
         lastSeenAddress = lastSeenAddress,
         lastSeenAt = lastSeenAt?.toEpochMillis() ?: 0L,
@@ -86,6 +89,7 @@ fun AlertDetailDto.toAlertEntity(): AlertEntity = AlertEntity(
     userId = ownerId,
     type = type,
     status = status,
+    foundCustody = foundCustody,
     lastSeenLat = lastSeenLat,
     lastSeenLng = lastSeenLng,
     lastSeenAddress = lastSeenAddress,
@@ -136,6 +140,7 @@ fun AlertWithPetEntity.toDomain(): AlertWithDetails = AlertWithDetails(
         userId = alert.userId,
         type = AlertType.fromValue(alert.type),
         status = AlertStatus.fromValue(alert.status),
+        foundCustody = FoundCustody.fromValue(alert.foundCustody),
         lastSeenLocation = Location(alert.lastSeenLat, alert.lastSeenLng, alert.lastSeenAddress),
         lastSeenAddress = alert.lastSeenAddress,
         lastSeenAt = alert.lastSeenAt,
@@ -177,6 +182,9 @@ fun toFoundAlertInsertParams(
     species = pet.species.value,
     lat = alert.lastSeenLocation.latitude,
     lng = alert.lastSeenLocation.longitude,
+    custody = checkNotNull(alert.foundCustody) {
+        "A found alert needs a custody -- CreateFoundAlertUseCase requires one"
+    }.value,
     breed = pet.breed,
     color = pet.color,
     size = pet.size.value,
@@ -197,6 +205,7 @@ fun AlertDto.toEntity(
     userId = userId ?: "",
     type = type,
     status = status,
+    foundCustody = foundCustody,
     lastSeenLat = lat,
     lastSeenLng = lng,
     lastSeenAddress = lastSeenAddress,

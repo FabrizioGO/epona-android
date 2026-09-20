@@ -29,6 +29,12 @@ class CreateFoundAlertUseCase @Inject constructor(
         require(alert.lastSeenLocation != Location.EMPTY) {
             "Last seen location is required"
         }
+        // Not defaulted anywhere on the way here, and the RPC rejects a null too.
+        // Guessing this either strands an animal nobody may report seeing, or has a
+        // neighbourhood watching for a dog that is asleep in someone's flat.
+        requireNotNull(alert.foundCustody) {
+            "Where the pet is now is required for a found alert"
+        }
         require(pet.photoUrls.size <= MAX_PHOTOS_PER_ENTITY) {
             "At most $MAX_PHOTOS_PER_ENTITY photos per pet"
         }

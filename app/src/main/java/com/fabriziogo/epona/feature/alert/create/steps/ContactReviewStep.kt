@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
+import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
@@ -32,6 +33,7 @@ fun ContactReviewStep(
     alertType: AlertType,
     petName: String,
     address: String,
+    custody: FoundCustody?,
     onPhoneChanged: (String) -> Unit,
     onRewardChanged: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -111,6 +113,25 @@ fun ContactReviewStep(
                     style = EponaTypography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
                 )
+
+                // Spelled out here because it is the one answer that cannot be
+                // changed by editing the post later, and a mis-tap decides
+                // whether strangers may report sightings on this animal.
+                custody?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(
+                            when (it) {
+                                FoundCustody.WITH_FINDER ->
+                                    R.string.create_ready_summary_custody_with_finder
+                                FoundCustody.AT_LOCATION ->
+                                    R.string.create_ready_summary_custody_at_location
+                            }
+                        ),
+                        style = EponaTypography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                    )
+                }
             }
         }
     }

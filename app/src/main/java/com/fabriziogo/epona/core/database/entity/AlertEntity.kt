@@ -43,6 +43,11 @@ data class AlertEntity(
 
     val status: String = "active",  // "active" | "resolved" | "expired"
 
+    // "with_finder" | "at_location"; null on lost alerts. Decides whether the
+    // detail screen offers a sighting at all — see Alert.acceptsSightings.
+    @ColumnInfo(name = "found_custody")
+    val foundCustody: String? = null,
+
     @ColumnInfo(name = "last_seen_lat")
     val lastSeenLat: Double,
 

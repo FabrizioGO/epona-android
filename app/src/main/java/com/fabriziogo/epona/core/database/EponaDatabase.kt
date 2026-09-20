@@ -23,7 +23,7 @@ import com.fabriziogo.epona.core.database.entity.UserEntity
         SightingEntity::class,
         NotificationEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

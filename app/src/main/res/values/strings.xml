@@ -386,4 +386,19 @@
     <string name="format_distance_meters" translatable="false">%d m</string>
     <string name="format_distance_km" translatable="false">%.1f km</string>
     <string name="alert_reward_amount" translatable="false">💰 $%d</string>
+
+    <!-- Found pet: where the animal is now, which decides whether the post takes sightings -->
+    <string name="create_custody_question">Where is the pet now?</string>
+    <string name="custody_with_finder">I have them with me</string>
+    <string name="custody_with_finder_desc">They\'re safe at my home, a vet or a shelter. People will be asked to contact you instead of reporting sightings.</string>
+    <string name="custody_at_location">I left them where I found them</string>
+    <string name="custody_at_location_desc">Others may spot them too, so people can add sightings and build a trail.</string>
+    <string name="create_ready_summary_custody_with_finder">You have them with you, so readers will be asked to contact you rather than report sightings.</string>
+    <string name="create_ready_summary_custody_at_location">You left them where you found them, so others can report sightings too.</string>
+    <string name="create_matches_hint_custody">Already in someone\'s care — tap to contact them</string>
+    <string name="detail_custody_title">Safe with the finder</string>
+    <string name="detail_custody_notice">The person who found this pet has them in their care. Contact them to arrange a reunion — there is nothing to report a sighting of.</string>
+    <string name="detail_badge_in_safe_hands">In safe hands</string>
+    <string name="detail_found_at">Found at</string>
+    <string name="detail_found_time">Found</string>
 </resources>

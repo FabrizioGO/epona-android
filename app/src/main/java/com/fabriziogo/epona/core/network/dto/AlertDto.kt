@@ -12,6 +12,10 @@ data class AlertDto(
     val userId: String? = null,
     val type: String,
     val status: String = "active",
+    // Null on every lost alert, and on found alerts written before this column
+    // existed, so FoundCustody.fromValue maps it to null rather than a default.
+    @SerialName("found_custody")
+    val foundCustody: String? = null,
     // Computed columns, so they only arrive when the select names them
     // (AlertService.getMyAlerts). Absent from RPC responses, hence nullable.
     @SerialName("last_seen_lat")
@@ -50,6 +54,9 @@ data class FoundAlertInsertParams(
     val lat: Double,
     @SerialName("p_lng")
     val lng: Double,
+    /** "with_finder" | "at_location". Required — the RPC rejects anything else. */
+    @SerialName("p_custody")
+    val custody: String,
     @SerialName("p_breed")
     val breed: String? = null,
     @SerialName("p_color")

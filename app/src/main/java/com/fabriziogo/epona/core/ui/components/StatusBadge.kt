@@ -96,3 +96,21 @@ fun RewardBadge(
             .padding(horizontal = 12.dp, vertical = 6.dp)
     )
 }
+
+/**
+ * Marks a found pet the finder took with them. Sits next to [AlertTypeBadge]:
+ * "FOUND" alone does not say whether the animal is still out there, and that is
+ * the difference between going to look for it and picking up the phone.
+ */
+@Composable
+fun InSafeHandsBadge(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.detail_badge_in_safe_hands).uppercase(),
+        style = EponaTypography.labelSmall.copy(fontWeight = FontWeight.Bold),
+        color = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(horizontal = 10.dp, vertical = 3.dp)
+    )
+}

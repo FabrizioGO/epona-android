@@ -10,6 +10,9 @@ data class AlertDetailDto(
     val alertId: String,
     val type: String,
     val status: String,
+    /** "with_finder" | "at_location"; null on lost alerts. */
+    @SerialName("found_custody")
+    val foundCustody: String? = null,
     @SerialName("last_seen_lat")
     val lastSeenLat: Double,
     @SerialName("last_seen_lng")

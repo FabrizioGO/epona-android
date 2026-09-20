@@ -3,6 +3,7 @@ package com.fabriziogo.epona.feature.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.domain.repository.AuthRepository
 import com.fabriziogo.epona.core.domain.usecase.alert.GetAlertDetailUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ResolveAlertUseCase
@@ -37,10 +38,17 @@ class AlertDetailViewModel @Inject constructor(
     private val _navEvents = Channel<DetailNavEvent>(Channel.BUFFERED)
     val navEvents = _navEvents.receiveAsFlow()
 
+    /** Resolving and retrying both reload the detail; the trail starts only once. */
+    private var sightingsStarted = false
+
+    /**
+     * Sightings are fetched from [loadAlertDetail]'s success rather than here,
+     * because whether this alert accepts any is not known until the detail
+     * arrives — a found pet the finder took home cannot be spotted by anyone.
+     * Nothing is lost by waiting: the whole screen is a spinner until then.
+     */
     init {
         loadAlertDetail()
-        loadSightings()
-        observeRealtimeSightings()
     }
 
     fun onEvent(event: AlertDetailEvent) {
@@ -52,8 +60,7 @@ class AlertDetailViewModel @Inject constructor(
 
             AlertDetailEvent.ContactOwnerClicked -> contactOwner()
 
-            AlertDetailEvent.ReportSightingClicked ->
-                emitNav(DetailNavEvent.NavigateToReportSighting(alertId))
+            AlertDetailEvent.ReportSightingClicked -> reportSighting()
 
             AlertDetailEvent.ViewOnMapClicked -> viewOnMap()
 
@@ -65,10 +72,8 @@ class AlertDetailViewModel @Inject constructor(
             AlertDetailEvent.ResolveDismissed ->
                 _state.update { it.copy(showResolveDialog = false) }
 
-            AlertDetailEvent.RetryLoad -> {
-                loadAlertDetail()
-                loadSightings()
-            }
+            // Only the detail: it is what decides whether there is a trail to load.
+            AlertDetailEvent.RetryLoad -> loadAlertDetail()
 
             AlertDetailEvent.ErrorDismissed ->
                 _state.update { it.copy(error = null) }
@@ -89,6 +94,7 @@ class AlertDetailViewModel @Inject constructor(
                             isCurrentUserOwner = detail.alert.userId == currentUserId
                         )
                     }
+                    if (detail.alert.acceptsSightings) startSightingsOnce()
                 }
                 .onFailure { err ->
                     _state.update {
@@ -99,6 +105,24 @@ class AlertDetailViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    /**
+     * The buttons are hidden when the finder has the pet, but a screen loaded
+     * before the post changed can still send this. create_sighting refuses it
+     * server-side too — this just avoids walking the user into that error.
+     */
+    private fun reportSighting() {
+        val alert = _state.value.alertDetail?.alert ?: return
+        if (!alert.acceptsSightings) return
+        emitNav(DetailNavEvent.NavigateToReportSighting(alertId))
+    }
+
+    private fun startSightingsOnce() {
+        if (sightingsStarted) return
+        sightingsStarted = true
+        loadSightings()
+        observeRealtimeSightings()
     }
 
     private fun loadSightings() {

@@ -13,10 +13,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.feature.alert.create.steps.components.CustodySelector
 import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCard
 
 /**
@@ -24,6 +26,9 @@ import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCar
  * description. Extracted from PhotoLocationStep by deleting the PhotoCaptureCard
  * (dead data: photoUris were never read by publish()); photos now live on the
  * pet — the registered pet for LOST, the FoundPetStep picker for FOUND.
+ *
+ * The FOUND branch also answers where the pet is now, directly under the picker
+ * because that answer is what the pin means: still there, or taken home.
  */
 @Composable
 fun LocationStep(
@@ -35,7 +40,10 @@ fun LocationStep(
     onUseCurrentLocation: () -> Unit,
     onLocationPicked: (Location) -> Unit,
     onDescriptionChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showCustody: Boolean = false,
+    custody: FoundCustody? = null,
+    onCustodySelected: (FoundCustody) -> Unit = {}
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
@@ -60,6 +68,14 @@ fun LocationStep(
             onLocationPicked = onLocationPicked
         )
 
+        if (showCustody) {
+            Spacer(Modifier.height(24.dp))
+            CustodySelector(
+                selected = custody,
+                onSelected = onCustodySelected
+            )
+        }
+
         Spacer(Modifier.height(24.dp))
 
         EponaTextField(
@@ -74,7 +90,7 @@ fun LocationStep(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Lost")
 @Composable
 private fun LocationStepPreview() {
     EponaTheme {
@@ -87,6 +103,26 @@ private fun LocationStepPreview() {
             onUseCurrentLocation = {},
             onLocationPicked = {},
             onDescriptionChanged = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Found")
+@Composable
+private fun LocationStepFoundPreview() {
+    EponaTheme {
+        LocationStep(
+            location = Location(40.4, -3.7, "Retiro Park, Madrid"),
+            address = "Retiro Park, Madrid",
+            description = "",
+            isLoadingLocation = false,
+            locationError = null,
+            onUseCurrentLocation = {},
+            onLocationPicked = {},
+            onDescriptionChanged = {},
+            showCustody = true,
+            custody = FoundCustody.WITH_FINDER,
+            onCustodySelected = {}
         )
     }
 }

@@ -347,4 +347,19 @@
     <string name="cd_dismiss">Descartar</string>
     <string name="cd_clear_search">Borrar búsqueda</string>
     <string name="cd_view_map">Ver mapa</string>
+
+    <!-- Mascota encontrada: dónde está el animal ahora, lo que decide si el aviso acepta avistamientos -->
+    <string name="create_custody_question">¿Dónde está la mascota ahora?</string>
+    <string name="custody_with_finder">La tengo conmigo</string>
+    <string name="custody_with_finder_desc">Está a salvo en mi casa, en el veterinario o en un refugio. Se le pedirá a la gente que te contacte en lugar de reportar avistamientos.</string>
+    <string name="custody_at_location">La dejé donde la encontré</string>
+    <string name="custody_at_location_desc">Otras personas también pueden verla, así que podrán agregar avistamientos y armar un rastro.</string>
+    <string name="create_ready_summary_custody_with_finder">La tienes contigo, así que se le pedirá a quien lo lea que te contacte en vez de reportar un avistamiento.</string>
+    <string name="create_ready_summary_custody_at_location">La dejaste donde la encontraste, así que otras personas también podrán reportar avistamientos.</string>
+    <string name="create_matches_hint_custody">Ya está al cuidado de alguien — toca para contactarlo</string>
+    <string name="detail_custody_title">A salvo con quien la encontró</string>
+    <string name="detail_custody_notice">La persona que encontró esta mascota la tiene a su cuidado. Contáctala para coordinar el reencuentro — no hay nada de lo que reportar un avistamiento.</string>
+    <string name="detail_badge_in_safe_hands">A salvo</string>
+    <string name="detail_found_at">Encontrada en</string>
+    <string name="detail_found_time">Encontrada</string>
 </resources>

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.feature.detail.components.DetailActionButtons
+import com.fabriziogo.epona.feature.detail.components.DetailCustodyNotice
 import com.fabriziogo.epona.feature.detail.components.DetailDescription
 import com.fabriziogo.epona.feature.detail.components.DetailHero
 import com.fabriziogo.epona.feature.detail.components.DetailInfoCards
@@ -44,6 +45,7 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertStatus
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.ui.components.AlertStatusBadge
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EmptyState
@@ -188,6 +190,7 @@ fun AlertDetailScreen(
                             lastSeenAddress = alert.lastSeenAddress ?: stringResource(R.string.detail_address_unknown),
                             lastSeenAt = alert.lastSeenAt,
                             sightingCount = alert.sightingCount,
+                            isFound = alert.type == AlertType.FOUND,
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
                     }
@@ -215,13 +218,23 @@ fun AlertDetailScreen(
                         }
                     }
 
-                    // Sightings trail
-                    item(key = "sightings") {
-                        DetailSightingsSection(
-                            sightings = state.sightings,
-                            isLoading = state.isSightingsLoading,
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        )
+                    // Sightings trail. Skipped entirely when the finder has the pet:
+                    // an empty "no one has reported seeing this pet yet" reads as
+                    // neglect when it is in fact impossible by design.
+                    if (alert.acceptsSightings) {
+                        item(key = "sightings") {
+                            DetailSightingsSection(
+                                sightings = state.sightings,
+                                isLoading = state.isSightingsLoading,
+                                modifier = Modifier.padding(horizontal = 20.dp)
+                            )
+                        }
+                    } else if (!isResolved) {
+                        item(key = "custody_notice") {
+                            DetailCustodyNotice(
+                                modifier = Modifier.padding(horizontal = 20.dp)
+                            )
+                        }
                     }
 
                     // Action buttons
@@ -229,7 +242,7 @@ fun AlertDetailScreen(
                         DetailActionButtons(
                             isOwner = state.isCurrentUserOwner,
                             isResolved = isResolved,
-                            isLost = alert.type == AlertType.LOST,
+                            acceptsSightings = alert.acceptsSightings,
                             isResolving = state.isResolving,
                             onContactClick = {
                                 viewModel.onEvent(AlertDetailEvent.ContactOwnerClicked)

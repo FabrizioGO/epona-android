@@ -25,7 +25,12 @@ import com.fabriziogo.epona.core.ui.components.EponaTonalButton
 fun DetailActionButtons(
     isOwner: Boolean,
     isResolved: Boolean,
-    isLost: Boolean,
+    /**
+     * False for a found pet the finder took with them — see Alert.acceptsSightings.
+     * Every sighting entry point below is gated on it, including the eye icon, which
+     * used to be offered on found alerts regardless.
+     */
+    acceptsSightings: Boolean,
     isResolving: Boolean,
     onContactClick: () -> Unit,
     onReportSightingClick: () -> Unit,
@@ -51,15 +56,18 @@ fun DetailActionButtons(
                     modifier = Modifier.weight(1f),
                     fullWidth = true
                 )
-                EponaOutlinedButton(
-                    text = "",
-                    onClick = onReportSightingClick,
-                    icon = Icons.Outlined.Visibility
-                )
+                // With no sighting to report, contact is the only thing left to do
+                // here, so it takes the whole row rather than leaving a dead stub.
+                if (acceptsSightings) {
+                    EponaOutlinedButton(
+                        text = "",
+                        onClick = onReportSightingClick,
+                        icon = Icons.Outlined.Visibility
+                    )
+                }
             }
 
-            // Report sighting (for lost pets)
-            if (isLost) {
+            if (acceptsSightings) {
                 EponaTonalButton(
                     text = stringResource(R.string.detail_report_sighting),
                     onClick = onReportSightingClick,
