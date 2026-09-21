@@ -16,10 +16,10 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.components.EponaTextField
+import com.fabriziogo.epona.core.ui.components.LocationPickerCard
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.feature.alert.create.steps.components.CustodySelector
-import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCard
 
 /**
  * Step 3 (shared): where the pet was lost or found, plus the alert
@@ -38,7 +38,7 @@ fun LocationStep(
     isLoadingLocation: Boolean,
     locationError: String?,
     onUseCurrentLocation: () -> Unit,
-    onLocationPicked: (Location) -> Unit,
+    onOpenMapPicker: () -> Unit,
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     showCustody: Boolean = false,
@@ -65,7 +65,7 @@ fun LocationStep(
             isLoading = isLoadingLocation,
             errorText = locationError,
             onUseCurrentLocation = onUseCurrentLocation,
-            onLocationPicked = onLocationPicked
+            onOpenMapPicker = onOpenMapPicker
         )
 
         if (showCustody) {
@@ -101,7 +101,7 @@ private fun LocationStepPreview() {
             isLoadingLocation = false,
             locationError = null,
             onUseCurrentLocation = {},
-            onLocationPicked = {},
+            onOpenMapPicker = {},
             onDescriptionChanged = {}
         )
     }
@@ -118,7 +118,7 @@ private fun LocationStepFoundPreview() {
             isLoadingLocation = false,
             locationError = null,
             onUseCurrentLocation = {},
-            onLocationPicked = {},
+            onOpenMapPicker = {},
             onDescriptionChanged = {},
             showCustody = true,
             custody = FoundCustody.WITH_FINDER,

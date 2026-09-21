@@ -37,7 +37,7 @@
     <string name="create_no_pets_desc">Agrega una mascota primero para crear una alerta</string>
     <string name="create_add_pet">Agregar Mascota</string>
     <string name="create_add_new_pet">Agregar Nueva Mascota</string>
-    <string name="create_description_placeholder">Color de collar, comportamiento, a qué dirección se fue, circunstancias...</string>
+    <string name="create_description_placeholder">Color de collar, comportamiento, a qué dirección se fue, circunstancias…</string>
     <string name="create_publish">🚨 Publicar Alerta</string>
     <string name="create_continue">Continuar</string>
     <string name="create_step_contact_subtitle">¿Como los demas pueden contactarte?</string>
@@ -83,14 +83,14 @@
     <string name="create_type_lost_desc">Alerta a tu comunidad</string>
     <string name="create_type_found">Encontré una mascota</string>
     <string name="create_type_found_desc">Ayudame a encontrar al dueño</string>
-    <string name="home_search_placeholder">Busca mascotas, razas, ubicaciones...</string>
+    <string name="home_search_placeholder">Busca mascotas, razas, ubicaciones…</string>
     <string name="home_filter_all">Todos</string>
     <string name="home_filter_lost">Perdidos</string>
     <string name="home_filter_found">Encontrados</string>
     <string name="auth_forgot_password">¿Olvidó su contraseña?</string>
     <string name="home_radius_info">Alrededor de %d km · %d perdidos · %d encontrados</string>
     <string name="home_empty_title">No hay alertas cerca</string>
-    <string name="home_empty_description">Actualmente no hay alertas de mascotas perdidas o encontradas en tu area ¡Perfecto!</string>
+    <string name="home_empty_description">Actualmente no hay alertas de mascotas perdidas o encontradas en tu área ¡Perfecto!</string>
     <string name="home_filter_all_count">Todos (%d)</string>
     <string name="home_filter_lost_count">🔴 Perdidos (%d)</string>
     <string name="create_step_pet_title">¿Cual mascota?</string>
@@ -162,11 +162,11 @@
     <string name="time_just_now">justo ahora</string>
     <string name="time_minutes_ago">Hace %d minutos</string>
     <string name="time_hours_ago">Hace %d horas</string>
-    <string name="time_days_ago">Hace %d dias</string>
+    <string name="time_days_ago">Hace %d días</string>
     <string name="time_weeks_ago">Hace %d semanas</string>
     <string name="time_months_ago">Hace %d meses</string>
     <string name="share_subject">Alerta de Mascota Perdida — Epona</string>
-    <string name="share_chooser">Compartir alerta via</string>
+    <string name="share_chooser">Compartir alerta vía</string>
     <string name="cd_profile_photo">Foto de perfil</string>
     <string name="cd_notifications">Notificaciones</string>
     <string name="cd_add_photo">Añadir foto</string>
@@ -225,7 +225,7 @@
     <string name="onboarding_next">Siguiente</string>
     <string name="onboarding_get_started">Iniciar</string>
     <string name="onboarding_has_account">Ya tengo una cuenta</string>
-    <string name="home_greeting_morning">Buenos dias 👋</string>
+    <string name="home_greeting_morning">Buenos días 👋</string>
     <string name="home_greeting_afternoon">Buenas tardes 👋</string>
     <string name="home_greeting_evening">Buenas noches 👋</string>
     <string name="home_alerts_near_you">%d alertas activas cerca de ti</string>
@@ -296,6 +296,11 @@
     <!-- Map -->
     <string name="map_toggle_radius">Alternar radio</string>
     <string name="map_sighting_trail_count">Rastro de avistamientos (%d)</string>
+    <string name="pick_location_title">Elegir ubicación</string>
+    <string name="pick_location_hint">Mueve el mapa para colocar el pin</string>
+    <string name="pick_location_confirm">Confirmar ubicación</string>
+    <string name="pick_location_resolving">Buscando dirección…</string>
+    <string name="pick_location_no_address">Dirección no disponible</string>
 
     <!-- Profile -->
     <string name="profile_settings_subtitle">Notificaciones, radio, preferencias</string>
@@ -305,7 +310,7 @@
     <string name="alert_location_unknown">Ubicación desconocida</string>
     <plurals name="alert_sighting_count">
         <item quantity="one">%d avistamiento</item>
-        <item quantity="other">%d avistamientos</item>
+        <item quantity="many">%d avistamientos</item>
     </plurals>
 
     <!-- Help &amp; FAQ -->

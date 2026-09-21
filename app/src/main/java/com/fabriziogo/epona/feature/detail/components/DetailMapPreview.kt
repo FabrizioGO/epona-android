@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,13 +16,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
+/**
+ * Lite-mode map snapshot of the alert's last-seen location, mirroring
+ * LocationPickerCard's preview. The Surface itself is not clickable: lite mode
+ * still embeds a MapView, which consumes touches before a parent clickable ever
+ * sees them, so a transparent overlay handles the tap to the full map instead.
+ */
 @Composable
 fun DetailMapPreview(
     latitude: Double,
@@ -31,43 +44,62 @@ fun DetailMapPreview(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val latLng = LatLng(latitude, longitude)
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp)
-            .clickable(onClick = onClick),
+            .padding(vertical = 12.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp)
-                .background(
-                    brush = androidx.compose.ui.graphics.Brush.linearGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
-                        )
-                    )
-                ),
+                .height(140.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Pin marker
-            Box(
-                modifier = Modifier
-                    .size(16.dp)
-                    .clip(CircleShape)
-                    .background(EponaColors.Lost),
-            )
-
-            // Pulse ring
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(EponaColors.Lost.copy(alpha = 0.15f))
-            )
+            if (LocalInspectionMode.current) {
+                // GoogleMap cannot render in the preview pane, so AlertDetailScreen's
+                // preview gets the same stand-in LocationPickerCard uses.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp)
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Filled.LocationOn,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            } else {
+                val cameraPositionState = rememberCameraPositionState(
+                    key = "$latitude,$longitude"
+                ) {
+                    position = CameraPosition.fromLatLngZoom(latLng, 15f)
+                }
+                GoogleMap(
+                    modifier = Modifier.matchParentSize(),
+                    cameraPositionState = cameraPositionState,
+                    googleMapOptionsFactory = { GoogleMapOptions().liteMode(true) },
+                    properties = MapProperties(),
+                    uiSettings = MapUiSettings(
+                        compassEnabled = false,
+                        mapToolbarEnabled = false,
+                        myLocationButtonEnabled = false,
+                        rotationGesturesEnabled = false,
+                        scrollGesturesEnabled = false,
+                        tiltGesturesEnabled = false,
+                        zoomControlsEnabled = false,
+                        zoomGesturesEnabled = false
+                    )
+                ) {
+                    Marker(state = MarkerState(position = latLng))
+                }
+            }
 
             // "View on map" label
             Text(
@@ -79,15 +111,10 @@ fun DetailMapPreview(
                     .padding(bottom = 12.dp)
             )
 
-            // Map icon
-            Icon(
-                Icons.Filled.Map,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+            Box(
                 modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.TopEnd)
-                    .padding(12.dp)
+                    .matchParentSize()
+                    .clickable(onClick = onClick)
             )
         }
     }

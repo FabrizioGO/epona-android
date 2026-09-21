@@ -24,8 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
-import com.fabriziogo.epona.feature.sighting.report.components.LocationPickerCard
+import com.fabriziogo.epona.core.ui.components.LocationPickerCard
 import com.fabriziogo.epona.feature.sighting.report.components.SightingNoteField
 import com.fabriziogo.epona.feature.sighting.report.components.SubmitSection
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
@@ -42,6 +43,9 @@ import kotlinx.coroutines.launch
 fun ReportSightingScreen(
     onNavigateBack: () -> Unit,
     onNavigateBackWithSuccess: () -> Unit,
+    onNavigateToPickLocation: (Location?) -> Unit,
+    pickedLocation: Location?,
+    onPickedLocationConsumed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ReportSightingViewModel = hiltViewModel()
 ) {
@@ -80,6 +84,13 @@ fun ReportSightingScreen(
                 SightingNavEvent.NavigateBack -> onNavigateBack()
                 SightingNavEvent.NavigateBackWithSuccess -> onNavigateBackWithSuccess()
             }
+        }
+    }
+
+    LaunchedEffect(pickedLocation) {
+        pickedLocation?.let {
+            viewModel.onEvent(ReportSightingEvent.LocationPicked(it))
+            onPickedLocationConsumed()
         }
     }
 
@@ -159,9 +170,7 @@ fun ReportSightingScreen(
                         locationPermission.requestOrOpenAppSettings()
                     }
                 },
-                onLocationPicked = { loc ->
-                    viewModel.onEvent(ReportSightingEvent.LocationPicked(loc))
-                }
+                onOpenMapPicker = { onNavigateToPickLocation(state.location) }
             )
 
             Spacer(Modifier.height(20.dp))

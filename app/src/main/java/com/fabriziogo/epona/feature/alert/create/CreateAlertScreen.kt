@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
+import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.feature.alert.create.steps.AlertTypeStep
 import com.fabriziogo.epona.feature.alert.create.steps.ContactReviewStep
@@ -54,6 +55,9 @@ fun CreateAlertScreen(
     onNavigateToAddPet: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
     onNavigateToMatch: (String) -> Unit,
+    onNavigateToPickLocation: (Location?) -> Unit,
+    pickedLocation: Location?,
+    onPickedLocationConsumed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateAlertViewModel = hiltViewModel()
 ) {
@@ -63,10 +67,20 @@ fun CreateAlertScreen(
     val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
 
     // Asked when the user reaches for their location, not when the wizard opens.
+    // Note: keep this as plain remember (not rememberSaveable). The composition is
+    // disposed while the map picker is pushed, so on return it is reconstructed
+    // already-granted and does not re-fire UseCurrentLocation over the user's pin.
     val locationPermission = rememberLocationPermissionState(
         onGranted = { viewModel.onEvent(CreateAlertEvent.UseCurrentLocation) },
         onDenied = { viewModel.onEvent(CreateAlertEvent.LocationPermissionDenied) }
     )
+
+    LaunchedEffect(pickedLocation) {
+        pickedLocation?.let {
+            viewModel.onEvent(CreateAlertEvent.LocationPicked(it))
+            onPickedLocationConsumed()
+        }
+    }
 
     // Owned by the screen rather than by FoundPetStep, so previews of the step
     // do not need an ActivityResultRegistry to render.
@@ -205,9 +219,7 @@ fun CreateAlertScreen(
                                 locationPermission.requestOrOpenAppSettings()
                             }
                         },
-                        onLocationPicked = {
-                            viewModel.onEvent(CreateAlertEvent.LocationPicked(it))
-                        },
+                        onOpenMapPicker = { onNavigateToPickLocation(state.location) },
                         onDescriptionChanged = {
                             viewModel.onEvent(CreateAlertEvent.DescriptionChanged(it))
                         },

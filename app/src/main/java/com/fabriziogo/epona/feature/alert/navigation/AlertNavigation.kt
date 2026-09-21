@@ -6,6 +6,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.ui.navigation.clearPickedLocation
+import com.fabriziogo.epona.core.ui.navigation.pickedLocation
 import com.fabriziogo.epona.feature.alert.create.CreateAlertScreen
 import com.fabriziogo.epona.feature.alert.resolve.ResolveAlertScreen
 
@@ -28,14 +31,18 @@ fun NavGraphBuilder.alertScreens(
     onNavigateToAddPet: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
     onNavigateToMatch: (String) -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToHome: () -> Unit,
+    onNavigateToPickLocation: (Location?) -> Unit
 ) {
-    composable(route = CREATE_ALERT_ROUTE) {
+    composable(route = CREATE_ALERT_ROUTE) { entry ->
         CreateAlertScreen(
             onNavigateBack = onNavigateBack,
             onNavigateToAddPet = onNavigateToAddPet,
             onNavigateToSuccess = onNavigateToSuccess,
-            onNavigateToMatch = onNavigateToMatch
+            onNavigateToMatch = onNavigateToMatch,
+            onNavigateToPickLocation = onNavigateToPickLocation,
+            pickedLocation = entry.pickedLocation(),
+            onPickedLocationConsumed = { entry.clearPickedLocation() }
         )
     }
 

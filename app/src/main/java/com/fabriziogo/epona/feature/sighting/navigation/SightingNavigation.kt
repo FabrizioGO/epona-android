@@ -6,6 +6,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.ui.navigation.clearPickedLocation
+import com.fabriziogo.epona.core.ui.navigation.pickedLocation
 import com.fabriziogo.epona.feature.sighting.list.SightingListScreen
 import com.fabriziogo.epona.feature.sighting.report.ReportSightingScreen
 
@@ -29,17 +32,21 @@ fun NavController.navigateToSightingList(
 
 fun NavGraphBuilder.sightingScreens(
     onNavigateBack: () -> Unit,
-    onNavigateBackWithSuccess: () -> Unit
+    onNavigateBackWithSuccess: () -> Unit,
+    onNavigateToPickLocation: (Location?) -> Unit
 ) {
     composable(
         route = REPORT_SIGHTING_ROUTE,
         arguments = listOf(
             navArgument(SIGHTING_ALERT_ID_ARG) { type = NavType.StringType }
         )
-    ) {
+    ) { entry ->
         ReportSightingScreen(
             onNavigateBack = onNavigateBack,
-            onNavigateBackWithSuccess = onNavigateBackWithSuccess
+            onNavigateBackWithSuccess = onNavigateBackWithSuccess,
+            onNavigateToPickLocation = onNavigateToPickLocation,
+            pickedLocation = entry.pickedLocation(),
+            onPickedLocationConsumed = { entry.clearPickedLocation() }
         )
     }
 

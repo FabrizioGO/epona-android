@@ -50,7 +50,7 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Epona.Splash"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|adjustPan">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

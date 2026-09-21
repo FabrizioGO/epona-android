@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.navigation.popBackStackWithLocation
 import com.fabriziogo.epona.core.ui.navigation.popBackStackWithMessage
 import com.fabriziogo.epona.feature.alert.navigation.CREATE_ALERT_ROUTE
 import com.fabriziogo.epona.feature.alert.navigation.alertScreens
@@ -19,6 +20,8 @@ import com.fabriziogo.epona.feature.home.navigation.HOME_ROUTE
 import com.fabriziogo.epona.feature.home.navigation.homeScreen
 import com.fabriziogo.epona.feature.map.navigation.mapScreen
 import com.fabriziogo.epona.feature.map.navigation.navigateToMap
+import com.fabriziogo.epona.feature.map.navigation.navigateToPickLocation
+import com.fabriziogo.epona.feature.map.navigation.pickLocationScreen
 import com.fabriziogo.epona.feature.notifications.navigation.navigateToNotifications
 import com.fabriziogo.epona.feature.notifications.navigation.notificationsScreen
 import com.fabriziogo.epona.feature.pet.navigation.navigateToAddPet
@@ -91,6 +94,10 @@ fun EponaNavHost(
                 navController.navigateToCreateAlert()
             }
         )
+        pickLocationScreen(
+            onLocationConfirmed = { navController.popBackStackWithLocation(it) },
+            onNavigateBack = { navController.popBackStack() }
+        )
 
         // ---- Notifications ----
         notificationsScreen(
@@ -140,6 +147,7 @@ fun EponaNavHost(
             onNavigateToAddPet = {
                 navController.navigateToAddPet()
             },
+            onNavigateToPickLocation = { navController.navigateToPickLocation(it) },
             onNavigateToSuccess = { alertId ->
                 navController.navigateToDetail(
                     alertId,
@@ -164,7 +172,8 @@ fun EponaNavHost(
             onNavigateBack = { navController.popBackStack() },
             onNavigateBackWithSuccess = {
                 navController.popBackStackWithMessage(sightingReportedMessage)
-            }
+            },
+            onNavigateToPickLocation = { navController.navigateToPickLocation(it) }
         )
 
         // ---- Pet Management ----
