@@ -11,5 +11,7 @@ data class AlertDetailUiState(
     val isCurrentUserOwner: Boolean = false,
     val showResolveDialog: Boolean = false,
     val isResolving: Boolean = false,
+    val showDeleteDialog: Boolean = false,
+    val isDeleting: Boolean = false,
     val error: String? = null
 )

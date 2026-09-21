@@ -9,6 +9,9 @@ sealed interface AlertDetailEvent {
     data object ResolveClicked : AlertDetailEvent
     data object ResolveConfirmed : AlertDetailEvent
     data object ResolveDismissed : AlertDetailEvent
+    data object DeleteClicked : AlertDetailEvent
+    data object DeleteConfirmed : AlertDetailEvent
+    data object DeleteDismissed : AlertDetailEvent
     data object RetryLoad : AlertDetailEvent
     data object ErrorDismissed : AlertDetailEvent
 }

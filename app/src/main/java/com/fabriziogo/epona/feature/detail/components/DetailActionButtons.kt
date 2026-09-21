@@ -10,8 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Phone
-import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,7 @@ fun DetailActionButtons(
     onContactClick: () -> Unit,
     onReportSightingClick: () -> Unit,
     onResolveClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -58,11 +60,13 @@ fun DetailActionButtons(
                 )
                 // With no sighting to report, contact is the only thing left to do
                 // here, so it takes the whole row rather than leaving a dead stub.
-                if (acceptsSightings) {
-                    EponaOutlinedButton(
+                if (isOwner) {
+                    EponaTonalButton(
                         text = "",
-                        onClick = onReportSightingClick,
-                        icon = Icons.Outlined.Visibility
+                        onClick = onDeleteClick,
+                        icon = Icons.Outlined.Delete,
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }

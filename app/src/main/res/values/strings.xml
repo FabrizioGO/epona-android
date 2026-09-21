@@ -156,6 +156,9 @@
     <string name="detail_sightings_label">Sightings</string>
     <string name="detail_unknown_location">unknown location</string>
     <string name="detail_address_unknown">Unknown</string>
+    <string name="detail_delete_alert">Delete alert</string>
+    <string name="detail_delete_alert_title">Delete this alert?</string>
+    <string name="detail_delete_alert_message">This will permanently remove the alert. This action cannot be undone.</string>
     <string name="resolve_default_pet_name">this pet</string>
     <string name="share_hashtag_text">Help bring them home! #Epona</string>
 

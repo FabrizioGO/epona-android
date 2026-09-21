@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.feature.detail.components.DeleteAlertDialog
 import com.fabriziogo.epona.feature.detail.components.DetailActionButtons
 import com.fabriziogo.epona.feature.detail.components.DetailCustodyNotice
 import com.fabriziogo.epona.feature.detail.components.DetailDescription
@@ -109,6 +110,14 @@ fun AlertDetailScreen(
                 ?: stringResource(R.string.resolve_default_pet_name),
             onConfirm = { viewModel.onEvent(AlertDetailEvent.ResolveConfirmed) },
             onDismiss = { viewModel.onEvent(AlertDetailEvent.ResolveDismissed) }
+        )
+    }
+
+    // Delete confirmation dialog
+    if (state.showDeleteDialog) {
+        DeleteAlertDialog(
+            onConfirm = { viewModel.onEvent(AlertDetailEvent.DeleteConfirmed) },
+            onDismiss = { viewModel.onEvent(AlertDetailEvent.DeleteDismissed) }
         )
     }
 
@@ -252,6 +261,9 @@ fun AlertDetailScreen(
                             },
                             onResolveClick = {
                                 viewModel.onEvent(AlertDetailEvent.ResolveClicked)
+                            },
+                            onDeleteClick = {
+                                viewModel.onEvent(AlertDetailEvent.DeleteClicked)
                             },
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )

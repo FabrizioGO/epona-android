@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -59,19 +60,26 @@ fun EponaTonalButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    fullWidth: Boolean = false
+    fullWidth: Boolean = false,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
+    contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
 ) {
     FilledTonalButton(
         onClick = onClick,
         modifier = if (fullWidth) modifier.fillMaxWidth().height(48.dp)
             else modifier.height(48.dp),
-        shape = MaterialTheme.shapes.large
+        shape = MaterialTheme.shapes.large,
+        colors = ButtonDefaults.filledTonalButtonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
     ) {
         icon?.let {
             Icon(it, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
         }
-        Text(text, style = EponaTypography.labelLarge)
+        if (text.isNotEmpty())
+            Text(text, style = EponaTypography.labelLarge)
     }
 }
 

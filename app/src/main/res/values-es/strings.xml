@@ -115,6 +115,7 @@
     <string name="detail_time">Hora</string>
     <string name="detail_unknown_location">ubicación desconocida</string>
     <string name="detail_address_unknown">Desconocido</string>
+    <string name="detail_delete_alert_message">La alerta se borrará permanentemente. Esta acción no puede deshacerse</string>
     <string name="resolve_default_pet_name">esta mascota</string>
     <string name="resolve_success_title">¡Mascota Reunida!</string>
     <string name="sighting_location_title">Ubicación</string>
@@ -310,6 +311,7 @@
     <string name="alert_location_unknown">Ubicación desconocida</string>
     <plurals name="alert_sighting_count">
         <item quantity="one">%d avistamiento</item>
+        <item quantity="other">%d avistamientos</item>
         <item quantity="many">%d avistamientos</item>
     </plurals>
 
@@ -367,4 +369,6 @@
     <string name="detail_badge_in_safe_hands">A salvo</string>
     <string name="detail_found_at">Encontrada en</string>
     <string name="detail_found_time">Encontrada</string>
+    <string name="detail_delete_alert">Eliminar Alerta</string>
+    <string name="detail_delete_alert_title">¿Desea borrar esta alerta?</string>
 </resources>

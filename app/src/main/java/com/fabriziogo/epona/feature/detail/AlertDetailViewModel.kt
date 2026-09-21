@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.domain.repository.AuthRepository
+import com.fabriziogo.epona.core.domain.usecase.alert.DeleteAlertUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.GetAlertDetailUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ResolveAlertUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.GetSightingTrailUseCase
@@ -27,6 +28,7 @@ class AlertDetailViewModel @Inject constructor(
     private val getSightingTrail: GetSightingTrailUseCase,
     private val observeSightings: ObserveSightingsUseCase,
     private val resolveAlert: ResolveAlertUseCase,
+    private val deleteAlert: DeleteAlertUseCase,
     private val authRepo: AuthRepository
 ) : ViewModel() {
 
@@ -71,6 +73,14 @@ class AlertDetailViewModel @Inject constructor(
 
             AlertDetailEvent.ResolveDismissed ->
                 _state.update { it.copy(showResolveDialog = false) }
+
+            AlertDetailEvent.DeleteClicked ->
+                _state.update { it.copy(showDeleteDialog = true) }
+
+            AlertDetailEvent.DeleteConfirmed -> deleteCurrentAlert()
+
+            AlertDetailEvent.DeleteDismissed ->
+                _state.update { it.copy(showDeleteDialog = false) }
 
             // Only the detail: it is what decides whether there is a trail to load.
             AlertDetailEvent.RetryLoad -> loadAlertDetail()
@@ -167,6 +177,25 @@ class AlertDetailViewModel @Inject constructor(
                         it.copy(
                             isResolving = false,
                             error = err.message ?: "Failed to resolve alert"
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun deleteCurrentAlert() {
+        viewModelScope.launch {
+            _state.update { it.copy(isDeleting = true, showDeleteDialog = false) }
+
+            deleteAlert(alertId)
+                .onSuccess {
+                    emitNav(DetailNavEvent.NavigateBack)
+                }
+                .onFailure { err ->
+                    _state.update {
+                        it.copy(
+                            isDeleting = false,
+                            error = err.message ?: "Failed to delete alert"
                         )
                     }
                 }
