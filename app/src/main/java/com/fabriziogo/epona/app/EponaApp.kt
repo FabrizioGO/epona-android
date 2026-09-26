@@ -89,6 +89,7 @@ fun EponaApp(
         EponaNavHost(
             navController = appState.navController,
             isAuthenticated = authState,
+            onNavigateToTopLevel = appState::navigateToTopLevel,
             onLaunchGoogleSignIn = onLaunchGoogleSignIn,
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone,

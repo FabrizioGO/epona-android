@@ -19,10 +19,8 @@ import com.fabriziogo.epona.feature.detail.navigation.navigateToDetail
 import com.fabriziogo.epona.feature.home.navigation.HOME_ROUTE
 import com.fabriziogo.epona.feature.home.navigation.homeScreen
 import com.fabriziogo.epona.feature.map.navigation.mapScreen
-import com.fabriziogo.epona.feature.map.navigation.navigateToMap
 import com.fabriziogo.epona.feature.map.navigation.navigateToPickLocation
 import com.fabriziogo.epona.feature.map.navigation.pickLocationScreen
-import com.fabriziogo.epona.feature.notifications.navigation.navigateToNotifications
 import com.fabriziogo.epona.feature.notifications.navigation.notificationsScreen
 import com.fabriziogo.epona.feature.pet.navigation.navigateToAddPet
 import com.fabriziogo.epona.feature.pet.navigation.navigateToEditPet
@@ -39,6 +37,7 @@ import com.fabriziogo.epona.feature.sighting.navigation.sightingScreens
 fun EponaNavHost(
     navController: NavHostController,
     isAuthenticated: Boolean,
+    onNavigateToTopLevel: (TopLevelDestination) -> Unit,
     onLaunchGoogleSignIn: () -> Unit,
     onShareAlert: (String, String) -> Unit,
     onDialPhone: (String) -> Unit,
@@ -75,13 +74,13 @@ fun EponaNavHost(
                 // TODO: Navigate to search screen
             },
             onNavigateToNotifications = {
-                navController.navigateToNotifications()
+                onNavigateToTopLevel(TopLevelDestination.ALERTS)
             },
             onNavigateToCreateAlert = {
                 navController.navigateToCreateAlert()
             },
             onNavigateToMap = {
-                navController.navigateToMap()
+                onNavigateToTopLevel(TopLevelDestination.MAP)
             }
         )
 
@@ -135,7 +134,7 @@ fun EponaNavHost(
                 navController.navigateToReportSighting(alertId)
             },
             onNavigateToMap = { lat, lng ->
-                navController.navigateToMap()
+                onNavigateToTopLevel(TopLevelDestination.MAP)
             },
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone

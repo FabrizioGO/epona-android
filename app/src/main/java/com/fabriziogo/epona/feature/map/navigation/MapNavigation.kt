@@ -16,10 +16,6 @@ const val PICK_LAT_ARG = "lat"
 const val PICK_LNG_ARG = "lng"
 const val PICK_LOCATION_ROUTE = "location/pick?lat={lat}&lng={lng}"
 
-fun NavController.navigateToMap(navOptions: NavOptions? = null) {
-    navigate(MAP_ROUTE, navOptions)
-}
-
 fun NavController.navigateToPickLocation(
     initial: Location?,
     navOptions: NavOptions? = null
