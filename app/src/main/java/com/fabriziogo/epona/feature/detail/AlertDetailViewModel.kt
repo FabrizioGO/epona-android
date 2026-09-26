@@ -3,11 +3,13 @@ package com.fabriziogo.epona.feature.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabriziogo.epona.core.domain.model.ReportReason
 import com.fabriziogo.epona.core.domain.model.acceptsSightings
 import com.fabriziogo.epona.core.domain.repository.AuthRepository
 import com.fabriziogo.epona.core.domain.usecase.alert.DeleteAlertUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.GetAlertDetailUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ResolveAlertUseCase
+import com.fabriziogo.epona.core.domain.usecase.report.ReportContentUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.GetSightingTrailUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.ObserveSightingsUseCase
 import com.fabriziogo.epona.feature.detail.navigation.ALERT_ID_ARG
@@ -29,6 +31,7 @@ class AlertDetailViewModel @Inject constructor(
     private val observeSightings: ObserveSightingsUseCase,
     private val resolveAlert: ResolveAlertUseCase,
     private val deleteAlert: DeleteAlertUseCase,
+    private val reportContent: ReportContentUseCase,
     private val authRepo: AuthRepository
 ) : ViewModel() {
 
@@ -81,6 +84,17 @@ class AlertDetailViewModel @Inject constructor(
 
             AlertDetailEvent.DeleteDismissed ->
                 _state.update { it.copy(showDeleteDialog = false) }
+
+            AlertDetailEvent.FlagClicked ->
+                _state.update { it.copy(showFlagDialog = true) }
+
+            is AlertDetailEvent.FlagSubmitted -> submitFlag(event.reason, event.details)
+
+            AlertDetailEvent.FlagDismissed ->
+                _state.update { it.copy(showFlagDialog = false) }
+
+            AlertDetailEvent.FlagSuccessMessageShown ->
+                _state.update { it.copy(flagSuccessMessage = null) }
 
             // Only the detail: it is what decides whether there is a trail to load.
             AlertDetailEvent.RetryLoad -> loadAlertDetail()
@@ -196,6 +210,30 @@ class AlertDetailViewModel @Inject constructor(
                         it.copy(
                             isDeleting = false,
                             error = err.message ?: "Failed to delete alert"
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun submitFlag(reason: ReportReason, details: String?) {
+        viewModelScope.launch {
+            _state.update { it.copy(isSubmittingFlag = true) }
+            reportContent(alertId, reason, details)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            isSubmittingFlag = false,
+                            showFlagDialog = false,
+                            flagSuccessMessage = "Thanks, we'll review it"
+                        )
+                    }
+                }
+                .onFailure { err ->
+                    _state.update {
+                        it.copy(
+                            isSubmittingFlag = false,
+                            error = err.message ?: "Failed to submit report"
                         )
                     }
                 }

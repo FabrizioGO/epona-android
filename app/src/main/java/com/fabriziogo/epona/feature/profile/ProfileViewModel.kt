@@ -3,6 +3,7 @@ package com.fabriziogo.epona.feature.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabriziogo.epona.core.domain.usecase.auth.DeleteAccountUseCase
 import com.fabriziogo.epona.core.domain.usecase.auth.GetCurrentUserUseCase
 import com.fabriziogo.epona.core.domain.usecase.auth.SignOutUseCase
 import com.fabriziogo.epona.core.domain.usecase.user.GetUserStatsUseCase
@@ -25,7 +26,8 @@ class ProfileViewModel @Inject constructor(
     private val getUserStats: GetUserStatsUseCase,
     private val updateAvatar: UpdateAvatarUseCase,
     private val imageProcessor: ImageProcessor,
-    private val signOut: SignOutUseCase
+    private val signOut: SignOutUseCase,
+    private val deleteAccount: DeleteAccountUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileUiState())
@@ -45,6 +47,11 @@ class ProfileViewModel @Inject constructor(
             ProfileEvent.SignOutClicked -> _state.update { it.copy(showSignOutDialog = true) }
             ProfileEvent.SignOutConfirmed -> performSignOut()
             ProfileEvent.SignOutDismissed -> _state.update { it.copy(showSignOutDialog = false) }
+            ProfileEvent.DeleteAccountClicked ->
+                _state.update { it.copy(showDeleteAccountDialog = true) }
+            ProfileEvent.DeleteAccountConfirmed -> performDeleteAccount()
+            ProfileEvent.DeleteAccountDismissed ->
+                _state.update { it.copy(showDeleteAccountDialog = false) }
             is ProfileEvent.AvatarPicked -> updateAvatarPhoto(event.uri)
             ProfileEvent.Refresh -> loadProfile()
             ProfileEvent.ErrorDismissed -> _state.update { it.copy(error = null) }
@@ -131,6 +138,25 @@ class ProfileViewModel @Inject constructor(
                         it.copy(
                             isSigningOut = false,
                             error = err.message ?: "Failed to sign out"
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun performDeleteAccount() {
+        viewModelScope.launch {
+            _state.update { it.copy(isDeletingAccount = true, showDeleteAccountDialog = false) }
+            deleteAccount()
+                .onSuccess {
+                    _state.update { it.copy(isDeletingAccount = false) }
+                    _navEvents.send(ProfileNavEvent.NavigateToAuth)
+                }
+                .onFailure { err ->
+                    _state.update {
+                        it.copy(
+                            isDeletingAccount = false,
+                            error = err.message ?: "Failed to delete account"
                         )
                     }
                 }

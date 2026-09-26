@@ -2,6 +2,7 @@ package com.fabriziogo.epona.feature.detail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,13 +13,21 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -45,7 +54,9 @@ fun DetailHero(
     alertType: AlertType,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isOwner: Boolean = false,
+    onFlagClick: (() -> Unit)? = null
 ) {
     val bgColor = if (alertType == AlertType.LOST)
         EponaColors.LostContainer else EponaColors.FoundContainer
@@ -110,21 +121,57 @@ fun DetailHero(
             )
         }
 
-        // Share button
-        IconButton(
-            onClick = onShareClick,
+        // Share + overflow (flag), top-end
+        Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
-                .padding(end = 12.dp, top = 12.dp),
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f)
-            )
+                .padding(end = 12.dp, top = 12.dp)
         ) {
-            Icon(
-                Icons.Outlined.Share,
-                contentDescription = stringResource(R.string.action_share)
-            )
+            IconButton(
+                onClick = onShareClick,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f)
+                )
+            ) {
+                Icon(
+                    Icons.Outlined.Share,
+                    contentDescription = stringResource(R.string.action_share)
+                )
+            }
+
+            // Only other users' posts can be flagged -- an owner has no reason to
+            // report their own alert, and DetailActionButtons already gives them
+            // a real Delete action for it.
+            if (!isOwner && onFlagClick != null) {
+                var menuExpanded by remember { mutableStateOf(false) }
+
+                IconButton(
+                    onClick = { menuExpanded = true },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.9f)
+                    )
+                ) {
+                    Icon(
+                        Icons.Outlined.MoreVert,
+                        contentDescription = stringResource(R.string.action_more_options)
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.report_flag_alert)) },
+                        leadingIcon = { Icon(Icons.Outlined.Flag, contentDescription = null) },
+                        onClick = {
+                            menuExpanded = false
+                            onFlagClick()
+                        }
+                    )
+                }
+            }
         }
     }
 }

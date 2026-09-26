@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.domain.model.ReportReason
+
 sealed interface AlertDetailEvent {
     data object BackClicked : AlertDetailEvent
     data object ShareClicked : AlertDetailEvent
@@ -12,6 +14,10 @@ sealed interface AlertDetailEvent {
     data object DeleteClicked : AlertDetailEvent
     data object DeleteConfirmed : AlertDetailEvent
     data object DeleteDismissed : AlertDetailEvent
+    data object FlagClicked : AlertDetailEvent
+    data class FlagSubmitted(val reason: ReportReason, val details: String?) : AlertDetailEvent
+    data object FlagDismissed : AlertDetailEvent
+    data object FlagSuccessMessageShown : AlertDetailEvent
     data object RetryLoad : AlertDetailEvent
     data object ErrorDismissed : AlertDetailEvent
 }

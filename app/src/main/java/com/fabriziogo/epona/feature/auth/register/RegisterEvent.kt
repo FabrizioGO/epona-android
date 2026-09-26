@@ -6,6 +6,7 @@ sealed interface RegisterEvent {
     data class EmailChanged(val email: String) : RegisterEvent
     data class PasswordChanged(val password: String) : RegisterEvent
     data class ConfirmPasswordChanged(val password: String) : RegisterEvent
+    data class TermsAcceptedChanged(val accepted: Boolean) : RegisterEvent
     data object SignUpClicked : RegisterEvent
     data class GoogleSignInResult(val idToken: String) : RegisterEvent
     data object GoogleSignInFailed : RegisterEvent

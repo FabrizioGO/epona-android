@@ -30,10 +30,17 @@ interface AuthRepository {
     suspend fun signUpWithEmail(
         email: String,
         password: String,
-        displayName: String
+        displayName: String,
+        acceptedTermsVersion: String
     ): Result<SignUpResult>
 
     suspend fun signInWithGoogle(idToken: String): Result<User>
 
     suspend fun signOut(): Result<Unit>
+
+    /**
+     * Deletes the signed-in user's account, every row and photo it owns on the
+     * server, and the local Room cache. Irreversible.
+     */
+    suspend fun deleteAccount(): Result<Unit>
 }

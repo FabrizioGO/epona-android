@@ -418,3 +418,10 @@ enabled = true
 # Authenticated by the x-epona-push-key header instead: JWT verification here would
 # accept the anon key, which ships inside the Android APK.
 verify_jwt = false
+
+[functions.delete-account]
+enabled = true
+# The caller's own token is verified inside the function against GET /auth/v1/user
+# (or, for an admin-initiated deletion, the x-epona-admin-key header) -- same
+# reasoning as push-notification above.
+verify_jwt = false

@@ -38,6 +38,7 @@ import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
+import com.fabriziogo.epona.feature.auth.components.LegalLinksText
 import com.fabriziogo.epona.feature.auth.components.OrDivider
 import com.fabriziogo.epona.feature.auth.components.PasswordTextField
 import com.fabriziogo.epona.feature.auth.components.SocialSignInButton
@@ -182,6 +183,19 @@ fun LoginContent(
                         textAlign = TextAlign.Center
                     )
                 }
+
+                Spacer(Modifier.height(8.dp))
+
+                // Passive notice: Google sign-in on this screen can also create a
+                // new account, so the same consent applies even without a checkbox.
+                LegalLinksText(
+                    text = stringResource(
+                        R.string.login_legal_notice,
+                        stringResource(R.string.url_terms),
+                        stringResource(R.string.url_privacy_policy)
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             Spacer(Modifier.navigationBarsPadding())

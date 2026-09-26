@@ -13,6 +13,7 @@ data class RegisterUiState(
     val confirmPasswordError: String? = null,
     val isLoading: Boolean = false,
     val isGoogleLoading: Boolean = false,
+    val acceptedTerms: Boolean = false,
     val error: String? = null,
     /**
      * Set when the account was created but Supabase requires the emailed

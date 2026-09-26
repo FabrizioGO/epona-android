@@ -4,6 +4,8 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.functions.Functions
+import io.github.jan.supabase.functions.functions
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.Realtime
@@ -31,6 +33,7 @@ class SupabaseProvider @Inject constructor() {
             install(Postgrest)
             install(Storage)
             install(Realtime)
+            install(Functions)
         }
     }
 
@@ -38,4 +41,5 @@ class SupabaseProvider @Inject constructor() {
     val postgrest get() = client.postgrest
     val storage get() = client.storage
     val realtime get() = client.realtime
+    val functions get() = client.functions
 }

@@ -56,7 +56,8 @@
     <string name="settings_push_desc">Recibe alertas de mascotas perdidas cercanas</string>
     <string name="settings_about_title">Acerca de</string>
     <string name="settings_version">Versión</string>
-    <string name="settings_terms">Terminos de Servicio</string>
+    <string name="settings_terms">Términos de Servicio</string>
+    <string name="settings_community_guidelines">Normas de la Comunidad</string>
     <string name="species_dog">Perro</string>
     <string name="species_cat">Gato</string>
     <string name="species_other">Otros</string>
@@ -133,6 +134,9 @@
     <string name="profile_help">Ayuda  Soporte</string>
     <string name="profile_section_my_stuff">Mis cosas</string>
     <string name="profile_section_account">Cuenta</string>
+    <string name="profile_delete_account">Eliminar cuenta</string>
+    <string name="profile_delete_account_title">¿Eliminar tu cuenta?</string>
+    <string name="profile_delete_account_message">Esto elimina permanentemente tu perfil, mascotas, alertas, avistamientos y fotos. Esta acción no se puede deshacer.</string>
     <string name="profile_pets_registered">%d registrados</string>
     <string name="notification_channel_name">Alertas de Mascotas</string>
     <string name="profile_alerts_active">%d activos</string>
@@ -160,6 +164,20 @@
     <string name="action_go_back">Volver</string>
     <string name="action_search">Buscar</string>
     <string name="action_filters">Filtros</string>
+    <string name="action_more_options">Más opciones</string>
+
+    <!-- Reportes (moderación de contenido) -->
+    <string name="report_flag_alert">Marcar como inapropiado</string>
+    <string name="report_dialog_title">Reportar contenido</string>
+    <string name="report_dialog_details_label">Detalles adicionales (opcional)</string>
+    <string name="report_dialog_submit">Enviar reporte</string>
+    <string name="report_reason_scam_or_fraud">Estafa o fraude</string>
+    <string name="report_reason_false_information">Información falsa</string>
+    <string name="report_reason_inappropriate">Contenido inapropiado</string>
+    <string name="report_reason_harassment">Acoso o discurso de odio</string>
+    <string name="report_reason_animal_cruelty">Crueldad animal</string>
+    <string name="report_reason_spam">Spam</string>
+    <string name="report_reason_other">Otro</string>
     <string name="time_just_now">justo ahora</string>
     <string name="time_minutes_ago">Hace %d minutos</string>
     <string name="time_hours_ago">Hace %d horas</string>
@@ -182,14 +200,19 @@
     <string name="action_confirm">Confirmar</string>
     <string name="action_share">Compartir</string>
     <string name="action_retry">Reintentar</string>
-    <string name="settings_privacy">Politicas de Privacidad</string>
+    <string name="settings_privacy">Política de Privacidad</string>
     <string name="settings_radius_title">Radio de Alerta</string>
     <string name="pet_edit_title">Editar Mascota</string>
     <string name="auth_no_account">¿Aún no tienes cuenta? Registrate</string>
     <string name="auth_has_account">¿Ya tienes cuenta? Inicia Sesión</string>
-    <string name="auth_terms">Al crear una cuenta usted está de acuerdo con los Términos de Servicio y las Políticas de Privacidad de Epona.</string>
+    <string name="auth_terms">Tengo 18 años o más y acepto los &lt;a href=\"%1$s\"&gt;Términos de Servicio&lt;/a&gt; y la &lt;a href=\"%2$s\"&gt;Política de Privacidad&lt;/a&gt; de Epona.</string>
+    <string name="login_legal_notice">Al continuar, aceptas nuestros &lt;a href=\"%1$s\"&gt;Términos de Servicio&lt;/a&gt; y nuestra &lt;a href=\"%2$s\"&gt;Política de Privacidad&lt;/a&gt;.</string>
     <string name="auth_sign_out_title">¿Cerrar sesión?</string>
     <string name="auth_sign_out_message">Necesitas volver a iniciar sesión para acceder a tus alertas y mascotas.</string>
+    <string name="url_terms">https://fabriziogo.github.io/epona-android/es/terms.html</string>
+    <string name="url_privacy_policy">https://fabriziogo.github.io/epona-android/es/privacy.html</string>
+    <string name="url_community_guidelines">https://fabriziogo.github.io/epona-android/es/terms.html#normas-de-la-comunidad</string>
+    <string name="url_account_deletion">https://fabriziogo.github.io/epona-android/es/delete-account.html</string>
     <string name="auth_confirm_email_title">Confirme su email</string>
     <string name="auth_confirm_email_message">Enviamos un link de confirmación a %1$s. Abralo para finalizar la creación de su cuenta, luego de inicie sesión.</string>
     <string name="auth_go_to_sign_in">Iniciar Sesión</string>

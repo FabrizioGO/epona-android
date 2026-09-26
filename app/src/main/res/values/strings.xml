@@ -28,12 +28,27 @@
     <string name="auth_forgot_password">Forgot password?</string>
     <string name="auth_no_account">Don\'t have an account? Sign up</string>
     <string name="auth_has_account">Already have an account? Sign in</string>
-    <string name="auth_terms">By creating an account, you agree to Epona\'s Terms of Service and Privacy Policy.</string>
+    <!--
+        %1$s/%2$s are the Terms/Privacy URLs, substituted before the string is
+        parsed as HTML by AnnotatedString.fromHtml() — see LegalLinksText.kt.
+        The angle brackets are escaped so aapt treats this as plain text, not markup.
+    -->
+    <string name="auth_terms">I\'m 18 or older and I agree to Epona\'s &lt;a href=\"%1$s\"&gt;Terms of Service&lt;/a&gt; and &lt;a href=\"%2$s\"&gt;Privacy Policy&lt;/a&gt;.</string>
+    <string name="login_legal_notice">By continuing, you agree to our &lt;a href=\"%1$s\"&gt;Terms of Service&lt;/a&gt; and &lt;a href=\"%2$s\"&gt;Privacy Policy&lt;/a&gt;.</string>
     <string name="auth_sign_out_title">Sign out?</string>
     <string name="auth_sign_out_message">You\'ll need to sign in again to access your alerts and pets.</string>
     <string name="auth_confirm_email_title">Confirm your email</string>
     <string name="auth_confirm_email_message">We sent a confirmation link to %1$s. Open it to finish creating your account, then sign in.</string>
     <string name="auth_go_to_sign_in">Go to sign in</string>
+
+    <!--
+        Legal document URLs (GitHub Pages, served from /docs). Kept as string
+        resources so each locale points at its own translated page.
+    -->
+    <string name="url_terms">https://fabriziogo.github.io/epona-android/terms.html</string>
+    <string name="url_privacy_policy">https://fabriziogo.github.io/epona-android/privacy.html</string>
+    <string name="url_community_guidelines">https://fabriziogo.github.io/epona-android/terms.html#community-guidelines</string>
+    <string name="url_account_deletion">https://fabriziogo.github.io/epona-android/delete-account.html</string>
 
     <!-- Validation -->
     <string name="error_email_required">Email is required</string>
@@ -233,6 +248,9 @@
     <string name="profile_section_my_stuff">My Stuff</string>
     <string name="profile_section_app" translatable="false">App</string>
     <string name="profile_section_account">Account</string>
+    <string name="profile_delete_account">Delete account</string>
+    <string name="profile_delete_account_title">Delete your account?</string>
+    <string name="profile_delete_account_message">This permanently deletes your profile, pets, alerts, sightings, and photos. This cannot be undone.</string>
     <string name="profile_pets_registered">%d registered</string>
     <string name="profile_alerts_active">%d active</string>
     <string name="profile_settings_subtitle">Notifications, radius, preferences</string>
@@ -328,6 +346,7 @@
     <string name="settings_version">Version</string>
     <string name="settings_privacy">Privacy Policy</string>
     <string name="settings_terms">Terms of Service</string>
+    <string name="settings_community_guidelines">Community Guidelines</string>
 
     <!-- Species -->
     <string name="species_dog">Dog</string>
@@ -362,6 +381,20 @@
     <string name="action_go_back">Go Back</string>
     <string name="action_search">Search</string>
     <string name="action_filters">Filters</string>
+    <string name="action_more_options">More options</string>
+
+    <!-- Reporting (UGC moderation) -->
+    <string name="report_flag_alert">Flag as inappropriate</string>
+    <string name="report_dialog_title">Report content</string>
+    <string name="report_dialog_details_label">Additional details (optional)</string>
+    <string name="report_dialog_submit">Submit report</string>
+    <string name="report_reason_scam_or_fraud">Scam or fraud</string>
+    <string name="report_reason_false_information">False information</string>
+    <string name="report_reason_inappropriate">Inappropriate content</string>
+    <string name="report_reason_harassment">Harassment or hate speech</string>
+    <string name="report_reason_animal_cruelty">Animal cruelty</string>
+    <string name="report_reason_spam">Spam</string>
+    <string name="report_reason_other">Other</string>
 
     <!-- Time -->
     <string name="time_just_now">just now</string>

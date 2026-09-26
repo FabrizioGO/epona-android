@@ -10,6 +10,9 @@ sealed interface ProfileEvent {
     data object SignOutClicked : ProfileEvent
     data object SignOutConfirmed : ProfileEvent
     data object SignOutDismissed : ProfileEvent
+    data object DeleteAccountClicked : ProfileEvent
+    data object DeleteAccountConfirmed : ProfileEvent
+    data object DeleteAccountDismissed : ProfileEvent
     data class AvatarPicked(val uri: Uri) : ProfileEvent
     data object Refresh : ProfileEvent
     data object ErrorDismissed : ProfileEvent
