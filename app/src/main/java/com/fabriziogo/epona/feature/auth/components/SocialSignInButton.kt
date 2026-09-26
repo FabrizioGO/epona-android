@@ -19,14 +19,15 @@ fun SocialSignInButton(
     text: String,
     isLoading: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     OutlinedButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp),
-        enabled = !isLoading,
+        enabled = enabled && !isLoading,
         shape = MaterialTheme.shapes.large
     ) {
         if (isLoading) {

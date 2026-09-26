@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Campaign
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Pets
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +36,7 @@ import com.fabriziogo.epona.BuildConfig
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
+import com.fabriziogo.epona.feature.profile.components.DeleteAccountDialog
 import com.fabriziogo.epona.feature.profile.components.ProfileHeader
 import com.fabriziogo.epona.feature.profile.components.SettingsItem
 import com.fabriziogo.epona.feature.profile.components.SettingsSection
@@ -116,6 +118,13 @@ fun ProfileScreen(
         )
     }
 
+    if (state.showDeleteAccountDialog) {
+        DeleteAccountDialog(
+            onConfirm = { viewModel.onEvent(ProfileEvent.DeleteAccountConfirmed) },
+            onDismiss = { viewModel.onEvent(ProfileEvent.DeleteAccountDismissed) }
+        )
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -127,7 +136,7 @@ fun ProfileScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
 
-        if (state.isLoading) {
+        if (state.isLoading || state.isDeletingAccount) {
             LoadingIndicator(modifier = Modifier.padding(padding))
             return@Scaffold
         }
@@ -199,6 +208,13 @@ fun ProfileScreen(
                     isDestructive = true,
                     showChevron = false,
                     onClick = { viewModel.onEvent(ProfileEvent.SignOutClicked) }
+                )
+                SettingsItem(
+                    icon = Icons.Outlined.DeleteForever,
+                    label = stringResource(R.string.profile_delete_account),
+                    isDestructive = true,
+                    showChevron = false,
+                    onClick = { viewModel.onEvent(ProfileEvent.DeleteAccountClicked) }
                 )
             }
 

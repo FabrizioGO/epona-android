@@ -48,6 +48,9 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.ConfirmPasswordChanged -> {
                 _state.update { it.copy(confirmPassword = event.password, confirmPasswordError = null) }
             }
+            is RegisterEvent.TermsAcceptedChanged -> {
+                _state.update { it.copy(acceptedTerms = event.accepted) }
+            }
             is RegisterEvent.SignUpClicked -> signUpWithEmail()
             is RegisterEvent.GoogleSignInResult -> signInWithGoogle(event.idToken)
             is RegisterEvent.GoogleSignInFailed -> {
@@ -97,7 +100,7 @@ class RegisterViewModel @Inject constructor(
 
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
-            signUp(s.email, s.password, displayName)
+            signUp(s.email, s.password, displayName, s.acceptedTerms)
                 .onSuccess { result ->
                     _state.update { it.copy(isLoading = false) }
                     when (result) {

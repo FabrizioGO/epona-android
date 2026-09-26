@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.supabase.postgrest)
     implementation(libs.supabase.realtime)
     implementation(libs.supabase.storage)
+    implementation(libs.supabase.functions)
     implementation(libs.ktor.client.android)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -90,8 +91,10 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.play.services.location)
     // Firebase versions come from the BOM below; never pin a Firebase artifact by hand.
+    // firebase-analytics is deliberately not included: it would collect device/app data
+    // this app never asked for, and the Privacy Policy / Play Data Safety form would
+    // have to disclose it for a feature nothing here actually uses.
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
     implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

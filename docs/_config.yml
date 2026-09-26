@@ -1,0 +1,31 @@
+title: Epona
+description: Lost and found pet alerts
+theme: jekyll-theme-minimal
+
+# ---------------------------------------------------------------------------
+# Single source of truth for every placeholder used across docs/*.md.
+# Fill these in before submitting the app to Google Play, then re-publish
+# (GitHub Pages rebuilds automatically on push to the branch it's configured
+# to serve from).
+# ---------------------------------------------------------------------------
+
+# Your full legal name (publisher: individual). Shown as the data controller
+# in the Privacy Policy and as "we" / "us" throughout the Terms.
+legal_name: "[YOUR FULL LEGAL NAME]"
+
+# An inbox you actually monitor. Used for privacy requests, deletion requests
+# received by email, and general legal contact.
+contact_email: "[YOUR CONTACT EMAIL]"
+
+# Where the Supabase project (database, auth, storage) is hosted, e.g.
+# "the United States" or "the European Union" — check your Supabase project
+# settings. This drives the international-transfers section of the policy.
+server_region: "[SUPABASE PROJECT REGION]"
+
+# Bump this (and LegalTerms.VERSION in the Android app) whenever the Terms
+# or Privacy Policy change materially, so re-acceptance can be required.
+terms_version: "2026-09-26"
+
+# Country whose law governs the Terms and where you'd expect any dispute to
+# be resolved.
+governing_country: "Venezuela"

@@ -9,6 +9,8 @@ data class ProfileUiState(
     val stats: UserStats = UserStats(),
     val showSignOutDialog: Boolean = false,
     val isSigningOut: Boolean = false,
+    val showDeleteAccountDialog: Boolean = false,
+    val isDeletingAccount: Boolean = false,
     /**
      * Local cache URI of the avatar being uploaded. Shown optimistically while
      * the upload + profile write are in flight; cleared once they settle.

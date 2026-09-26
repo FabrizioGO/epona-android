@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -69,13 +70,16 @@ class AuthService @Inject constructor(
     suspend fun signUpWithEmail(
         email: String,
         password: String,
-        displayName: String
+        displayName: String,
+        acceptedTermsVersion: String
     ): SignUpOutcome {
         val signedUpUser = auth.signUpWith(Email) {
             this.email = email
             this.password = password
             this.data = buildJsonObject {
                 put("display_name", displayName)
+                put("terms_version", acceptedTermsVersion)
+                put("terms_accepted_at", Instant.now().toString())
             }
         }
         val session = auth.currentSessionOrNull()
@@ -94,6 +98,22 @@ class AuthService @Inject constructor(
     }
 
     suspend fun signOut() {
+        auth.signOut()
+    }
+
+    /**
+     * Deletes the signed-in user's account and every row/file it owns, via the
+     * delete-account Edge Function -- see that function and
+     * public.delete_user_data (supabase/migrations/20260926000100_account_deletion.sql)
+     * for what actually gets removed. The Functions plugin attaches the current
+     * session's bearer token automatically, which is what the function uses to
+     * resolve which account to delete.
+     *
+     * Signs out locally afterwards: the server-side account is already gone, so
+     * there is nothing left for a stored session to refresh against.
+     */
+    suspend fun deleteAccount() {
+        supabase.functions.invoke("delete-account")
         auth.signOut()
     }
 

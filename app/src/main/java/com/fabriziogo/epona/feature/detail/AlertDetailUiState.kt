@@ -13,5 +13,9 @@ data class AlertDetailUiState(
     val isResolving: Boolean = false,
     val showDeleteDialog: Boolean = false,
     val isDeleting: Boolean = false,
+    /** Whether FlagContentDialog is showing, for this alert. */
+    val showFlagDialog: Boolean = false,
+    val isSubmittingFlag: Boolean = false,
+    val flagSuccessMessage: String? = null,
     val error: String? = null
 )

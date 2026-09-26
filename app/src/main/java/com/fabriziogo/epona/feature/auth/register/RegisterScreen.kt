@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
+import com.fabriziogo.epona.feature.auth.components.LegalLinksText
 import com.fabriziogo.epona.feature.auth.components.OrDivider
 import com.fabriziogo.epona.feature.auth.components.PasswordTextField
 import com.fabriziogo.epona.feature.auth.components.SocialSignInButton
@@ -132,7 +135,8 @@ private fun RegisterContent(
                 SocialSignInButton(
                     text = stringResource(R.string.auth_google),
                     isLoading = state.isGoogleLoading,
-                    onClick = onLaunchGoogleSignIn
+                    onClick = onLaunchGoogleSignIn,
+                    enabled = state.acceptedTerms
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -203,6 +207,28 @@ private fun RegisterContent(
 
                 Spacer(Modifier.height(20.dp))
 
+                // Terms + Privacy consent checkbox
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = state.acceptedTerms,
+                        onCheckedChange = { onEvent(RegisterEvent.TermsAcceptedChanged(it)) }
+                    )
+                    LegalLinksText(
+                        text = stringResource(
+                            R.string.auth_terms,
+                            stringResource(R.string.url_terms),
+                            stringResource(R.string.url_privacy_policy)
+                        ),
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
                 // Sign up button
                 EponaFilledButton(
                     text = stringResource(R.string.auth_sign_up),
@@ -214,17 +240,7 @@ private fun RegisterContent(
                         && state.email.isNotBlank()
                         && state.password.isNotBlank()
                         && state.confirmPassword.isNotBlank()
-                )
-
-                Spacer(Modifier.height(12.dp))
-
-                // Terms text
-                Text(
-                    text = stringResource(R.string.auth_terms),
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                        && state.acceptedTerms
                 )
 
                 Spacer(Modifier.height(12.dp))

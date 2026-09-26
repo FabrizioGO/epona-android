@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.profile.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -21,6 +25,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +49,7 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val notificationPermission = rememberNotificationPermissionState()
+    val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(state.error) {
         state.error?.let {
@@ -136,15 +142,32 @@ fun SettingsScreen(
                         )
                     }
                 )
+                val privacyUrl = stringResource(R.string.url_privacy_policy)
                 ListItem(
                     headlineContent = {
                         Text(stringResource(R.string.settings_privacy), style = EponaTypography.bodyLarge)
-                    }
+                    },
+                    trailingContent = { Icon(Icons.Outlined.OpenInNew, contentDescription = null) },
+                    modifier = Modifier.clickable { uriHandler.openUri(privacyUrl) }
                 )
+                val termsUrl = stringResource(R.string.url_terms)
                 ListItem(
                     headlineContent = {
                         Text(stringResource(R.string.settings_terms), style = EponaTypography.bodyLarge)
-                    }
+                    },
+                    trailingContent = { Icon(Icons.Outlined.OpenInNew, contentDescription = null) },
+                    modifier = Modifier.clickable { uriHandler.openUri(termsUrl) }
+                )
+                val guidelinesUrl = stringResource(R.string.url_community_guidelines)
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            stringResource(R.string.settings_community_guidelines),
+                            style = EponaTypography.bodyLarge
+                        )
+                    },
+                    trailingContent = { Icon(Icons.Outlined.OpenInNew, contentDescription = null) },
+                    modifier = Modifier.clickable { uriHandler.openUri(guidelinesUrl) }
                 )
             }
 

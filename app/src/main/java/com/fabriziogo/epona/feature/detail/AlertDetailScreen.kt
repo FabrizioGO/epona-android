@@ -31,6 +31,7 @@ import com.fabriziogo.epona.feature.detail.components.DetailHero
 import com.fabriziogo.epona.feature.detail.components.DetailInfoCards
 import com.fabriziogo.epona.feature.detail.components.DetailMapPreview
 import com.fabriziogo.epona.feature.detail.components.DetailSightingsSection
+import com.fabriziogo.epona.feature.detail.components.FlagContentDialog
 import com.fabriziogo.epona.feature.detail.components.ResolveDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -95,6 +96,13 @@ fun AlertDetailScreen(
         }
     }
 
+    LaunchedEffect(state.flagSuccessMessage) {
+        state.flagSuccessMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.onEvent(AlertDetailEvent.FlagSuccessMessageShown)
+        }
+    }
+
     // Confirmation handed back by the report-sighting screen, which otherwise just pops.
     LaunchedEffect(confirmationMessage) {
         confirmationMessage?.let {
@@ -118,6 +126,17 @@ fun AlertDetailScreen(
         DeleteAlertDialog(
             onConfirm = { viewModel.onEvent(AlertDetailEvent.DeleteConfirmed) },
             onDismiss = { viewModel.onEvent(AlertDetailEvent.DeleteDismissed) }
+        )
+    }
+
+    // Report content dialog
+    if (state.showFlagDialog) {
+        FlagContentDialog(
+            isSubmitting = state.isSubmittingFlag,
+            onSubmit = { reason, details ->
+                viewModel.onEvent(AlertDetailEvent.FlagSubmitted(reason, details))
+            },
+            onDismiss = { viewModel.onEvent(AlertDetailEvent.FlagDismissed) }
         )
     }
 
@@ -181,6 +200,10 @@ fun AlertDetailScreen(
                             },
                             onShareClick = {
                                 viewModel.onEvent(AlertDetailEvent.ShareClicked)
+                            },
+                            isOwner = state.isCurrentUserOwner,
+                            onFlagClick = {
+                                viewModel.onEvent(AlertDetailEvent.FlagClicked)
                             }
                         )
                     }
