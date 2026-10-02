@@ -26,7 +26,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.feature.detail.components.DeleteAlertDialog
 import com.fabriziogo.epona.feature.detail.components.DetailActionButtons
 import com.fabriziogo.epona.feature.detail.components.DetailCustodyNotice
-import com.fabriziogo.epona.feature.detail.components.DetailDescription
+import com.fabriziogo.epona.feature.detail.components.DetailAlertStory
+import com.fabriziogo.epona.feature.detail.components.DetailPetFeatures
 import com.fabriziogo.epona.feature.detail.components.DetailHero
 import com.fabriziogo.epona.feature.detail.components.DetailInfoCards
 import com.fabriziogo.epona.feature.detail.components.DetailMapPreview
@@ -216,6 +217,18 @@ fun AlertDetailScreen(
                         )
                     }
 
+                    // Pet's lasting identifying traits, right under breed/size/color
+                    pet.description?.let { features ->
+                        item(key = "pet_features") {
+                            DetailPetFeatures(
+                                description = features,
+                                modifier = Modifier
+                                    .padding(horizontal = 20.dp)
+                                    .padding(bottom = 16.dp)
+                            )
+                        }
+                    }
+
                     // Last seen location + time cards
                     item(key = "info_cards") {
                         DetailInfoCards(
@@ -225,6 +238,18 @@ fun AlertDetailScreen(
                             isFound = alert.type == AlertType.FOUND,
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
+                    }
+
+                    // Poster's account of this specific alert, next to where/when
+                    alert.description?.let { story ->
+                        item(key = "alert_story") {
+                            DetailAlertStory(
+                                description = story,
+                                alertType = alert.type,
+                                ownerName = detail.ownerName,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                            )
+                        }
                     }
 
                     // Map preview
@@ -237,17 +262,6 @@ fun AlertDetailScreen(
                             },
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
-                    }
-
-                    // Description
-                    if (alert.description != null || pet.description != null) {
-                        item(key = "description") {
-                            DetailDescription(
-                                alertDescription = alert.description,
-                                petDescription = pet.description,
-                                modifier = Modifier.padding(horizontal = 20.dp)
-                            )
-                        }
                     }
 
                     // Sightings trail. Skipped entirely when the finder has the pet:

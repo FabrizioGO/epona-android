@@ -267,7 +267,7 @@ fun EditPetScreenContent(
             EponaTextField(
                 value = state.description,
                 onValueChange = { onEvent(EditPetEvent.DescriptionChanged(it)) },
-                label = stringResource(R.string.create_description),
+                label = stringResource(R.string.pet_features_label),
                 placeholder = stringResource(R.string.pet_description_placeholder),
                 singleLine = false,
                 maxLines = 4,

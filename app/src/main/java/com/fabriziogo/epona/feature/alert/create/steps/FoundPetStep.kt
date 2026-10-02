@@ -113,7 +113,7 @@ fun FoundPetStep(
         EponaTextField(
             value = form.description,
             onValueChange = onDescriptionChanged,
-            label = stringResource(R.string.create_description),
+            label = stringResource(R.string.pet_features_label),
             placeholder = stringResource(R.string.create_found_description_placeholder),
             singleLine = false,
             maxLines = 5,

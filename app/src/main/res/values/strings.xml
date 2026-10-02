@@ -125,8 +125,10 @@
     <string name="create_contact_phone_placeholder" translatable="false">+1 (555) 000–0000</string>
     <string name="create_reward">Reward (optional)</string>
     <string name="create_reward_hint">Offering a reward can increase response</string>
-    <string name="create_description">Description</string>
-    <string name="create_description_placeholder">Collar color, behavior, direction heading, circumstances…</string>
+    <string name="alert_story_label_lost">What happened</string>
+    <string name="alert_story_label_found">How I found them</string>
+    <string name="create_description_placeholder">When and how they got lost, collar they wore, direction they went…</string>
+    <string name="create_found_story_placeholder">Where and when, their condition, how they behaved…</string>
     <string name="create_publish">🚨 Publish Alert</string>
     <string name="create_continue">Continue</string>
     <string name="create_back">Back</string>
@@ -140,7 +142,7 @@
     <string name="create_reward_placeholder" translatable="false">e.g. 50</string>
     <string name="create_step_found_pet_title">What does the pet look like?</string>
     <string name="create_step_found_pet_subtitle">Species, appearance and photos help the owner recognize them</string>
-    <string name="create_found_description_placeholder">Collar, markings, size, behavior, condition…</string>
+    <string name="create_found_description_placeholder">Markings, scars, collar or tag, temperament…</string>
     <string name="create_step_location_title">Where was the pet?</string>
     <string name="create_step_location_subtitle">Pin the location so others know where to look</string>
     <string name="create_step_matches_title">Is this the pet?</string>
@@ -153,7 +155,7 @@
     <string name="create_found_publish">📢 Publish Found Alert</string>
 
     <!-- Alert Detail -->
-    <string name="detail_description">Description</string>
+    <string name="detail_story_attribution">— %1$s</string>
     <string name="detail_sightings">Sightings (%d)</string>
     <string name="detail_no_sightings">No sightings reported yet. Be the first to help!</string>
     <string name="detail_contact_owner">Contact Owner</string>
@@ -314,7 +316,8 @@
     <string name="pet_section_additional_info">Additional Information</string>
     <string name="pet_microchip_label">Microchip ID</string>
     <string name="pet_optional_placeholder">Optional</string>
-    <string name="pet_description_placeholder">Add any distinctive features or markings</string>
+    <string name="pet_features_label">Distinguishing features</string>
+    <string name="pet_description_placeholder">Markings, scars, microchip, temperament…</string>
     <string name="pet_save">Save Pet</string>
     <string name="pet_update">Update Pet</string>
     <string name="pet_photos_desc">Add photos to help identify your pet</string>

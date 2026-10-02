@@ -32,12 +32,13 @@
     <string name="resolve_message">Esto marcará a %s como encontrado y cerrará esta alerta. ¡Tu comunidad será notificada del feliz reencuentro!</string>
     <string name="resolve_confirm">¡Si, ya estamos reunidos! 🎉</string>
     <string name="resolve_dismiss">Aun no</string>
-    <string name="detail_description">Descripción</string>
+    <string name="detail_story_attribution">— %1$s</string>
     <string name="create_no_pets_title">No hay mascotas registradas aun</string>
     <string name="create_no_pets_desc">Agrega una mascota primero para crear una alerta</string>
     <string name="create_add_pet">Agregar Mascota</string>
     <string name="create_add_new_pet">Agregar Nueva Mascota</string>
-    <string name="create_description_placeholder">Color de collar, comportamiento, a qué dirección se fue, circunstancias…</string>
+    <string name="create_description_placeholder">Cuándo y cómo se perdió, collar que llevaba, hacia dónde fue…</string>
+    <string name="create_found_story_placeholder">Dónde y cuándo, su estado, cómo se comportaba…</string>
     <string name="create_publish">🚨 Publicar Alerta</string>
     <string name="create_continue">Continuar</string>
     <string name="create_step_contact_subtitle">¿Como los demas pueden contactarte?</string>
@@ -100,7 +101,7 @@
     <string name="create_reward">Recompensa (Opcional)</string>
     <string name="create_step_found_pet_title">¿Cómo es la mascota?</string>
     <string name="create_step_found_pet_subtitle">Especie, apariencia y fotos ayudan al dueño a reconocerla</string>
-    <string name="create_found_description_placeholder">Collar, manchas, tamaño, comportamiento, estado…</string>
+    <string name="create_found_description_placeholder">Manchas, cicatrices, collar o placa, carácter…</string>
     <string name="create_step_location_title">¿Dónde estaba la mascota?</string>
     <string name="create_step_location_subtitle">Marca la ubicación para que otros sepan dónde buscar</string>
     <string name="create_step_matches_title">¿Es esta la mascota?</string>
@@ -258,7 +259,8 @@
     <string name="create_step_photo_subtitle">Ayuda a otros a reconocer la mascota y conocer donde buscar</string>
     <string name="create_step_contact_title">Contacto &amp; Review</string>
     <string name="create_reward_hint">Ofrecer una recompenza puede aumentar las respuestas</string>
-    <string name="create_description">Descripción</string>
+    <string name="alert_story_label_lost">Qué pasó</string>
+    <string name="alert_story_label_found">Cómo lo encontré</string>
     <string name="create_ready_summary">%1$s alertas para %2$s cerca %3$s. Tu comunidad será notificada instantáneamente.</string>
     <string name="detail_mark_reunited">Marcar como Reunidos</string>
     <string name="detail_no_phone">No hay número de contacto disponible</string>
@@ -365,7 +367,8 @@
     <string name="pet_section_physical_traits">Características físicas</string>
     <string name="pet_section_additional_info">Información adicional</string>
     <string name="pet_microchip_label">ID de microchip</string>
-    <string name="pet_description_placeholder">Agrega rasgos distintivos o marcas particulares</string>
+    <string name="pet_features_label">Rasgos distintivos</string>
+    <string name="pet_description_placeholder">Manchas, cicatrices, microchip, carácter…</string>
 
     <!-- Settings -->
     <string name="settings_radius_desc">Las alertas dentro de este radio te notificarán</string>

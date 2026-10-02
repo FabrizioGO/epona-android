@@ -81,8 +81,14 @@ fun LocationStep(
         EponaTextField(
             value = description,
             onValueChange = onDescriptionChanged,
-            label = stringResource(R.string.create_description),
-            placeholder = stringResource(R.string.create_description_placeholder),
+            // showCustody is only true for FOUND alerts, so it doubles as the type switch.
+            label = stringResource(
+                if (showCustody) R.string.alert_story_label_found else R.string.alert_story_label_lost
+            ),
+            placeholder = stringResource(
+                if (showCustody) R.string.create_found_story_placeholder
+                else R.string.create_description_placeholder
+            ),
             singleLine = false,
             maxLines = 5,
             imeAction = ImeAction.Done
