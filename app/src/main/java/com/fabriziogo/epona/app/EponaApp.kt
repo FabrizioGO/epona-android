@@ -35,6 +35,7 @@ fun EponaApp(
 ) {
     val appState = rememberEponaAppState()
     val authState by appViewModel.authState.collectAsStateWithLifecycle()
+    val isSessionReady by appViewModel.isSessionReady.collectAsStateWithLifecycle()
     val unreadCount by appViewModel.unreadCount.collectAsStateWithLifecycle()
 
     val notificationPermission = rememberNotificationPermissionState()
@@ -50,6 +51,13 @@ fun EponaApp(
         appState.navController.navigateToDetail(alertId)
         onDeepLinkHandled()
     }
+
+    // The nav graph's start destination is decided once, from `authState`, when it is
+    // first composed -- it does not re-navigate if that value changes later. Building it
+    // before the stored session finishes restoring would fix it to the signed-out graph
+    // and flash onboarding even for a user with an active session, so nothing is composed
+    // until the real value is in.
+    if (!isSessionReady) return
 
     Scaffold(
         modifier = modifier.fillMaxSize(),

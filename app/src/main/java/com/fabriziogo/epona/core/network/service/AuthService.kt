@@ -2,11 +2,11 @@ package com.fabriziogo.epona.core.network.service
 
 import com.fabriziogo.epona.core.network.SupabaseProvider
 import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -46,10 +46,18 @@ class AuthService @Inject constructor(
             ?: throw IllegalStateException("Not authenticated")
     }
 
+    /**
+     * Skips [SessionStatus.Initializing]: while the stored session is still being
+     * restored from disk, it is neither authenticated nor not, and reporting it as
+     * `false` is what causes a cold start with an active session to flash the signed-out
+     * UI before flipping to signed-in once restoration finishes.
+     */
     fun observeAuthState(): Flow<Boolean> =
-        auth.sessionStatus.map { status ->
-            status is SessionStatus.Authenticated
-        }
+        auth.sessionStatus
+            .filter { status -> status !is SessionStatus.Initializing }
+            .map { status ->
+                status is SessionStatus.Authenticated
+            }
 
     suspend fun signInWithEmail(email: String, password: String): UserInfo {
         auth.signInWith(Email) {

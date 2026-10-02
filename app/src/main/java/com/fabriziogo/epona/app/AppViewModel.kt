@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,6 +29,20 @@ class AppViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
+        )
+
+    /**
+     * True once [authState] reflects the real session rather than its `false` default.
+     * Started eagerly, independent of the UI subscribing, so navigation can wait on the
+     * actual outcome instead of the initial value and briefly land on onboarding for a
+     * signed-in user.
+     */
+    val isSessionReady: StateFlow<Boolean> = observeAuthState()
+        .map { true }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
             initialValue = false
         )
 
