@@ -11,7 +11,7 @@ theme: jekyll-theme-minimal
 
 # Your full legal name (publisher: individual). Shown as the data controller
 # in the Privacy Policy and as "we" / "us" throughout the Terms.
-legal_name: "[YOUR FULL LEGAL NAME]"
+legal_name: "Fabrizio Gagliardi"
 
 # An inbox you actually monitor. Used for privacy requests, deletion requests
 # received by email, and general legal contact.
@@ -20,7 +20,7 @@ contact_email: "[YOUR CONTACT EMAIL]"
 # Where the Supabase project (database, auth, storage) is hosted, e.g.
 # "the United States" or "the European Union" — check your Supabase project
 # settings. This drives the international-transfers section of the policy.
-server_region: "[SUPABASE PROJECT REGION]"
+server_region: "the United States"
 
 # Bump this (and LegalTerms.VERSION in the Android app) whenever the Terms
 # or Privacy Policy change materially, so re-acceptance can be required.
