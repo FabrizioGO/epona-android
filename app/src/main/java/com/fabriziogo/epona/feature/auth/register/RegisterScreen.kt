@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.feature.auth.GOOGLE_SIGN_IN_ENABLED
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
 import com.fabriziogo.epona.feature.auth.components.LegalLinksText
 import com.fabriziogo.epona.feature.auth.components.OrDivider
@@ -133,19 +134,21 @@ private fun RegisterContent(
                 subtitle = stringResource(R.string.auth_sign_up_subtitle),
                 onBackClick = { onEvent(RegisterEvent.NavigateToLogin) }
             ) {
-                // Google Sign In
-                SocialSignInButton(
-                    text = stringResource(R.string.auth_google),
-                    isLoading = state.isGoogleLoading,
-                    onClick = onLaunchGoogleSignIn,
-                    enabled = state.acceptedTerms
-                )
+                if (GOOGLE_SIGN_IN_ENABLED) {
+                    // Google Sign In
+                    SocialSignInButton(
+                        text = stringResource(R.string.auth_google),
+                        isLoading = state.isGoogleLoading,
+                        onClick = onLaunchGoogleSignIn,
+                        enabled = state.acceptedTerms
+                    )
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(20.dp))
 
-                OrDivider()
+                    OrDivider()
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(20.dp))
+                }
 
                 // First / Last name
                 Row(

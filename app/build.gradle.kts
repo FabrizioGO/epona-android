@@ -34,8 +34,29 @@ android {
         manifestPlaceholders["MAPS_API_KEY"] = localProperties["MAPS_API_KEY"] ?: ""
     }
 
+    // Upload-key credentials live in local.properties (gitignored) or, on CI, in
+    // environment variables of the same name. See PLAY_STORE_CHECKLIST.md.
+    val releaseSigningKeys = listOf(
+        "RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS", "RELEASE_KEY_PASSWORD"
+    )
+    fun signingValue(key: String): String? =
+        (localProperties[key] as String?) ?: System.getenv(key)
+    val hasReleaseSigning = releaseSigningKeys.all { !signingValue(it).isNullOrBlank() }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(signingValue("RELEASE_STORE_FILE")!!)
+                storePassword = signingValue("RELEASE_STORE_PASSWORD")
+                keyAlias = signingValue("RELEASE_KEY_ALIAS")
+                keyPassword = signingValue("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -50,6 +71,26 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+// Fail release builds that would otherwise ship unsigned or with "null" baked into
+// BuildConfig (e.g. on a machine without this project's local.properties).
+gradle.taskGraph.whenReady {
+    val buildingRelease = allTasks.any {
+        it.project == project && (it.name.contains("Release") && (it.name.startsWith("bundle") ||
+            it.name.startsWith("assemble") || it.name.startsWith("package")))
+    }
+    if (!buildingRelease) return@whenReady
+    val required = listOf(
+        "SUPABASE_URL", "SUPABASE_ANON_KEY", "MAPS_API_KEY", "GOOGLE_WEB_CLIENT_ID",
+        "RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS", "RELEASE_KEY_PASSWORD"
+    )
+    val missing = required.filter {
+        ((localProperties[it] as String?) ?: System.getenv(it)).isNullOrBlank()
+    }
+    if (missing.isNotEmpty()) {
+        throw GradleException("Release build is missing values in local.properties: $missing")
     }
 }
 

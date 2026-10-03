@@ -38,6 +38,7 @@ import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
+import com.fabriziogo.epona.feature.auth.GOOGLE_SIGN_IN_ENABLED
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
 import com.fabriziogo.epona.feature.auth.components.LegalLinksText
 import com.fabriziogo.epona.feature.auth.components.OrDivider
@@ -112,18 +113,20 @@ fun LoginContent(
                 title = stringResource(R.string.auth_welcome_back),
                 subtitle = stringResource(R.string.auth_sign_in_subtitle)
             ) {
-                // Google Sign In
-                SocialSignInButton(
-                    text = stringResource(R.string.auth_google),
-                    isLoading = state.isGoogleLoading,
-                    onClick = onLaunchGoogleSignIn
-                )
+                if (GOOGLE_SIGN_IN_ENABLED) {
+                    // Google Sign In
+                    SocialSignInButton(
+                        text = stringResource(R.string.auth_google),
+                        isLoading = state.isGoogleLoading,
+                        onClick = onLaunchGoogleSignIn
+                    )
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(20.dp))
 
-                OrDivider()
+                    OrDivider()
 
-                Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(20.dp))
+                }
 
                 // Email
                 EponaTextField(

@@ -93,14 +93,19 @@ Flagging these so they're a decision, not a surprise at review time:
   direct user interaction and public UGC. Content reporting is in place;
   blocking is a larger feature (a `blocked_users` table, feed/RPC filtering)
   that was out of scope here.
-- **Google Sign-In button is a stub** (`MainActivity.launchGoogleSignIn()` is
-  a `TODO`, and the actual `signInWith(Google)` call in `AuthService` is
-  commented out). A reviewer who taps it will see nothing happen. Either wire
-  it up before submitting or remove the button.
-- **No release `signingConfig`** in `app/build.gradle.kts`, and
-  `isMinifyEnabled = false`. You'll need a signing key and keystore to produce
-  a release build Play will accept, and should decide whether to turn on R8
-  before shipping.
+- **Google Sign-In is hidden for the first release (decided).**
+  `GOOGLE_SIGN_IN_ENABLED = false` in `feature/auth/AuthFeatureFlags.kt` hides
+  the button and its "or" divider on Login and Register. Email/password is the
+  only sign-in method. **Post-approval follow-up:** implement Credential
+  Manager in `MainActivity.launchGoogleSignIn()`, uncomment/finish the
+  `signInWithGoogle` call in `AuthService`, register the release + Play App
+  Signing SHA-1 in Google Cloud/Firebase, then flip the flag to `true`. Update
+  the Data Safety form and Privacy Policy if Google account data is collected.
+- **Release signing is configured** (`RELEASE_STORE_*` / `RELEASE_KEY_*` in
+  `local.properties` or env vars; release builds fail if they or the API keys
+  are missing). You still need to generate the upload keystore and back it up.
+  `isMinifyEnabled = false` — decide whether to turn on R8 (needs keep rules for
+  serialization/Supabase DTOs) before shipping.
 - **No explicit permission-rationale screen** before the system location
   prompt. Not required by Play, but Google Play's location policy expects the
   in-context request to make clear why it's needed — `LocationPermissionBanner`
