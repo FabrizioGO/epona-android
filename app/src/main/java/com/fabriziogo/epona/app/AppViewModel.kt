@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -25,25 +24,17 @@ class AppViewModel @Inject constructor(
     private val syncUserLocale: SyncUserLocaleUseCase
 ) : ViewModel() {
 
-    val authState: StateFlow<Boolean> = observeAuthState()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
     /**
-     * True once [authState] reflects the real session rather than its `false` default.
-     * Started eagerly, independent of the UI subscribing, so navigation can wait on the
-     * actual outcome instead of the initial value and briefly land on onboarding for a
-     * signed-in user.
+     * `null` while the stored session is still being restored, then the real signed-in
+     * state. A single eager flow: gating readiness and auth on two separate collections
+     * let navigation see "ready" while auth still held its `false` default, which fixed
+     * the start destination to onboarding for a signed-in user.
      */
-    val isSessionReady: StateFlow<Boolean> = observeAuthState()
-        .map { true }
+    val authState: StateFlow<Boolean?> = observeAuthState()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = false
+            initialValue = null
         )
 
     val unreadCount: StateFlow<Int> = observeUnreadCount()

@@ -35,29 +35,26 @@ fun EponaApp(
 ) {
     val appState = rememberEponaAppState()
     val authState by appViewModel.authState.collectAsStateWithLifecycle()
-    val isSessionReady by appViewModel.isSessionReady.collectAsStateWithLifecycle()
     val unreadCount by appViewModel.unreadCount.collectAsStateWithLifecycle()
+    val isAuthenticated = authState == true
 
     val notificationPermission = rememberNotificationPermissionState()
-    RequestNotificationPermissionOnceSignedIn(notificationPermission, authState)
+    RequestNotificationPermissionOnceSignedIn(notificationPermission, isAuthenticated)
 
-    // Keyed on the session too. Snapshotting `authState` once would miss it: at cold
-    // start that is the `false` initial value of a WhileSubscribed StateFlow, so a tap
-    // that launched the app from dead would silently drop the navigation. Re-keying
-    // makes the deep link wait for the session instead.
-    LaunchedEffect(deepLinkAlertId, authState) {
+    // Keyed on the session too, so a tap that launched the app from dead waits for the
+    // session to restore instead of being dropped.
+    LaunchedEffect(deepLinkAlertId, isAuthenticated) {
         val alertId = deepLinkAlertId ?: return@LaunchedEffect
-        if (!authState) return@LaunchedEffect
+        if (!isAuthenticated) return@LaunchedEffect
         appState.navController.navigateToDetail(alertId)
         onDeepLinkHandled()
     }
 
-    // The nav graph's start destination is decided once, from `authState`, when it is
-    // first composed -- it does not re-navigate if that value changes later. Building it
-    // before the stored session finishes restoring would fix it to the signed-out graph
-    // and flash onboarding even for a user with an active session, so nothing is composed
-    // until the real value is in.
-    if (!isSessionReady) return
+    // The nav graph's start destination is decided once, when it is first composed, and
+    // never moves back to Home afterwards. `authState` is null until the stored session
+    // has finished restoring, so nothing is composed before the real value is in --
+    // otherwise a signed-in user would be fixed to the onboarding graph.
+    if (authState == null) return
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -96,7 +93,7 @@ fun EponaApp(
     ) { padding ->
         EponaNavHost(
             navController = appState.navController,
-            isAuthenticated = authState,
+            isAuthenticated = isAuthenticated,
             onNavigateToTopLevel = appState::navigateToTopLevel,
             onLaunchGoogleSignIn = onLaunchGoogleSignIn,
             onShareAlert = onShareAlert,
