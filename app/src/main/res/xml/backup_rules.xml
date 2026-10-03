@@ -6,7 +6,6 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
+    <!-- Only shared preferences are backed up; the Room database (epona_db) is not included. -->
     <include domain="sharedpref" path="." />
-    <exclude domain="database" path="epona_db" />
-    <exclude domain="no_backup" path="." />
 </full-backup-content>

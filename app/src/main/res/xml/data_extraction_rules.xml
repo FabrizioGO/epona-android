@@ -5,8 +5,8 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
+        <!-- Only shared preferences go to cloud backup; the Room database is not included. -->
         <include domain="sharedpref" path="." />
-        <exclude domain="database" path="epona_db" />
     </cloud-backup>
     <device-transfer>
         <include domain="sharedpref" path="." />
