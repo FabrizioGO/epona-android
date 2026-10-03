@@ -242,14 +242,9 @@ class AlertDetailViewModel @Inject constructor(
 
     private fun shareAlert() {
         val detail = _state.value.alertDetail ?: return
-        val pet = detail.pet
         val alert = detail.alert
-        val typeLabel = if (alert.type.value == "lost") "LOST" else "FOUND"
-        val text = "$typeLabel: ${pet.name.ifBlank { pet.species.value }} (${pet.breed ?: pet.species.value}) " +
-            "near ${alert.lastSeenAddress ?: "unknown location"}. " +
-            "Help bring them home! #Epona"
         val url = "https://epona.app/alert/${alert.id}"
-        emitNav(DetailNavEvent.ShareAlert(text, url))
+        emitNav(DetailNavEvent.ShareAlert(detail, url))
     }
 
     private fun contactOwner() {

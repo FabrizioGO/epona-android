@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.ReportReason
 
 sealed interface AlertDetailEvent {
@@ -26,6 +27,6 @@ sealed interface DetailNavEvent {
     data object NavigateBack : DetailNavEvent
     data class NavigateToReportSighting(val alertId: String) : DetailNavEvent
     data class NavigateToMap(val lat: Double, val lng: Double) : DetailNavEvent
-    data class ShareAlert(val text: String, val url: String) : DetailNavEvent
+    data class ShareAlert(val detail: AlertWithDetails, val url: String) : DetailNavEvent
     data class DialPhone(val phone: String) : DetailNavEvent
 }

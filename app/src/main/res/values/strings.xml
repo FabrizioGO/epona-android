@@ -410,6 +410,8 @@
     <!-- Share -->
     <string name="share_subject">Missing Pet Alert — Epona</string>
     <string name="share_chooser">Share alert via</string>
+    <string name="share_text_lost">LOST: %1$s (%2$s) near %3$s. %4$s</string>
+    <string name="share_text_found">FOUND: %1$s (%2$s) near %3$s. %4$s</string>
 
     <!-- Content Descriptions -->
     <string name="cd_profile_photo">Profile photo</string>

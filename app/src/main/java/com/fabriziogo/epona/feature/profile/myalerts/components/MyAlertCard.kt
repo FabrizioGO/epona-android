@@ -22,15 +22,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.domain.model.Alert
+import com.fabriziogo.epona.core.domain.model.AlertStatus
+import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
+import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.domain.model.Pet
+import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.ui.components.AlertStatusBadge
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.components.formatTimeAgo
 import com.fabriziogo.epona.core.ui.components.petDisplayName
+import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -114,16 +122,71 @@ fun MyAlertCard(
                         style = EponaTypography.labelSmall,
                         color = MaterialTheme.colorScheme.outline
                     )
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = formatTimeAgo(alert.createdAt),
+                        style = EponaTypography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
             }
-
-            Spacer(Modifier.width(8.dp))
-
-            Text(
-                text = formatTimeAgo(alert.createdAt),
-                style = EponaTypography.labelSmall,
-                color = MaterialTheme.colorScheme.outline
-            )
         }
+    }
+}
+
+private fun previewAlert(
+    type: AlertType = AlertType.LOST,
+    status: AlertStatus = AlertStatus.ACTIVE,
+    address: String? = "Retiro Park, Madrid",
+    sightings: Int = 3,
+    pet: Pet = Pet(id = "p1", name = "Luna", species = Species.DOG)
+) = AlertWithDetails(
+    alert = Alert(
+        id = "1",
+        type = type,
+        status = status,
+        lastSeenLocation = Location(40.4, -3.7, address),
+        lastSeenAddress = address,
+        sightingCount = sightings,
+        createdAt = System.currentTimeMillis() - 2 * 60 * 60 * 1000L
+    ),
+    pet = pet,
+    ownerName = "Fabrizio"
+)
+
+@Preview(showBackground = true, name = "Lost / active")
+@Composable
+private fun MyAlertCardLostPreview() {
+    EponaTheme { MyAlertCard(alertWithDetails = previewAlert(), onClick = {}) }
+}
+
+@Preview(showBackground = true, name = "Found / resolved")
+@Composable
+private fun MyAlertCardFoundResolvedPreview() {
+    EponaTheme {
+        MyAlertCard(
+            alertWithDetails = previewAlert(
+                type = AlertType.FOUND,
+                status = AlertStatus.RESOLVED,
+                sightings = 0,
+                pet = Pet(id = "p2", name = "Milo", species = Species.CAT)
+            ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Unknown location, long name")
+@Composable
+private fun MyAlertCardLongTextPreview() {
+    EponaTheme {
+        MyAlertCard(
+            alertWithDetails = previewAlert(
+                address = null,
+                sightings = 1,
+                pet = Pet(id = "p3", name = "Sir Bartholomew Fluffington III", species = Species.OTHER)
+            ),
+            onClick = {}
+        )
     }
 }

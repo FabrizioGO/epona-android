@@ -52,12 +52,12 @@ fun AlertStatusBadge(
     modifier: Modifier = Modifier
 ) {
     val bg = when (status) {
-        AlertStatus.ACTIVE -> MaterialTheme.colorScheme.primaryContainer
+        AlertStatus.ACTIVE -> MaterialTheme.colorScheme.primary
         AlertStatus.RESOLVED -> EponaColors.FoundContainer
         AlertStatus.EXPIRED -> MaterialTheme.colorScheme.surfaceVariant
     }
     val fg = when (status) {
-        AlertStatus.ACTIVE -> MaterialTheme.colorScheme.primary
+        AlertStatus.ACTIVE -> MaterialTheme.colorScheme.onPrimary
         AlertStatus.RESOLVED -> EponaColors.Found
         AlertStatus.EXPIRED -> MaterialTheme.colorScheme.outline
     }

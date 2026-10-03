@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -88,9 +89,9 @@ class MainActivity : ComponentActivity() {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, "$text\n$url")
-            putExtra(Intent.EXTRA_SUBJECT, "Missing Pet Alert — Epona")
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject))
         }
-        startActivity(Intent.createChooser(shareIntent, "Share alert via"))
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_chooser)))
     }
 
     private fun dialPhone(phone: String) {

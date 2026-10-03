@@ -187,6 +187,8 @@
     <string name="time_months_ago">Hace %d meses</string>
     <string name="share_subject">Alerta de Mascota Perdida — Epona</string>
     <string name="share_chooser">Compartir alerta vía</string>
+    <string name="share_text_lost">PERDIDO: %1$s (%2$s) cerca de %3$s. %4$s</string>
+    <string name="share_text_found">ENCONTRADO: %1$s (%2$s) cerca de %3$s. %4$s</string>
     <string name="cd_profile_photo">Foto de perfil</string>
     <string name="cd_notifications">Notificaciones</string>
     <string name="cd_add_photo">Añadir foto</string>

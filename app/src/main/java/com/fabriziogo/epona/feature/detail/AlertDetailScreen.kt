@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail
 
+import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -42,6 +43,7 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.fabriziogo.epona.R
@@ -72,6 +74,7 @@ fun AlertDetailScreen(
     viewModel: AlertDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -83,7 +86,7 @@ fun AlertDetailScreen(
                 is DetailNavEvent.NavigateToMap ->
                     onNavigateToMap(event.lat, event.lng)
                 is DetailNavEvent.ShareAlert ->
-                    onShareAlert(event.text, event.url)
+                    onShareAlert(buildShareText(context, event.detail), event.url)
                 is DetailNavEvent.DialPhone ->
                     onDialPhone(event.phone)
             }
@@ -389,5 +392,18 @@ fun AlertDetailScreenPreview() {
         onDialPhone = {},
         confirmationMessage = null,
         onConfirmationShown = {}
+    )
+}
+
+private fun buildShareText(context: Context, detail: AlertWithDetails): String {
+    val pet = detail.pet
+    val alert = detail.alert
+    val species = context.getString(pet.species.label)
+    return context.getString(
+        if (alert.type == AlertType.LOST) R.string.share_text_lost else R.string.share_text_found,
+        pet.name.ifBlank { species },
+        pet.breed ?: species,
+        alert.lastSeenAddress ?: context.getString(R.string.alert_location_unknown),
+        context.getString(R.string.share_hashtag_text)
     )
 }
