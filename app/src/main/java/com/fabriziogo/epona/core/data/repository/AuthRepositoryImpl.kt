@@ -77,6 +77,21 @@ class AuthRepositoryImpl @Inject constructor(
         clearLocalCache()
     }
 
+    override suspend fun sendPasswordResetCode(email: String): Result<Unit> = runCatching {
+        authService.sendPasswordResetCode(email)
+    }
+
+    override suspend fun verifyPasswordResetCode(
+        email: String,
+        code: String
+    ): Result<Unit> = runCatching {
+        authService.verifyPasswordResetCode(email, code)
+    }
+
+    override suspend fun updatePassword(newPassword: String): Result<Unit> = runCatching {
+        authService.updatePassword(newPassword)
+    }
+
     override suspend fun deleteAccount(): Result<Unit> = runCatching {
         authService.deleteAccount()
         clearLocalCache()

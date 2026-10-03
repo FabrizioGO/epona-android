@@ -2,6 +2,7 @@ package com.fabriziogo.epona.core.network.service
 
 import com.fabriziogo.epona.core.network.SupabaseProvider
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
@@ -107,6 +108,20 @@ class AuthService @Inject constructor(
 
     suspend fun signOut() {
         auth.signOut()
+    }
+
+    /** Emails a recovery code. The Reset Password template must include `{{ .Token }}`. */
+    suspend fun sendPasswordResetCode(email: String) {
+        auth.resetPasswordForEmail(email)
+    }
+
+    /** Exchanges the emailed code for a recovery session, which authorises [updatePassword]. */
+    suspend fun verifyPasswordResetCode(email: String, code: String) {
+        auth.verifyEmailOtp(type = OtpType.Email.RECOVERY, email = email, token = code)
+    }
+
+    suspend fun updatePassword(newPassword: String) {
+        auth.updateUser { password = newPassword }
     }
 
     /**

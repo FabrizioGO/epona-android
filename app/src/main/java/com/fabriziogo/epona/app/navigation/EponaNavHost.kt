@@ -1,6 +1,11 @@
 package com.fabriziogo.epona.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -47,7 +52,17 @@ fun EponaNavHost(
     val petAddedMessage = stringResource(R.string.pet_added_success)
     val petUpdatedMessage = stringResource(R.string.pet_updated_success)
 
-    val startDestination = if (isAuthenticated) HOME_ROUTE else AUTH_GRAPH_ROUTE
+    // NavHost rebuilds its graph, and resets the back stack to the start destination,
+    // whenever this value changes. Signing in must therefore not change it: every sign-in
+    // path navigates to Home itself, and the password-reset flow signs the user in
+    // (verifying the emailed code creates a session) while they still have to choose a
+    // new password. Only a sign-out moves it, back to the auth graph.
+    var startDestination by remember {
+        mutableStateOf(if (isAuthenticated) HOME_ROUTE else AUTH_GRAPH_ROUTE)
+    }
+    LaunchedEffect(isAuthenticated) {
+        if (!isAuthenticated) startDestination = AUTH_GRAPH_ROUTE
+    }
 
     NavHost(
         navController = navController,

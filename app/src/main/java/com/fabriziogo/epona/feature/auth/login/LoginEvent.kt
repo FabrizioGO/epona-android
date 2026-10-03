@@ -7,11 +7,13 @@ sealed interface LoginEvent {
     data class GoogleSignInResult(val idToken: String) : LoginEvent
     data object GoogleSignInFailed : LoginEvent
     data object NavigateToRegister : LoginEvent
+    data object ForgotPasswordClicked : LoginEvent
     data object ErrorDismissed : LoginEvent
 }
 
 sealed interface LoginNavEvent {
     data object NavigateToHome : LoginNavEvent
     data object NavigateToRegister : LoginNavEvent
+    data class NavigateToForgotPassword(val email: String) : LoginNavEvent
     data object LaunchGoogleSignIn : LoginNavEvent
 }

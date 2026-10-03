@@ -26,6 +26,19 @@
     <string name="auth_first_name">First Name</string>
     <string name="auth_last_name">Last Name</string>
     <string name="auth_forgot_password">Forgot password?</string>
+    <string name="forgot_title">Reset password</string>
+    <string name="forgot_email_subtitle">Enter your email and we\'ll send you a code</string>
+    <string name="forgot_code_title">Check your email</string>
+    <string name="forgot_code_subtitle">We sent a code to %1$s</string>
+    <string name="forgot_new_password_title">New password</string>
+    <string name="forgot_new_password_subtitle">Choose a new password for your account</string>
+    <string name="forgot_code_label">Code</string>
+    <string name="forgot_new_password_label">New password</string>
+    <string name="forgot_send_code">Send code</string>
+    <string name="forgot_verify">Verify</string>
+    <string name="forgot_resend_code">Resend code</string>
+    <string name="forgot_resend_in">Resend in %1$d s</string>
+    <string name="forgot_save_password">Save password</string>
     <string name="auth_no_account">Don\'t have an account? Sign up</string>
     <string name="auth_has_account">Already have an account? Sign in</string>
     <!--

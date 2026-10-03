@@ -38,6 +38,13 @@ interface AuthRepository {
 
     suspend fun signOut(): Result<Unit>
 
+    suspend fun sendPasswordResetCode(email: String): Result<Unit>
+
+    /** On success the user holds a recovery session, so [updatePassword] may follow. */
+    suspend fun verifyPasswordResetCode(email: String, code: String): Result<Unit>
+
+    suspend fun updatePassword(newPassword: String): Result<Unit>
+
     /**
      * Deletes the signed-in user's account, every row and photo it owns on the
      * server, and the local Room cache. Irreversible.

@@ -42,6 +42,12 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.NavigateToRegister -> {
                 viewModelScope.launch { _navEvents.send(LoginNavEvent.NavigateToRegister) }
             }
+            is LoginEvent.ForgotPasswordClicked -> {
+                val email = _state.value.email.trim()
+                viewModelScope.launch {
+                    _navEvents.send(LoginNavEvent.NavigateToForgotPassword(email))
+                }
+            }
             is LoginEvent.ErrorDismissed -> {
                 _state.update { it.copy(error = null) }
             }
@@ -124,6 +130,13 @@ internal fun mapAuthError(err: Throwable): String = when {
         "An account with this email already exists"
     err.message?.contains("weak_password", true) == true ->
         "Password is too weak"
+    err.message?.contains("otp_expired", true) == true ||
+        err.message?.contains("token has expired or is invalid", true) == true ->
+        "Code is invalid or has expired"
+    err.message?.contains("same_password", true) == true ->
+        "New password must be different from the old one"
+    err.message?.contains("rate_limit", true) == true ->
+        "Too many requests. Please wait a moment."
     err.message?.contains("network", true) == true ->
         "No internet connection. Please try again."
     else -> err.message ?: "Something went wrong. Please try again."

@@ -48,6 +48,7 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onLaunchGoogleSignIn: () -> Unit,
+    onNavigateToForgotPassword: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -62,6 +63,8 @@ fun LoginScreen(
                 LoginNavEvent.NavigateToHome -> onNavigateToHome()
                 LoginNavEvent.NavigateToRegister -> onNavigateToRegister()
                 LoginNavEvent.LaunchGoogleSignIn -> onLaunchGoogleSignIn()
+                is LoginNavEvent.NavigateToForgotPassword ->
+                    onNavigateToForgotPassword(event.email)
             }
         }
     }
@@ -148,7 +151,7 @@ fun LoginContent(
 
                 // Forgot password
                 TextButton(
-                    onClick = { /* TODO: navigate to reset */ },
+                    onClick = { onEvent(LoginEvent.ForgotPasswordClicked) },
                     modifier = Modifier.align(Alignment.End)
                 ) {
                     Text(

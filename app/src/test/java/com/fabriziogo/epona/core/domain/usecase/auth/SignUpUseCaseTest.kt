@@ -81,6 +81,15 @@ class SignUpUseCaseTest {
 
         override suspend fun signOut(): Result<Unit> = Result.success(Unit)
 
+        override suspend fun sendPasswordResetCode(email: String): Result<Unit> =
+            Result.success(Unit)
+
+        override suspend fun verifyPasswordResetCode(email: String, code: String): Result<Unit> =
+            Result.success(Unit)
+
+        override suspend fun updatePassword(newPassword: String): Result<Unit> =
+            Result.success(Unit)
+
         override suspend fun deleteAccount(): Result<Unit> = Result.success(Unit)
     }
 }
