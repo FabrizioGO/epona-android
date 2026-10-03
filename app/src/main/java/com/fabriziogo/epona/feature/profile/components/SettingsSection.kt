@@ -21,8 +21,8 @@ fun SettingsSection(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = title,
-            style = EponaTypography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = EponaTypography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
         )
         content()

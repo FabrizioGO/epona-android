@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Pets
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +35,7 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
+import com.fabriziogo.epona.core.ui.components.HeroSheetEdge
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.theme.EponaTealDark
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
@@ -148,24 +148,10 @@ fun HomeScreenContent(
 
             // Rounded-top sheet transition + section header. Teal peeks behind the corners.
             item(span = { GridItemSpan(maxLineSpan) }, key = "sheet_header") {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = MaterialTheme.colorScheme.surface,
-                                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
-                            )
-                            .padding(top = 20.dp)
-                    ) {
-                        AlertFeedSection(
-                            onViewMapClick = { onEvent(HomeEvent.ViewMapClicked) }
-                        )
-                    }
+                HeroSheetEdge {
+                    AlertFeedSection(
+                        onViewMapClick = { onEvent(HomeEvent.ViewMapClicked) }
+                    )
                 }
             }
 

@@ -354,6 +354,13 @@
         <item quantity="other">%d avistamientos</item>
         <item quantity="many">%d avistamientos</item>
     </plurals>
+    <plurals name="notifications_unread_count">
+        <item quantity="one">%d sin leer</item>
+        <item quantity="other">%d sin leer</item>
+        <item quantity="many">%d sin leer</item>
+    </plurals>
+    <string name="notifications_all_caught_up">Estás al día</string>
+    <string name="notifications_section_recent">Recientes</string>
 
     <!-- Help &amp; FAQ -->
     <string name="help_faq_title">Preguntas frecuentes</string>

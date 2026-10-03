@@ -11,11 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.UserStats
+import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
@@ -54,7 +57,8 @@ private fun StatCard(
     Surface(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerLow
+        // Translucent tile: StatsRow lives on the always-teal hero, like AlertCategoryRow.
+        color = Color.White.copy(alpha = 0.12f)
     ) {
         Column(
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
@@ -63,15 +67,23 @@ private fun StatCard(
             Text(
                 text = value,
                 style = EponaTypography.headlineSmall,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color.White,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = label,
                 style = EponaTypography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = Color.White.copy(alpha = 0.7f),
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0F4F44)
+@Composable
+private fun StatsRowPreview() {
+    EponaTheme(dynamicColor = false) {
+        StatsRow(stats = UserStats(totalPets = 2, activeAlerts = 1, sightingsReported = 5))
     }
 }

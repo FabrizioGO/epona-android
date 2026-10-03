@@ -13,25 +13,19 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaAvatar
 import com.fabriziogo.epona.core.ui.components.EponaSearchBar
-import com.fabriziogo.epona.core.ui.theme.EponaColors
+import com.fabriziogo.epona.core.ui.components.HeroIconButton
 import com.fabriziogo.epona.core.ui.theme.EponaTealDark
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.EponaTypography
@@ -131,32 +125,6 @@ fun HomeHero(
             foundCount = foundCount,
             onFilterSelected = onFilterSelected
         )
-    }
-}
-
-@Composable
-private fun HeroIconButton(
-    icon: ImageVector,
-    contentDescription: String,
-    onClick: () -> Unit,
-    badgeCount: Int = 0
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.size(44.dp),
-        colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White)
-    ) {
-        BadgedBox(
-            badge = {
-                if (badgeCount > 0) {
-                    Badge(containerColor = EponaColors.Lost) {
-                        Text(badgeCount.toString())
-                    }
-                }
-            }
-        ) {
-            Icon(icon, contentDescription = contentDescription, tint = MaterialTheme.colorScheme.primaryContainer)
-        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.fabriziogo.epona.feature.profile.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,13 +61,18 @@ fun ProfileHeader(
                 url = previewUri ?: avatarUrl,
                 name = displayName,
                 size = 88.dp,
-                modifier = Modifier.then(clickableModifier)
+                containerColor = Color.White.copy(alpha = 0.16f),
+                contentColor = Color.White,
+                modifier = Modifier
+                    .border(2.dp, Color.White.copy(alpha = 0.6f), CircleShape)
+                    .then(clickableModifier)
             )
 
             if (isUploading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(88.dp),
-                    strokeWidth = 3.dp
+                    strokeWidth = 3.dp,
+                    color = Color.White
                 )
             }
 
@@ -76,7 +83,7 @@ fun ProfileHeader(
                         .offset(x = 4.dp, y = 4.dp)
                         .size(32.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
+                        .background(MaterialTheme.colorScheme.secondary)
                         .clickable(enabled = !isUploading, onClick = onAvatarClick),
                     contentAlignment = Alignment.Center
                 ) {
@@ -84,7 +91,7 @@ fun ProfileHeader(
                         imageVector = Icons.Filled.CameraAlt,
                         contentDescription = stringResource(R.string.profile_change_photo),
                         modifier = Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.onSecondary
                     )
                 }
             }
@@ -95,7 +102,7 @@ fun ProfileHeader(
         Text(
             text = displayName,
             style = EponaTypography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.White
         )
 
         Spacer(Modifier.height(4.dp))
@@ -103,12 +110,12 @@ fun ProfileHeader(
         Text(
             text = email,
             style = EponaTypography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = Color.White.copy(alpha = 0.75f)
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF0F4F44)
 @Composable
 private fun ProfileHeaderPreview() {
     EponaTheme {
@@ -121,7 +128,7 @@ private fun ProfileHeaderPreview() {
     }
 }
 
-@Preview(showBackground = true, name = "Uploading")
+@Preview(showBackground = true, backgroundColor = 0xFF0F4F44, name = "Uploading")
 @Composable
 private fun ProfileHeaderUploadingPreview() {
     EponaTheme {
