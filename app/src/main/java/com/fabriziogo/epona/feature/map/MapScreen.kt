@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.feature.map.components.AlertMarkerContent
 import com.fabriziogo.epona.feature.map.components.AlertPreviewSheet
 import com.fabriziogo.epona.feature.map.components.LocationPermissionBanner
@@ -93,6 +94,9 @@ fun MapScreen(
             state.cameraZoom
         )
     }
+
+    val lostCount = remember(state.alerts) { state.alerts.count { it.alert.type == AlertType.LOST } }
+    val foundCount = remember(state.alerts) { state.alerts.count { it.alert.type == AlertType.FOUND } }
 
     // CameraUpdateFactory is initialized by the Maps SDK when the map comes up,
     // so no camera update may be built before onMapLoaded fires.
@@ -239,6 +243,8 @@ fun MapScreen(
             MapFilterBar(
                 showLost = state.showLost,
                 showFound = state.showFound,
+                lostCount = lostCount,
+                foundCount = foundCount,
                 onFilterToggled = { viewModel.onEvent(MapEvent.FilterToggled(it)) },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
