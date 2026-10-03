@@ -8,13 +8,18 @@ import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.usecase.alert.GetNearbyAlertsUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ObserveNearbyAlertsUseCase
 import com.fabriziogo.epona.core.domain.usecase.auth.GetCurrentUserUseCase
+import com.fabriziogo.epona.core.domain.usecase.location.CalculateDistanceUseCase
 import com.fabriziogo.epona.core.domain.usecase.location.GetCurrentLocationUseCase
 import com.fabriziogo.epona.core.domain.usecase.notification.ObserveUnreadCountUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,6 +30,7 @@ class HomeViewModel @Inject constructor(
     private val getNearbyAlerts: GetNearbyAlertsUseCase,
     private val observeNearbyAlerts: ObserveNearbyAlertsUseCase,
     private val getCurrentLocation: GetCurrentLocationUseCase,
+    private val calculateDistance: CalculateDistanceUseCase,
     private val getCurrentUser: GetCurrentUserUseCase,
     private val observeUnreadCount: ObserveUnreadCountUseCase
 ) : ViewModel() {
@@ -32,13 +38,22 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeUiState())
     val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
+    /** Location the realtime subscription should be bound to; set after each location resolve. */
+    private val realtimeLocation = MutableStateFlow<Location?>(null)
+
     private val _navEvents = Channel<HomeNavigationEvent>(Channel.BUFFERED)
     val navEvents = _navEvents.receiveAsFlow()
 
     init {
         loadUserProfile()
         observeUnreadNotifications()
+        observeRealtimeAlerts()
         loadInitialData()
+    }
+
+    private companion object {
+        /** Moves smaller than this don't justify re-opening the realtime channel. */
+        const val REALTIME_RESUBSCRIBE_METERS = 500.0
     }
 
     fun onEvent(event: HomeEvent) {
@@ -63,7 +78,8 @@ class HomeViewModel @Inject constructor(
                     it.copy(
                         userName = user.displayName,
                         userAvatar = user.avatarUrl,
-                        userLocation = user.location,
+                        // Never overwrite a live fix with the saved profile location.
+                        userLocation = it.userLocation ?: user.location,
                         alertRadiusKm = user.alertRadiusKm
                     )
                 }
@@ -90,16 +106,18 @@ class HomeViewModel @Inject constructor(
             // Fetch nearby alerts
             fetchAlerts(location)
 
-            // Start observing realtime updates
-            observeRealtimeAlerts(location)
+            realtimeLocation.value = location
         }
     }
 
     private fun refreshAlerts() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
-            val location = _state.value.userLocation ?: resolveLocation()
+            // Re-resolve on every refresh: the device may have moved since the last fetch.
+            val location = resolveLocation()
+            _state.update { it.copy(userLocation = location) }
             fetchAlerts(location)
+            realtimeLocation.value = location
             _state.update { it.copy(isRefreshing = false) }
         }
     }
@@ -146,29 +164,42 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun observeRealtimeAlerts(location: Location) {
-        val radiusMeters = _state.value.alertRadiusKm * 1000
+    /**
+     * Single long-lived collector. `flatMapLatest` cancels and joins the previous realtime
+     * subscription before opening the next, and `distinctUntilChanged` skips GPS jitter so
+     * the channel is only re-subscribed after a meaningful move.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeRealtimeAlerts() {
         viewModelScope.launch {
-            observeNearbyAlerts(
-                latitude = location.latitude,
-                longitude = location.longitude,
-                radiusMeters = radiusMeters
-            ).collect { alerts ->
-                val filter = _state.value.selectedFilter
-                val query = _state.value.searchQuery
-                val lostCount = alerts.count { it.alert.type == AlertType.LOST }
-                val foundCount = alerts.count { it.alert.type == AlertType.FOUND }
-
-                _state.update {
-                    it.copy(
-                        alerts = alerts,
-                        filteredAlerts = applyFilters(alerts, filter, query),
-                        totalActiveAlerts = alerts.size,
-                        lostCount = lostCount,
-                        foundCount = foundCount
+            realtimeLocation
+                .filterNotNull()
+                .distinctUntilChanged { old, new ->
+                    calculateDistance(old, new) < REALTIME_RESUBSCRIBE_METERS
+                }
+                .flatMapLatest { location ->
+                    observeNearbyAlerts(
+                        latitude = location.latitude,
+                        longitude = location.longitude,
+                        radiusMeters = _state.value.alertRadiusKm * 1000
                     )
                 }
-            }
+                .collect { alerts ->
+                    val filter = _state.value.selectedFilter
+                    val query = _state.value.searchQuery
+                    val lostCount = alerts.count { it.alert.type == AlertType.LOST }
+                    val foundCount = alerts.count { it.alert.type == AlertType.FOUND }
+
+                    _state.update {
+                        it.copy(
+                            alerts = alerts,
+                            filteredAlerts = applyFilters(alerts, filter, query),
+                            totalActiveAlerts = alerts.size,
+                            lostCount = lostCount,
+                            foundCount = foundCount
+                        )
+                    }
+                }
         }
     }
 
