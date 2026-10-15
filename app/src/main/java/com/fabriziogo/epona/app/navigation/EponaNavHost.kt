@@ -23,6 +23,7 @@ import com.fabriziogo.epona.feature.detail.navigation.detailScreen
 import com.fabriziogo.epona.feature.detail.navigation.navigateToDetail
 import com.fabriziogo.epona.feature.home.navigation.HOME_ROUTE
 import com.fabriziogo.epona.feature.home.navigation.homeScreen
+import com.fabriziogo.epona.feature.map.navigation.focusMapOn
 import com.fabriziogo.epona.feature.map.navigation.mapScreen
 import com.fabriziogo.epona.feature.map.navigation.navigateToPickLocation
 import com.fabriziogo.epona.feature.map.navigation.pickLocationScreen
@@ -150,6 +151,7 @@ fun EponaNavHost(
             },
             onNavigateToMap = { lat, lng ->
                 onNavigateToTopLevel(TopLevelDestination.MAP)
+                navController.focusMapOn(lat, lng)
             },
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone

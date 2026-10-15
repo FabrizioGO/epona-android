@@ -13,6 +13,9 @@ sealed interface MapEvent {
     data object CreateAlertClicked : MapEvent
     data object RetryLoad : MapEvent
     data object ErrorDismissed : MapEvent
+
+    /** Opened with a specific coordinate, e.g. "View on map" from an alert detail. */
+    data class FocusOn(val latitude: Double, val longitude: Double) : MapEvent
 }
 
 sealed interface MapNavEvent {

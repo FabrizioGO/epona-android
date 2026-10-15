@@ -32,10 +32,12 @@ fun NavGraphBuilder.mapScreen(
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreateAlert: () -> Unit
 ) {
-    composable(route = MAP_ROUTE) {
+    composable(route = MAP_ROUTE) { entry ->
         MapScreen(
             onNavigateToDetail = onNavigateToDetail,
-            onNavigateToCreateAlert = onNavigateToCreateAlert
+            onNavigateToCreateAlert = onNavigateToCreateAlert,
+            focus = entry.mapFocus(),
+            onFocusConsumed = { entry.clearMapFocus() }
         )
     }
 }

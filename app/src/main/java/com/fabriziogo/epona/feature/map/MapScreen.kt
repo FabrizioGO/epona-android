@@ -53,6 +53,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapScreen(
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreateAlert: () -> Unit,
+    focus: Pair<Double, Double>?,
+    onFocusConsumed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel()
 ) {
@@ -65,6 +67,15 @@ fun MapScreen(
                 is MapNavEvent.NavigateToDetail -> onNavigateToDetail(event.alertId)
                 MapNavEvent.NavigateToCreateAlert -> onNavigateToCreateAlert()
             }
+        }
+    }
+
+    // "View on map" handed us a coordinate: move the camera there. Self-terminating —
+    // consuming it re-emits null, the effect restarts on null and no-ops.
+    LaunchedEffect(focus) {
+        focus?.let {
+            viewModel.onEvent(MapEvent.FocusOn(it.first, it.second))
+            onFocusConsumed()
         }
     }
 
