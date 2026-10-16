@@ -85,12 +85,4 @@ val md_theme_dark_surfaceContainer = Color(0xFF201F1E)
 val md_theme_dark_surfaceContainerHigh = Color(0xFF2B2A29)
 val md_theme_dark_surfaceContainerHighest = Color(0xFF363534)
 
-// Semantic colors (used directly in components)
-object EponaColors {
-    val Lost = Color(0xFFDC2626)
-    val LostContainer = Color(0xFFFEE2E2)
-    val Found = Color(0xFF059669)
-    val FoundContainer = Color(0xFFD1FAE5)
-    val Reward = Color(0xFFD97706)
-    val RewardContainer = Color(0xFFFEF3C7)
-}
+// Lost / Found / Reward semantic colors live in ExtendedColors.kt (light + dark sets).

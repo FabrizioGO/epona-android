@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.pet.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -42,7 +43,7 @@ fun <T : Enum<T>> SelectionChips(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun SelectionChipsPreview() {
     EponaTheme {

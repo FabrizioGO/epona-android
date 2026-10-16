@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.formatTimeAgo
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun DetailInfoCards(
@@ -106,12 +105,12 @@ private fun InfoCard(
             Column {
                 Text(
                     text = label,
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     text = value,
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2
                 )

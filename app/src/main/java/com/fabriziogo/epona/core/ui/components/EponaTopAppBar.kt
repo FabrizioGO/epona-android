@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +31,7 @@ fun EponaTopAppBar(
         title = {
             Text(
                 text = title,
-                style = EponaTypography.titleLarge
+                style = MaterialTheme.typography.titleLarge
             )
         },
         modifier = modifier,
@@ -51,9 +50,9 @@ fun EponaTopAppBar(
         },
         actions = { actions() },
         scrollBehavior = scrollBehavior,
+        // Resting on surface; the default scrolled color gives the tonal change on scroll.
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface
         )
     )
 }
@@ -70,15 +69,14 @@ fun EponaLargeTopAppBar(
         title = {
             Text(
                 text = title,
-                style = EponaTypography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium
             )
         },
         modifier = modifier,
         actions = { actions() },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            scrolledContainerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface
         )
     )
 }

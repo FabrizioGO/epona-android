@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Circular user avatar: the remote photo when [url] is set, otherwise the first
@@ -51,7 +50,7 @@ fun EponaAvatar(
         } else {
             Text(
                 text = name.firstOrNull()?.uppercase() ?: "?",
-                style = EponaTypography.titleMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = contentColor
             )
         }

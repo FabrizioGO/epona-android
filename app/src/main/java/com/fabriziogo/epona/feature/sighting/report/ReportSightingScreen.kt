@@ -1,7 +1,13 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.sighting.report
 
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.height
@@ -17,16 +23,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
+import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.LocationPickerCard
 import com.fabriziogo.epona.feature.sighting.report.components.SightingNoteField
 import com.fabriziogo.epona.feature.sighting.report.components.SubmitSection
@@ -36,7 +46,6 @@ import com.fabriziogo.epona.core.ui.media.PhotoThumbnailRow
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,11 +111,40 @@ fun ReportSightingScreen(
         }
     }
 
+    val isDirty = state.note.isNotBlank() || state.photos.isNotEmpty()
+    var showDiscardDialog by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = isDirty && !state.isSubmitting) { showDiscardDialog = true }
+
+    if (showDiscardDialog) {
+        EponaConfirmDialog(
+            title = stringResource(R.string.discard_title),
+            message = stringResource(R.string.discard_message),
+            confirmText = stringResource(R.string.discard_confirm),
+            dismissText = stringResource(R.string.discard_keep_editing),
+            onConfirm = {
+                showDiscardDialog = false
+                viewModel.onEvent(ReportSightingEvent.BackClicked)
+            },
+            onDismiss = { showDiscardDialog = false }
+        )
+    }
+
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
+        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.sighting_report_title),
-                onCloseClick = { viewModel.onEvent(ReportSightingEvent.BackClicked) }
+                onCloseClick = {
+                    if (isDirty && !state.isSubmitting) showDiscardDialog = true
+                    else viewModel.onEvent(ReportSightingEvent.BackClicked)
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -115,8 +153,10 @@ fun ReportSightingScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
+                .consumeWindowInsets(padding)
                 .imePadding()
                 .verticalScroll(rememberScrollState())
+                .constrainedWidth()
                 .padding(horizontal = 20.dp)
         ) {
             Spacer(Modifier.height(8.dp))
@@ -125,13 +165,13 @@ fun ReportSightingScreen(
             if (state.petName.isNotBlank()) {
                 Text(
                     text = stringResource(R.string.sighting_spotted, state.petName),
-                    style = EponaTypography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.sighting_add_photo),
-                    style = EponaTypography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -141,12 +181,12 @@ fun ReportSightingScreen(
             // Photo capture
             Text(
                 text = stringResource(R.string.sighting_photos_title),
-                style = EponaTypography.titleMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(R.string.sighting_photos_desc),
-                style = EponaTypography.bodySmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(12.dp))

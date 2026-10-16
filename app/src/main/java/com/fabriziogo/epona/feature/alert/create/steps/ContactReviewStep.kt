@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,7 +26,6 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.ui.components.EponaTextField
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun ContactReviewStep(
@@ -41,13 +42,14 @@ fun ContactReviewStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             stringResource(R.string.create_step_contact_title),
-            style = EponaTypography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.create_step_contact_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))
@@ -89,11 +91,11 @@ fun ContactReviewStep(
                     Icon(
                         Icons.Outlined.Check,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
                         stringResource(R.string.create_ready_title),
-                        style = EponaTypography.titleSmall,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
@@ -110,8 +112,8 @@ fun ContactReviewStep(
                 }
                 Text(
                     text = summaryText,
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
                 // Spelled out here because it is the one answer that cannot be
@@ -128,8 +130,8 @@ fun ContactReviewStep(
                                     R.string.create_ready_summary_custody_at_location
                             }
                         ),
-                        style = EponaTypography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }

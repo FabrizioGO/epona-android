@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -39,7 +40,6 @@ import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.components.formatTimeAgo
 import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun MyAlertCard(
@@ -65,7 +65,7 @@ fun MyAlertCard(
                 if (pet.photoUrls.isNotEmpty()) {
                     AsyncImage(
                         model = pet.photoUrls.first(),
-                        contentDescription = petDisplayName(pet),
+                        contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(56.dp)
                     )
@@ -78,7 +78,8 @@ fun MyAlertCard(
                             "rabbit" -> "🐇"
                             else -> "🐾"
                         },
-                        style = EponaTypography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.clearAndSetSemantics {}
                     )
                 }
             }
@@ -89,7 +90,7 @@ fun MyAlertCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = petDisplayName(pet),
-                        style = EponaTypography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f, fill = false)
                     )
@@ -99,7 +100,7 @@ fun MyAlertCard(
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = alert.lastSeenAddress ?: stringResource(R.string.alert_location_unknown),
-                    style = EponaTypography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(6.dp))
@@ -110,7 +111,7 @@ fun MyAlertCard(
                         Icons.Outlined.Visibility,
                         contentDescription = null,
                         modifier = Modifier.size(14.dp),
-                        tint = MaterialTheme.colorScheme.outline
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.width(2.dp))
                     Text(
@@ -119,14 +120,14 @@ fun MyAlertCard(
                             alert.sightingCount,
                             alert.sightingCount
                         ),
-                        style = EponaTypography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
                         text = formatTimeAgo(alert.createdAt),
-                        style = EponaTypography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

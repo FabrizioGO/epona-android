@@ -1,5 +1,8 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,10 +28,9 @@ import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.ui.components.EmptyState
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.PetCard
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Step 4 (shared): nearby alerts of the opposite type that might be the same
@@ -51,19 +53,20 @@ fun MatchesStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             stringResource(R.string.create_step_matches_title),
-            style = EponaTypography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.create_step_matches_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))
 
         when {
-            isLoading -> LoadingIndicator(modifier = Modifier.fillMaxWidth())
+            isLoading -> FullScreenProgress(modifier = Modifier.fillMaxWidth())
 
             matches.isEmpty() -> EmptyState(
                 icon = Icons.Outlined.Search,
@@ -79,7 +82,7 @@ fun MatchesStep(
                         if (lookingFor == AlertType.LOST) R.string.create_matches_hint
                         else R.string.create_matches_hint_lost
                     ),
-                    style = EponaTypography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
@@ -94,7 +97,7 @@ fun MatchesStep(
                 Spacer(Modifier.height(16.dp))
                 Text(
                     text = stringResource(R.string.create_matches_none),
-                    style = EponaTypography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -119,7 +122,7 @@ private fun previewMatch(id: String, breed: String?) = AlertWithDetails(
     distanceMeters = 850.0
 )
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun MatchesStepLoadingPreview() {
     EponaTheme {
@@ -133,7 +136,7 @@ private fun MatchesStepLoadingPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun MatchesStepEmptyPreview() {
     EponaTheme {
@@ -147,7 +150,7 @@ private fun MatchesStepEmptyPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun MatchesStepPopulatedPreview() {
     EponaTheme {

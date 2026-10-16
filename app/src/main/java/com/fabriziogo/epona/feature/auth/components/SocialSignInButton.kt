@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SocialSignInButton(
@@ -27,8 +26,7 @@ fun SocialSignInButton(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp),
-        enabled = enabled && !isLoading,
-        shape = MaterialTheme.shapes.large
+        enabled = enabled && !isLoading
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -38,13 +36,13 @@ fun SocialSignInButton(
         } else {
             Text(
                 text = "G",
-                style = EponaTypography.titleMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.width(12.dp))
             Text(
                 text = text,
-                style = EponaTypography.labelLarge
+                style = MaterialTheme.typography.labelLarge
             )
         }
     }

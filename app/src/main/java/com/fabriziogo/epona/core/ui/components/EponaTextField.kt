@@ -9,6 +9,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,6 +35,8 @@ fun EponaTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false
 ) {
+    val focusManager = LocalFocusManager.current
+
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
@@ -59,9 +63,14 @@ fun EponaTextField(
                 keyboardType = keyboardType,
                 imeAction = imeAction
             ),
+            // onNext must keep moving focus: a custom handler replaces the default behaviour,
+            // so run the caller's action and then advance.
             keyboardActions = KeyboardActions(
                 onDone = { onImeAction() },
-                onNext = { onImeAction() },
+                onNext = {
+                    onImeAction()
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
                 onSearch = { onImeAction() }
             ),
             visualTransformation = visualTransformation,

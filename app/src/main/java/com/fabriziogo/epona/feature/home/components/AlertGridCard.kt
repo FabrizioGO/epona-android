@@ -43,11 +43,12 @@ import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.components.emoji
 import com.fabriziogo.epona.core.ui.components.formatDistance
 import com.fabriziogo.epona.core.ui.extensions.pressScale
-import com.fabriziogo.epona.core.ui.theme.EponaColors
-import com.fabriziogo.epona.core.ui.theme.EponaTeal
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.feature.home.previewAlertWithDetails
+
+/** Photo overlays sit on a dark scrim, so their content stays white in every theme. */
+private val OnScrim = Color.White
 
 /**
  * Tall photo card for the home feed grid — pet photo with a gradient overlay carrying the
@@ -72,7 +73,8 @@ fun AlertGridCard(
         if (pet.photoUrls.isNotEmpty()) {
             AsyncImage(
                 model = pet.photoUrls.first(),
-                contentDescription = petDisplayName(pet),
+                // The pet's name is shown on the card, so the photo is not read out separately.
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -82,11 +84,12 @@ fun AlertGridCard(
                     .fillMaxSize()
                     .background(
                         if (alert.type == AlertType.LOST)
-                            EponaColors.LostContainer else EponaColors.FoundContainer
+                            MaterialTheme.extendedColors.lostContainer
+                        else MaterialTheme.extendedColors.foundContainer
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = pet.species.emoji(), style = EponaTypography.displaySmall)
+                Text(text = pet.species.emoji(), style = MaterialTheme.typography.displaySmall)
             }
         }
 
@@ -131,8 +134,8 @@ fun AlertGridCard(
         ) {
             Text(
                 text = petDisplayName(pet),
-                style = EponaTypography.titleMedium,
-                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                color = OnScrim,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -142,13 +145,13 @@ fun AlertGridCard(
                     Icons.Outlined.LocationOn,
                     contentDescription = null,
                     modifier = Modifier.size(12.dp),
-                    tint = Color.White.copy(alpha = 0.75f)
+                    tint = OnScrim.copy(alpha = 0.75f)
                 )
                 Spacer(Modifier.size(2.dp))
                 Text(
                     text = alert.lastSeenAddress ?: stringResource(R.string.alert_location_unknown),
-                    style = EponaTypography.bodySmall,
-                    color = Color.White.copy(alpha = 0.75f),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = OnScrim.copy(alpha = 0.75f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -166,7 +169,7 @@ fun AlertGridCard(
                         Icons.Filled.Visibility,
                         contentDescription = null,
                         modifier = Modifier.size(12.dp),
-                        tint = Color.White.copy(alpha = 0.85f)
+                        tint = OnScrim.copy(alpha = 0.85f)
                     )
                     Spacer(Modifier.size(2.dp))
                     Text(
@@ -175,20 +178,20 @@ fun AlertGridCard(
                             alert.sightingCount,
                             alert.sightingCount
                         ),
-                        style = EponaTypography.labelSmall,
-                        color = Color.White.copy(alpha = 0.85f)
+                        style = MaterialTheme.typography.labelSmall,
+                        color = OnScrim.copy(alpha = 0.85f)
                     )
                 }
 
                 alertWithDetails.distanceMeters?.let { distance ->
                     Surface(
                         shape = CircleShape,
-                        color = EponaTeal
+                        color = MaterialTheme.colorScheme.primary
                     ) {
                         Text(
                             text = formatDistance(distance),
-                            style = EponaTypography.labelMedium,
-                            color = Color.White,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                         )
                     }

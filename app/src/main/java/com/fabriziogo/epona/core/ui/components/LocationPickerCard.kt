@@ -25,10 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Location
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -52,12 +53,12 @@ fun LocationPickerCard(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.sighting_location_title),
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = stringResource(R.string.sighting_location_desc),
-            style = EponaTypography.bodySmall,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
@@ -86,7 +87,7 @@ fun LocationPickerCard(
                         Spacer(Modifier.height(8.dp))
                         Text(
                             stringResource(R.string.sighting_location_loading),
-                            style = EponaTypography.bodySmall,
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -109,7 +110,7 @@ fun LocationPickerCard(
                             Icon(
                                 Icons.Filled.LocationOn,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                 modifier = Modifier.padding(10.dp)
                             )
                         }
@@ -119,15 +120,15 @@ fun LocationPickerCard(
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = address.ifBlank { stringResource(R.string.sighting_location_set) },
-                                style = EponaTypography.titleSmall,
+                                style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 maxLines = 2
                             )
                             Text(
                                 text = "${String.format("%.4f", location.latitude)}, " +
                                         String.format("%.4f", location.longitude),
-                                style = EponaTypography.bodySmall,
-                                color = MaterialTheme.colorScheme.outline
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
@@ -137,7 +138,7 @@ fun LocationPickerCard(
                         // since the empty state says "tap to set" but the filled one did not.
                         Text(
                             text = stringResource(R.string.action_edit),
-                            style = EponaTypography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -156,7 +157,11 @@ fun LocationPickerCard(
                                 )
                             )
                         )
-                        .clickable(onClick = onOpenMapPicker),
+                        .clickable(
+                            onClickLabel = stringResource(R.string.sighting_location_tap),
+                            role = Role.Button,
+                            onClick = onOpenMapPicker
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -169,7 +174,7 @@ fun LocationPickerCard(
                         Spacer(Modifier.height(8.dp))
                         Text(
                             stringResource(R.string.sighting_location_tap),
-                            style = EponaTypography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -181,7 +186,7 @@ fun LocationPickerCard(
         errorText?.let {
             Text(
                 text = it,
-                style = EponaTypography.bodySmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 6.dp, start = 4.dp)
             )
@@ -200,7 +205,7 @@ fun LocationPickerCard(
             Spacer(Modifier.width(6.dp))
             Text(
                 stringResource(R.string.sighting_use_current),
-                style = EponaTypography.labelLarge
+                style = MaterialTheme.typography.labelLarge
             )
         }
     }
@@ -252,7 +257,7 @@ private fun LocationMapPreview(
                 modifier = Modifier.matchParentSize(),
                 cameraPositionState = cameraPositionState,
                 googleMapOptionsFactory = { GoogleMapOptions().liteMode(true) },
-                properties = MapProperties(),
+                properties = MapProperties(mapStyleOptions = rememberMapStyle()),
                 uiSettings = MapUiSettings(
                     compassEnabled = false,
                     mapToolbarEnabled = false,
@@ -270,7 +275,11 @@ private fun LocationMapPreview(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .clickable(onClick = onOpenMapPicker)
+                .clickable(
+                    onClickLabel = stringResource(R.string.sighting_location_tap),
+                    role = Role.Button,
+                    onClick = onOpenMapPicker
+                )
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,7 +20,6 @@ import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.components.LocationPickerCard
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.feature.alert.create.steps.components.CustodySelector
 
 /**
@@ -48,13 +49,14 @@ fun LocationStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             stringResource(R.string.create_step_location_title),
-            style = EponaTypography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.create_step_location_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))

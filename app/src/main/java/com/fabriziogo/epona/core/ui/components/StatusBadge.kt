@@ -13,21 +13,21 @@ import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertStatus
 import com.fabriziogo.epona.core.domain.model.AlertType
-import com.fabriziogo.epona.core.ui.theme.EponaColors
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 
 @Composable
 fun AlertTypeBadge(
     type: AlertType,
     modifier: Modifier = Modifier
 ) {
+    val extended = MaterialTheme.extendedColors
     val bg = when (type) {
-        AlertType.LOST -> EponaColors.LostContainer
-        AlertType.FOUND -> EponaColors.FoundContainer
+        AlertType.LOST -> extended.lostContainer
+        AlertType.FOUND -> extended.foundContainer
     }
     val fg = when (type) {
-        AlertType.LOST -> EponaColors.Lost
-        AlertType.FOUND -> EponaColors.Found
+        AlertType.LOST -> extended.onLostContainer
+        AlertType.FOUND -> extended.onFoundContainer
     }
     val label = when (type) {
         AlertType.LOST -> stringResource(R.string.alert_type_lost)
@@ -35,7 +35,7 @@ fun AlertTypeBadge(
     }
     Text(
         text = label.uppercase(),
-        style = EponaTypography.labelSmall.copy(
+        style = MaterialTheme.typography.labelSmall.copy(
             fontWeight = FontWeight.Bold
         ),
         color = fg,
@@ -51,15 +51,16 @@ fun AlertStatusBadge(
     status: AlertStatus,
     modifier: Modifier = Modifier
 ) {
+    val extended = MaterialTheme.extendedColors
     val bg = when (status) {
         AlertStatus.ACTIVE -> MaterialTheme.colorScheme.primary
-        AlertStatus.RESOLVED -> EponaColors.FoundContainer
+        AlertStatus.RESOLVED -> extended.foundContainer
         AlertStatus.EXPIRED -> MaterialTheme.colorScheme.surfaceVariant
     }
     val fg = when (status) {
         AlertStatus.ACTIVE -> MaterialTheme.colorScheme.onPrimary
-        AlertStatus.RESOLVED -> EponaColors.Found
-        AlertStatus.EXPIRED -> MaterialTheme.colorScheme.outline
+        AlertStatus.RESOLVED -> extended.onFoundContainer
+        AlertStatus.EXPIRED -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val label = when (status) {
         AlertStatus.ACTIVE -> stringResource(R.string.alert_status_active)
@@ -68,7 +69,7 @@ fun AlertStatusBadge(
     }
     Text(
         text = label.uppercase(),
-        style = EponaTypography.labelSmall.copy(
+        style = MaterialTheme.typography.labelSmall.copy(
             fontWeight = FontWeight.Bold
         ),
         color = fg,
@@ -86,13 +87,13 @@ fun RewardBadge(
 ) {
     Text(
         text = stringResource(R.string.alert_reward_amount, amount.toInt()),
-        style = EponaTypography.labelLarge.copy(
+        style = MaterialTheme.typography.labelLarge.copy(
             fontWeight = FontWeight.Bold
         ),
-        color = EponaColors.Reward,
+        color = MaterialTheme.extendedColors.onRewardContainer,
         modifier = modifier
             .clip(MaterialTheme.shapes.medium)
-            .background(EponaColors.RewardContainer)
+            .background(MaterialTheme.extendedColors.rewardContainer)
             .padding(horizontal = 12.dp, vertical = 6.dp)
     )
 }
@@ -106,7 +107,7 @@ fun RewardBadge(
 fun InSafeHandsBadge(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(R.string.detail_badge_in_safe_hands).uppercase(),
-        style = EponaTypography.labelSmall.copy(fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
         color = MaterialTheme.colorScheme.onSecondaryContainer,
         modifier = modifier
             .clip(MaterialTheme.shapes.small)

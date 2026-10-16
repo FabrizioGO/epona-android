@@ -14,7 +14,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Renders text containing one or more `<a href="...">` links, opened through the
@@ -30,8 +29,8 @@ import com.fabriziogo.epona.core.ui.theme.EponaTypography
 fun LegalLinksText(
     text: String,
     modifier: Modifier = Modifier,
-    style: TextStyle = EponaTypography.bodySmall,
-    color: Color = MaterialTheme.colorScheme.outline,
+    style: TextStyle = MaterialTheme.typography.bodySmall,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     linkColor: Color = MaterialTheme.colorScheme.primary,
     textAlign: TextAlign = TextAlign.Center
 ) {

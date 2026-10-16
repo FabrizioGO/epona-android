@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.forgotpassword
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -31,13 +32,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.luminance
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
 import com.fabriziogo.epona.feature.auth.components.PasswordTextField
@@ -51,7 +52,7 @@ fun ForgotPasswordScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    StatusBarIcons(darkIcons = false)
+    StatusBarIcons(darkIcons = MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5f)
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -196,7 +197,7 @@ private fun ColumnScope.CodeStep(
             } else {
                 stringResource(R.string.forgot_resend_code)
             },
-            style = EponaTypography.labelLarge
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }
@@ -236,7 +237,7 @@ private fun NewPasswordStep(
     )
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ForgotPasswordEmailPreview() {
     EponaTheme(dynamicColor = false) {
@@ -244,7 +245,7 @@ private fun ForgotPasswordEmailPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ForgotPasswordCodePreview() {
     EponaTheme(dynamicColor = false) {
@@ -260,7 +261,7 @@ private fun ForgotPasswordCodePreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ForgotPasswordNewPasswordPreview() {
     EponaTheme(dynamicColor = false) {

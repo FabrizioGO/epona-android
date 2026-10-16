@@ -1,5 +1,11 @@
 package com.fabriziogo.epona.app.navigation
 
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +45,10 @@ import com.fabriziogo.epona.feature.profile.navigation.profileGraph
 import com.fabriziogo.epona.feature.sighting.navigation.navigateToReportSighting
 import com.fabriziogo.epona.feature.sighting.navigation.sightingScreens
 
+// MD3 motion easing (see m3.material.io/styles/motion/easing-and-duration/tokens-specs).
+private val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
+private val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0f, 0.8f, 0.15f)
+
 @Composable
 fun EponaNavHost(
     navController: NavHostController,
@@ -68,7 +78,25 @@ fun EponaNavHost(
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
+        // Short shared-axis style transitions (a slight horizontal shift plus fade) instead
+        // of the default plain fade, with the MD3 emphasized-decelerate easing on entry.
+        enterTransition = {
+            slideInHorizontally(tween(300, easing = EmphasizedDecelerate)) { it / 10 } +
+                fadeIn(tween(300))
+        },
+        exitTransition = {
+            slideOutHorizontally(tween(200, easing = EmphasizedAccelerate)) { -it / 10 } +
+                fadeOut(tween(200))
+        },
+        popEnterTransition = {
+            slideInHorizontally(tween(300, easing = EmphasizedDecelerate)) { -it / 10 } +
+                fadeIn(tween(300))
+        },
+        popExitTransition = {
+            slideOutHorizontally(tween(200, easing = EmphasizedAccelerate)) { it / 10 } +
+                fadeOut(tween(200))
+        }
     ) {
         // ---- Auth ----
         authGraph(

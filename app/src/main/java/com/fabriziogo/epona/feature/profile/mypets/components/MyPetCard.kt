@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.EponaCard
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun MyPetCard(
@@ -53,7 +53,7 @@ fun MyPetCard(
                 if (pet.photoUrls.isNotEmpty()) {
                     AsyncImage(
                         model = pet.photoUrls.first(),
-                        contentDescription = pet.name,
+                        contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(60.dp)
                     )
@@ -64,7 +64,8 @@ fun MyPetCard(
                             "bird" -> "🐦"; "rabbit" -> "🐇"
                             else -> "🐾"
                         },
-                        style = EponaTypography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.clearAndSetSemantics {}
                     )
                 }
             }
@@ -75,7 +76,7 @@ fun MyPetCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = pet.name,
-                    style = EponaTypography.titleMedium,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
@@ -84,14 +85,14 @@ fun MyPetCard(
                         stringResource(pet.species.label),
                         pet.color
                     ).joinToString(" · "),
-                    style = EponaTypography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 pet.microchipId?.let {
                     Text(
                         text = "${stringResource(R.string.my_pets_chip_prefix)} $it",
-                        style = EponaTypography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

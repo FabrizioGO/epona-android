@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.core.ui.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Badge
@@ -24,17 +25,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.fabriziogo.epona.core.ui.theme.EponaColors
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
- * Teal header shared by the top-level tabs: title (+ optional subtitle) with action buttons,
- * then free-form [content]. Always-dark like the Home hero, so text is hardcoded white.
+ * Header shared by the top-level tabs: title (+ optional subtitle) with action buttons,
+ * then free-form [content]. Painted with `primaryContainer`; text uses `onPrimaryContainer`
+ * so it stays legible in light, dark and Material You themes.
  */
 @Composable
 fun TabHero(
@@ -42,14 +42,17 @@ fun TabHero(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    contentInset: Dp = 0.dp,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
+    val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp + contentInset)
             .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Row(
@@ -60,14 +63,14 @@ fun TabHero(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = EponaTypography.headlineMedium,
-                    color = Color.White
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = contentColor
                 )
                 if (subtitle != null) {
                     Text(
                         text = subtitle,
-                        style = EponaTypography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.75f)
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = contentColor
                     )
                 }
             }
@@ -77,7 +80,7 @@ fun TabHero(
     }
 }
 
-/** White circular action button for use on a teal hero. */
+/** Circular action button for use on a [TabHero]-style hero; meets the 48dp touch target. */
 @Composable
 fun HeroIconButton(
     icon: ImageVector,
@@ -88,23 +91,22 @@ fun HeroIconButton(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier.size(44.dp),
-        colors = IconButtonDefaults.iconButtonColors(containerColor = Color.White)
+        modifier = modifier.size(48.dp),
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
     ) {
         BadgedBox(
             badge = {
                 if (badgeCount > 0) {
-                    Badge(containerColor = EponaColors.Lost) {
+                    Badge {
                         Text(badgeCount.toString())
                     }
                 }
             }
         ) {
-            Icon(
-                icon,
-                contentDescription = contentDescription,
-                tint = MaterialTheme.colorScheme.primaryContainer
-            )
+            Icon(icon, contentDescription = contentDescription)
         }
     }
 }
@@ -125,7 +127,10 @@ fun HeroSheetEdge(
                 .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+                    shape = MaterialTheme.shapes.extraLarge.copy(
+                        bottomStart = ZeroCornerSize,
+                        bottomEnd = ZeroCornerSize
+                    )
                 )
                 .padding(top = 20.dp)
         ) {
@@ -134,7 +139,7 @@ fun HeroSheetEdge(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0F4F44)
+@EponaPreviews
 @Composable
 private fun TabHeroPreview() {
     EponaTheme(dynamicColor = false) {
@@ -153,12 +158,16 @@ private fun TabHeroPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun HeroSheetEdgePreview() {
     EponaTheme(dynamicColor = false) {
         HeroSheetEdge {
-            Text("Section", style = EponaTypography.titleLarge, modifier = Modifier.padding(20.dp))
+            Text(
+                "Section",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(20.dp)
+            )
         }
     }
 }

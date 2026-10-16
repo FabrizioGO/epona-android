@@ -28,8 +28,7 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.acceptsSightings
-import com.fabriziogo.epona.core.ui.theme.EponaColors
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 
 @Composable
 fun PetCard(
@@ -55,22 +54,22 @@ fun PetCard(
                     .clip(MaterialTheme.shapes.medium)
                     .background(
                         if (alert.type == AlertType.LOST)
-                            EponaColors.LostContainer
-                        else EponaColors.FoundContainer
+                            MaterialTheme.extendedColors.lostContainer
+                        else MaterialTheme.extendedColors.foundContainer
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 if (pet.photoUrls.isNotEmpty()) {
                     AsyncImage(
                         model = pet.photoUrls.first(),
-                        contentDescription = petDisplayName(pet),
+                        contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.size(56.dp)
                     )
                 } else {
                     Text(
                         text = pet.species.emoji(),
-                        style = EponaTypography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall
                     )
                 }
             }
@@ -85,7 +84,7 @@ fun PetCard(
                 ) {
                     Text(
                         text = petDisplayName(pet),
-                        style = EponaTypography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     AlertTypeBadge(type = alert.type)
@@ -94,7 +93,7 @@ fun PetCard(
                 Text(
                     text = listOfNotNull(pet.breed, pet.color)
                         .joinToString(" · "),
-                    style = EponaTypography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
@@ -104,7 +103,7 @@ fun PetCard(
                 if (!alert.acceptsSightings) {
                     Text(
                         text = stringResource(R.string.create_matches_hint_custody),
-                        style = EponaTypography.labelSmall,
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(top = 2.dp)
                     )
@@ -120,13 +119,13 @@ fun PetCard(
                                 Icons.Outlined.LocationOn,
                                 contentDescription = null,
                                 modifier = Modifier.size(14.dp),
-                                tint = MaterialTheme.colorScheme.outline
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(Modifier.width(3.dp))
                             Text(
                                 text = formatDistance(dist),
-                                style = EponaTypography.bodySmall,
-                                color = MaterialTheme.colorScheme.outline
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -135,13 +134,13 @@ fun PetCard(
                             Icons.Outlined.DateRange,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.width(3.dp))
                         Text(
                             text = formatTimeAgo(alert.createdAt),
-                            style = EponaTypography.bodySmall,
-                            color = MaterialTheme.colorScheme.outline
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

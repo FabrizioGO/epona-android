@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Title block for the teal [AuthHeroCard] header: a circular paw badge over a
@@ -51,16 +51,16 @@ fun AuthHeader(
 
         Text(
             text = title,
-            style = EponaTypography.headlineLarge,
-            color = Color.White
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
 
         Spacer(Modifier.height(6.dp))
 
         Text(
             text = subtitle,
-            style = EponaTypography.bodyLarge,
-            color = Color.White.copy(alpha = 0.85f)
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }

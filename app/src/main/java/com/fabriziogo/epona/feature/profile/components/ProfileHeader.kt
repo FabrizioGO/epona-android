@@ -23,12 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaAvatar
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Avatar + name + email. The avatar is tappable when [onAvatarClick] is set and
@@ -52,8 +53,14 @@ fun ProfileHeader(
         Box(
             contentAlignment = Alignment.Center
         ) {
+            // The avatar is the single accessible target for changing the photo; the camera
+            // badge below is only a visual hint, so TalkBack does not stop on it twice.
             val clickableModifier = if (onAvatarClick != null && !isUploading) {
-                Modifier.clickable(onClick = onAvatarClick)
+                Modifier.clickable(
+                    onClickLabel = stringResource(R.string.profile_change_photo),
+                    role = Role.Button,
+                    onClick = onAvatarClick
+                )
             } else {
                 Modifier
             }
@@ -61,10 +68,10 @@ fun ProfileHeader(
                 url = previewUri ?: avatarUrl,
                 name = displayName,
                 size = 88.dp,
-                containerColor = Color.White.copy(alpha = 0.16f),
-                contentColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.16f),
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier
-                    .border(2.dp, Color.White.copy(alpha = 0.6f), CircleShape)
+                    .border(2.dp, MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f), CircleShape)
                     .then(clickableModifier)
             )
 
@@ -72,7 +79,7 @@ fun ProfileHeader(
                 CircularProgressIndicator(
                     modifier = Modifier.size(88.dp),
                     strokeWidth = 3.dp,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
 
@@ -84,12 +91,12 @@ fun ProfileHeader(
                         .size(32.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondary)
-                        .clickable(enabled = !isUploading, onClick = onAvatarClick),
+                        .clearAndSetSemantics {},
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = stringResource(R.string.profile_change_photo),
+                        contentDescription = null,
                         modifier = Modifier.size(18.dp),
                         tint = MaterialTheme.colorScheme.onSecondary
                     )
@@ -101,16 +108,16 @@ fun ProfileHeader(
 
         Text(
             text = displayName,
-            style = EponaTypography.headlineSmall,
-            color = Color.White
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
 
         Spacer(Modifier.height(4.dp))
 
         Text(
             text = email,
-            style = EponaTypography.bodyMedium,
-            color = Color.White.copy(alpha = 0.75f)
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }

@@ -2,7 +2,8 @@ package com.fabriziogo.epona.feature.auth.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -45,8 +46,8 @@ fun PasswordTextField(
         trailingIcon = {
             IconButton(onClick = { visible = !visible }) {
                 Icon(
-                    imageVector = if (visible) Icons.Outlined.Lock
-                        else Icons.Outlined.Lock,
+                    imageVector = if (visible) Icons.Outlined.VisibilityOff
+                        else Icons.Outlined.Visibility,
                     contentDescription = if (visible) stringResource(R.string.cd_hide_password)
                         else stringResource(R.string.cd_show_password)
                 )

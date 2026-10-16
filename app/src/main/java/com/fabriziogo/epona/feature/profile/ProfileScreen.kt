@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.profile
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.fabriziogo.epona.core.ui.layout.FormMaxWidth
+import com.fabriziogo.epona.core.ui.layout.contentGutter
+import com.fabriziogo.epona.core.ui.layout.fullBleed
+import androidx.compose.ui.graphics.luminance
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.BuildConfig
@@ -40,12 +46,11 @@ import com.fabriziogo.epona.core.domain.model.UserStats
 import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.HeroIconButton
 import com.fabriziogo.epona.core.ui.components.HeroSheetEdge
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.TabHero
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.profile.components.DeleteAccountDialog
 import com.fabriziogo.epona.feature.profile.components.ProfileHeader
@@ -70,7 +75,7 @@ fun ProfileScreen(
     val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
 
     // White glyphs read against the teal hero regardless of the app theme.
-    StatusBarIcons(darkIcons = false)
+    StatusBarIcons(darkIcons = MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5f)
 
     // Owned by the screen rather than by the stateless header below, so previews
     // of the header do not need an ActivityResultRegistry to render. Single slot:
@@ -154,15 +159,21 @@ fun ProfileScreenContent(
     onAvatarClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Zero on phones. On wide windows the settings rows stay in a readable column while the
+    // hero and sheet edge still run edge to edge.
+    val gutter = contentGutter(FormMaxWidth)
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(paddingValues)
             .background(MaterialTheme.colorScheme.surface),
-        contentPadding = PaddingValues(bottom = 24.dp)
+        contentPadding = PaddingValues(start = gutter, end = gutter, bottom = 24.dp)
     ) {
         item(key = "hero") {
             TabHero(
+                modifier = Modifier.fullBleed(gutter),
+                contentInset = gutter,
                 title = stringResource(R.string.profile_title),
                 actions = {
                     HeroIconButton(
@@ -188,17 +199,17 @@ fun ProfileScreenContent(
         }
 
         item(key = "sheet") {
-            HeroSheetEdge {
+            HeroSheetEdge(modifier = Modifier.fullBleed(gutter)) {
                 if (state.isLoading || state.isDeletingAccount) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(240.dp)
                     ) {
-                        LoadingIndicator()
+                        FullScreenProgress()
                     }
                 } else {
-                    ProfileSections(state = state, onEvent = onEvent)
+                    ProfileSections(state = state, onEvent = onEvent, inset = gutter)
                 }
             }
         }
@@ -208,9 +219,10 @@ fun ProfileScreenContent(
 @Composable
 private fun ProfileSections(
     state: ProfileUiState,
-    onEvent: (ProfileEvent) -> Unit
+    onEvent: (ProfileEvent) -> Unit,
+    inset: Dp = 0.dp
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp + inset)) {
         SettingsSection(title = stringResource(R.string.profile_section_my_stuff)) {
             SettingsItem(
                 icon = Icons.Outlined.Pets,
@@ -265,14 +277,14 @@ private fun ProfileSections(
 
         Text(
             text = stringResource(R.string.profile_version, BuildConfig.VERSION_NAME),
-            style = EponaTypography.bodySmall,
-            color = MaterialTheme.colorScheme.outline,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 24.dp)
         )
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ProfileScreenPreview() {
     EponaTheme(dynamicColor = false) {
@@ -288,7 +300,7 @@ private fun ProfileScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ProfileScreenLoadingPreview() {
     EponaTheme(dynamicColor = false) {
