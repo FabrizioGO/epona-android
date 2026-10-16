@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.alert.create
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -9,6 +10,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,10 +26,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,6 +47,8 @@ import com.fabriziogo.epona.feature.alert.create.steps.FoundPetStep
 import com.fabriziogo.epona.feature.alert.create.steps.LocationStep
 import com.fabriziogo.epona.feature.alert.create.steps.MatchesStep
 import com.fabriziogo.epona.feature.alert.create.steps.PetSelectionStep
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
+import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
@@ -122,11 +130,37 @@ fun CreateAlertScreen(
         }
     }
 
+    // Past the first step the user has made choices; leaving should not silently drop them.
+    var showDiscardDialog by remember { mutableStateOf(false) }
+    val hasProgress = state.currentStep > 1
+
+    // Back steps through the wizard instead of popping the whole flow.
+    BackHandler(enabled = hasProgress) {
+        viewModel.onEvent(CreateAlertEvent.PreviousStep)
+    }
+
+    if (showDiscardDialog) {
+        EponaConfirmDialog(
+            title = stringResource(R.string.discard_title),
+            message = stringResource(R.string.discard_message),
+            confirmText = stringResource(R.string.discard_confirm),
+            dismissText = stringResource(R.string.discard_keep_editing),
+            onConfirm = {
+                showDiscardDialog = false
+                viewModel.onEvent(CreateAlertEvent.CloseClicked)
+            },
+            onDismiss = { showDiscardDialog = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             EponaTopAppBar(
                 title = stringResource(R.string.create_alert_title),
-                onCloseClick = { viewModel.onEvent(CreateAlertEvent.CloseClicked) }
+                onCloseClick = {
+                    if (hasProgress) showDiscardDialog = true
+                    else viewModel.onEvent(CreateAlertEvent.CloseClicked)
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -135,14 +169,19 @@ fun CreateAlertScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
+                .consumeWindowInsets(padding)
                 .imePadding()
         ) {
             // M3 progress indicator
+            val stepDescription = stringResource(
+                R.string.create_step_progress, state.currentStep, state.totalSteps
+            )
             LinearProgressIndicator(
                 progress = { state.progress },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .semantics { stateDescription = stepDescription },
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
             )
@@ -163,6 +202,7 @@ fun CreateAlertScreen(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
+                    .constrainedWidth()
                     .padding(horizontal = 20.dp)
             ) { step ->
                 when (step) {
@@ -268,7 +308,7 @@ fun CreateAlertScreen(
             // Bottom action buttons
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .constrainedWidth()
                     .padding(horizontal = 20.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {

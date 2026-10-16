@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -58,7 +59,6 @@ import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.components.RewardBadge
 import com.fabriziogo.epona.core.ui.components.petDisplayName
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -341,7 +341,7 @@ internal fun DetailHeaderContent(
             ) {
                 Text(
                     text = petDisplayName(pet),
-                    style = EponaTypography.headlineMedium,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 if (isResolved) {
@@ -367,7 +367,7 @@ internal fun DetailHeaderContent(
                 stringResource(pet.size.label),
                 pet.color
             ).joinToString(" · "),
-            style = EponaTypography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
@@ -375,13 +375,13 @@ internal fun DetailHeaderContent(
         Spacer(Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.detail_posted_by, detail.ownerName),
-            style = EponaTypography.bodySmall,
-            color = MaterialTheme.colorScheme.outline
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun AlertDetailScreenPreview() {
     AlertDetailScreen(

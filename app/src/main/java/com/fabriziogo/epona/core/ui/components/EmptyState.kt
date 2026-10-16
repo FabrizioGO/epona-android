@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.core.ui.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +21,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EmptyState(
@@ -46,14 +46,14 @@ fun EmptyState(
         Spacer(Modifier.height(16.dp))
         Text(
             text = title,
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(8.dp))
         Text(
             text = description,
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
@@ -64,7 +64,7 @@ fun EmptyState(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun EmptyStatePreview() {
     EmptyState(
@@ -74,7 +74,7 @@ fun EmptyStatePreview() {
     )
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun EmptyStateWithActionPreview() {
     EmptyState(

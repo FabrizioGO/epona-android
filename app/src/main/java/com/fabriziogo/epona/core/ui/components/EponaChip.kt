@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EponaFilterChip(
@@ -23,7 +22,7 @@ fun EponaFilterChip(
     FilterChip(
         selected = selected,
         onClick = onClick,
-        label = { Text(label, style = EponaTypography.labelLarge) },
+        label = { Text(label, style = MaterialTheme.typography.labelLarge) },
         modifier = modifier,
         leadingIcon = leadingIcon?.let {
             { Icon(it, contentDescription = null) }

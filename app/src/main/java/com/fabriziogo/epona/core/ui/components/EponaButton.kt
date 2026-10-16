@@ -10,6 +10,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -19,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EponaFilledButton(
@@ -35,13 +35,14 @@ fun EponaFilledButton(
         onClick = onClick,
         modifier = if (fullWidth) modifier.fillMaxWidth().height(48.dp)
             else modifier.height(48.dp),
-        enabled = enabled && !loading,
-        shape = MaterialTheme.shapes.large
+        enabled = enabled && !loading
     ) {
         if (loading) {
+            // The button is disabled while loading, so follow its (disabled) content color
+            // rather than onPrimary, which would vanish on the grey disabled container.
             CircularProgressIndicator(
                 modifier = Modifier.size(20.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = LocalContentColor.current,
                 strokeWidth = 2.dp
             )
         } else {
@@ -49,7 +50,7 @@ fun EponaFilledButton(
                 Icon(it, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
             }
-            Text(text, style = EponaTypography.labelLarge)
+            Text(text, style = MaterialTheme.typography.labelLarge)
         }
     }
 }
@@ -61,6 +62,7 @@ fun EponaTonalButton(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     fullWidth: Boolean = false,
+    enabled: Boolean = true,
     containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSecondaryContainer
 ) {
@@ -68,8 +70,8 @@ fun EponaTonalButton(
         onClick = onClick,
         modifier = if (fullWidth) modifier.fillMaxWidth().height(48.dp)
             else modifier.height(48.dp),
-        shape = MaterialTheme.shapes.large,
-        colors = ButtonDefaults.filledTonalButtonColors(
+        enabled = enabled,
+        colors =ButtonDefaults.filledTonalButtonColors(
             containerColor = containerColor,
             contentColor = contentColor
         )
@@ -79,7 +81,7 @@ fun EponaTonalButton(
             Spacer(Modifier.width(8.dp))
         }
         if (text.isNotEmpty())
-            Text(text, style = EponaTypography.labelLarge)
+            Text(text, style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -89,20 +91,21 @@ fun EponaOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    fullWidth: Boolean = false
+    fullWidth: Boolean = false,
+    enabled: Boolean = true
 ) {
     OutlinedButton(
         onClick = onClick,
         modifier = if (fullWidth) modifier.fillMaxWidth().height(48.dp)
             else modifier.height(48.dp),
-        shape = MaterialTheme.shapes.large,
-        border = ButtonDefaults.outlinedButtonBorder(enabled = true)
+        enabled = enabled,
+        border = ButtonDefaults.outlinedButtonBorder(enabled = enabled)
     ) {
         icon?.let {
             Icon(it, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
         }
-        Text(text, style = EponaTypography.labelLarge)
+        Text(text, style = MaterialTheme.typography.labelLarge)
     }
 }
 
@@ -118,6 +121,6 @@ fun EponaTextButton(
             Icon(it, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
         }
-        Text(text, style = EponaTypography.labelLarge)
+        Text(text, style = MaterialTheme.typography.labelLarge)
     }
 }

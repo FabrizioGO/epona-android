@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,7 +19,6 @@ import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.media.PhotoItem
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.feature.alert.create.FoundPetForm
 import com.fabriziogo.epona.feature.pet.components.PhotoPickerSection
 import com.fabriziogo.epona.feature.pet.components.SelectionChips
@@ -43,20 +43,20 @@ fun FoundPetStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             stringResource(R.string.create_step_found_pet_title),
-            style = EponaTypography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.create_step_found_pet_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))
 
         Text(
             stringResource(R.string.pet_species_label),
-            style = EponaTypography.titleSmall,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(8.dp))
@@ -89,7 +89,7 @@ fun FoundPetStep(
 
         Text(
             stringResource(R.string.pet_size_label),
-            style = EponaTypography.titleSmall,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(8.dp))
@@ -122,7 +122,7 @@ fun FoundPetStep(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun FoundPetStepPreview() {
     EponaTheme {

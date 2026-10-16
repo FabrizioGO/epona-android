@@ -20,7 +20,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -30,7 +34,6 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun PetSelectionStep(
@@ -44,13 +47,13 @@ fun PetSelectionStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             stringResource(R.string.create_step_pet_title),
-            style = EponaTypography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
             stringResource(R.string.create_step_pet_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(24.dp))
@@ -65,16 +68,16 @@ fun PetSelectionStep(
                         .padding(32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("🐾", style = EponaTypography.displayLarge)
+                    Text("🐾", style = MaterialTheme.typography.displayLarge)
                     Spacer(Modifier.height(16.dp))
                     Text(
                         stringResource(R.string.create_no_pets_title),
-                        style = EponaTypography.titleMedium
+                        style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
                         stringResource(R.string.create_no_pets_desc),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(20.dp))
@@ -87,15 +90,23 @@ fun PetSelectionStep(
             }
 
             else -> {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(
+                    modifier = Modifier.selectableGroup(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     pets.forEach { pet ->
                         val isSelected = selectedPet?.id == pet.id
                         Surface(
-                            onClick = { onPetSelected(pet) },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = isSelected,
+                                    onClick = { onPetSelected(pet) },
+                                    role = Role.RadioButton
+                                ),
                             shape = MaterialTheme.shapes.medium,
-                            color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.surfaceContainer,
+                            color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer
+                            else MaterialTheme.colorScheme.surfaceContainerLow,
                             border = if (isSelected) androidx.compose.foundation.BorderStroke(
                                 2.dp, MaterialTheme.colorScheme.primary
                             ) else null
@@ -114,7 +125,8 @@ fun PetSelectionStep(
                                     if (pet.photoUrls.isNotEmpty()) {
                                         AsyncImage(
                                             model = pet.photoUrls.first(),
-                                            contentDescription = pet.name,
+                                            // The name beside it already labels the row.
+                                            contentDescription = null,
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier.size(48.dp)
                                         )
@@ -125,7 +137,8 @@ fun PetSelectionStep(
                                                 "bird" -> "🐦"; "rabbit" -> "🐇"
                                                 else -> "🐾"
                                             },
-                                            style = EponaTypography.titleMedium
+                                            style = MaterialTheme.typography.titleMedium,
+                                            modifier = Modifier.clearAndSetSemantics {}
                                         )
                                     }
                                 }
@@ -133,9 +146,9 @@ fun PetSelectionStep(
                                 Column(Modifier.weight(1f)) {
                                     Text(
                                         pet.name,
-                                        style = EponaTypography.titleMedium,
+                                        style = MaterialTheme.typography.titleMedium,
                                         color = if (isSelected)
-                                            MaterialTheme.colorScheme.onPrimaryContainer
+                                            MaterialTheme.colorScheme.onSecondaryContainer
                                         else MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
@@ -145,9 +158,9 @@ fun PetSelectionStep(
                                             pet.color
                                         )
                                             .joinToString(" · "),
-                                        style = EponaTypography.bodySmall,
+                                        style = MaterialTheme.typography.bodySmall,
                                         color = if (isSelected)
-                                            MaterialTheme.colorScheme.onPrimaryContainer
+                                            MaterialTheme.colorScheme.onSecondaryContainer
                                         else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
@@ -155,7 +168,7 @@ fun PetSelectionStep(
                                     Icon(
                                         Icons.Filled.Check,
                                         contentDescription = stringResource(R.string.cd_selected),
-                                        tint = MaterialTheme.colorScheme.primary,
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }

@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.UserStats
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun StatsRow(
@@ -58,7 +57,7 @@ private fun StatCard(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
         // Translucent tile: StatsRow lives on the always-teal hero, like AlertCategoryRow.
-        color = Color.White.copy(alpha = 0.12f)
+        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f)
     ) {
         Column(
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
@@ -66,14 +65,14 @@ private fun StatCard(
         ) {
             Text(
                 text = value,
-                style = EponaTypography.headlineSmall,
-                color = Color.White,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = label,
-                style = EponaTypography.bodySmall,
-                color = Color.White.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )
         }

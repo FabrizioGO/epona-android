@@ -9,8 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SettingsSection(
@@ -21,9 +22,11 @@ fun SettingsSection(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = title,
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
+            modifier = Modifier
+                .padding(bottom = 8.dp, start = 4.dp)
+                .semantics { heading() }
         )
         content()
     }

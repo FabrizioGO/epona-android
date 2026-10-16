@@ -18,9 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -85,7 +86,7 @@ fun DetailMapPreview(
                     modifier = Modifier.matchParentSize(),
                     cameraPositionState = cameraPositionState,
                     googleMapOptionsFactory = { GoogleMapOptions().liteMode(true) },
-                    properties = MapProperties(),
+                    properties = MapProperties(mapStyleOptions = rememberMapStyle()),
                     uiSettings = MapUiSettings(
                         compassEnabled = false,
                         mapToolbarEnabled = false,
@@ -104,7 +105,7 @@ fun DetailMapPreview(
             // "View on map" label
             Text(
                 text = stringResource(R.string.detail_view_on_map),
-                style = EponaTypography.labelLarge,
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -114,7 +115,11 @@ fun DetailMapPreview(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .clickable(onClick = onClick)
+                    .clickable(
+                        onClickLabel = stringResource(R.string.detail_view_on_map),
+                        role = Role.Button,
+                        onClick = onClick
+                    )
             )
         }
     }

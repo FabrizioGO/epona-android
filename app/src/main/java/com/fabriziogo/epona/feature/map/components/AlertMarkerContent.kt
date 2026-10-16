@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
-import com.fabriziogo.epona.core.ui.theme.EponaColors
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 
 @Composable
 fun AlertMarkerContent(
@@ -29,16 +29,17 @@ fun AlertMarkerContent(
     val alert = alertWithDetails.alert
     val pet = alertWithDetails.pet
 
+    val extended = MaterialTheme.extendedColors
     val containerColor = if (alert.type == AlertType.LOST) {
-        EponaColors.LostContainer
+        extended.lostContainer
     } else {
-        EponaColors.FoundContainer
+        extended.foundContainer
     }
 
     val borderColor = if (alert.type == AlertType.LOST) {
-        EponaColors.Lost
+        extended.lost
     } else {
-        EponaColors.Found
+        extended.found
     }
 
     val emoji = when (pet.species.value) {
@@ -49,7 +50,7 @@ fun AlertMarkerContent(
         else -> "🐾"
     }
 
-    val shape = RoundedCornerShape(50)
+    val shape = CircleShape
 
     Box(
         modifier = modifier

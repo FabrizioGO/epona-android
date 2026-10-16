@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.MyLocation
@@ -41,13 +40,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.components.LoadingIndicator
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -159,7 +158,8 @@ fun PickLocationScreen(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 properties = MapProperties(
-                    isMyLocationEnabled = locationPermission.isGranted
+                    isMyLocationEnabled = locationPermission.isGranted,
+                    mapStyleOptions = rememberMapStyle()
                 ),
                 uiSettings = MapUiSettings(
                     zoomControlsEnabled = false,
@@ -188,13 +188,13 @@ fun PickLocationScreen(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    shadowElevation = 4.dp,
-                    color = MaterialTheme.colorScheme.surface
+                    shape = MaterialTheme.shapes.large,
+                    shadowElevation = 3.dp,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh
                 ) {
                     Text(
                         text = stringResource(R.string.pick_location_hint),
-                        style = EponaTypography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                     )
@@ -260,13 +260,13 @@ private fun PickLocationBottomBar(
                     Spacer(Modifier.width(8.dp))
                     Text(
                         text = stringResource(R.string.pick_location_resolving),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 } else if (address.isNotBlank()) {
                     Text(
                         text = address,
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 2,
                         modifier = Modifier.weight(1f)
@@ -274,7 +274,7 @@ private fun PickLocationBottomBar(
                 } else {
                     Text(
                         text = stringResource(R.string.pick_location_no_address),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.weight(1f)
                     )
@@ -285,8 +285,8 @@ private fun PickLocationBottomBar(
                 Text(
                     text = "${String.format("%.4f", it.latitude)}, " +
                             String.format("%.4f", it.longitude),
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Spacer(Modifier.height(12.dp))

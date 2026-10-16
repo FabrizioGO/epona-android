@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.core.ui.media
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -91,22 +93,28 @@ private fun PhotoThumbnail(
             modifier = Modifier.size(size)
         )
 
+        // The visible badge is 24dp; the clickable area around it is the 48dp minimum.
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(4.dp)
-                .size(24.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.error)
-                .clickable(onClick = onRemove),
+                .size(48.dp)
+                .clickable(onClick = onRemove, role = Role.Button),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.cd_remove_photo),
-                modifier = Modifier.size(14.dp),
-                tint = MaterialTheme.colorScheme.onError
-            )
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.inverseSurface),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.cd_remove_photo),
+                    modifier = Modifier.size(14.dp),
+                    tint = MaterialTheme.colorScheme.inverseOnSurface
+                )
+            }
         }
     }
 }
@@ -119,7 +127,7 @@ private fun AddPhotoTile(
     Surface(
         modifier = Modifier
             .size(size)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick, role = Role.Button),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
@@ -137,7 +145,7 @@ private fun AddPhotoTile(
 
 private const val ADD_TILE_KEY = "add_photo_tile"
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun PhotoThumbnailRowPreview() {
     EponaTheme {

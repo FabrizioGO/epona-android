@@ -113,7 +113,8 @@ fun MyPetsScreen(
                     modifier = modifier
                         .fillMaxSize()
                         .padding(padding),
-                    contentPadding = PaddingValues(16.dp),
+                    // Bottom: clears the FAB (56dp + 16dp margin) so the last card's buttons stay reachable.
+                    contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(

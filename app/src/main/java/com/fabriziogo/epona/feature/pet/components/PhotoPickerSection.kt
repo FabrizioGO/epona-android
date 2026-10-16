@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.pet.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,7 +64,7 @@ fun PhotoPickerSection(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun PhotoPickerSectionPreview() {
     EponaTheme {

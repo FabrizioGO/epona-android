@@ -1,13 +1,17 @@
 package com.fabriziogo.epona.app
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,10 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.app.navigation.EponaNavHost
+import com.fabriziogo.epona.app.navigation.TopLevelDestination
 import com.fabriziogo.epona.app.navigation.rememberEponaAppState
 import com.fabriziogo.epona.feature.detail.navigation.navigateToDetail
-import com.fabriziogo.epona.core.ui.components.EponaNavigationBar
-import com.fabriziogo.epona.core.ui.components.NavBarItem
 import com.fabriziogo.epona.core.ui.permission.RequestNotificationPermissionOnceSignedIn
 import com.fabriziogo.epona.core.ui.permission.rememberNotificationPermissionState
 
@@ -56,41 +59,48 @@ fun EponaApp(
     // otherwise a signed-in user would be fixed to the onboarding graph.
     if (authState == null) return
 
-    Scaffold(
+    // Bar on phones, rail on wider windows; hidden on screens that are not top-level tabs.
+    // Every screen owns its own insets (some, like alert detail and map, draw under the
+    // transparent status bar), so the content is not padded for the status bar here.
+    val showSuite = appState.shouldShowBottomBar
+    val suiteType = if (showSuite) {
+        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(currentWindowAdaptiveInfo())
+    } else {
+        NavigationSuiteType.None
+    }
+
+    // isSelected reads composition state, so resolve it here; the items block is not composable.
+    val selectedByDestination = appState.topLevelDestinations.associateWith { appState.isSelected(it) }
+
+    NavigationSuiteScaffold(
         modifier = modifier.fillMaxSize(),
-        // Every screen owns its own insets. Some of them (alert detail, map) deliberately
-        // draw under the transparent status bar, and the rest already pad themselves
-        // through their own Scaffold or TopAppBar, so padding the NavHost here as well
-        // would add the status-bar height to each of them a second time.
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = {
-            AnimatedVisibility(
-                visible = appState.shouldShowBottomBar,
-                enter = slideInVertically { it },
-                exit = slideOutVertically { it }
-            ) {
-                EponaNavigationBar(
-                    items = appState.topLevelDestinations.map { dest ->
-                        NavBarItem(
-                            route = dest.route,
-                            label = stringResource(dest.labelRes),
-                            icon = dest.icon,
-                            selectedIcon = dest.selectedIcon,
-                            badgeCount = if (dest == com.fabriziogo.epona.app.navigation.TopLevelDestination.ALERTS)
-                                unreadCount else 0
-                        )
+        layoutType = suiteType,
+        navigationSuiteItems = {
+            appState.topLevelDestinations.forEach { dest ->
+                val selected = selectedByDestination[dest] == true
+                item(
+                    selected = selected,
+                    onClick = { appState.navigateToTopLevel(dest) },
+                    icon = {
+                        BadgedBox(
+                            badge = {
+                                if (dest == TopLevelDestination.ALERTS && unreadCount > 0) {
+                                    Badge { Text(unreadCount.toString()) }
+                                }
+                            }
+                        ) {
+                            // The label below names the tab, so the icon stays silent.
+                            Icon(
+                                imageVector = if (selected) dest.selectedIcon else dest.icon,
+                                contentDescription = null
+                            )
+                        }
                     },
-                    currentRoute = appState.topLevelDestinations.firstOrNull { dest ->
-                        appState.isSelected(dest)
-                    }?.route ?: "",
-                    onItemClick = { route ->
-                        val dest = appState.topLevelDestinations.first { it.route == route }
-                        appState.navigateToTopLevel(dest)
-                    }
+                    label = { Text(stringResource(dest.labelRes)) }
                 )
             }
         }
-    ) { padding ->
+    ) {
         EponaNavHost(
             navController = appState.navController,
             isAuthenticated = isAuthenticated,
@@ -98,11 +108,13 @@ fun EponaApp(
             onLaunchGoogleSignIn = onLaunchGoogleSignIn,
             onShareAlert = onShareAlert,
             onDialPhone = onDialPhone,
-            // The bottom bar carries the navigation-bar inset, so consuming its height here
-            // keeps screens from padding for that bar on top of it.
-            modifier = Modifier
-                .padding(padding)
-                .consumeWindowInsets(padding)
+            // With a bottom bar the bar already carries the navigation-bar inset, so consume
+            // it here to keep screens from padding for it a second time.
+            modifier = if (suiteType == NavigationSuiteType.NavigationBar) {
+                Modifier.consumeWindowInsets(WindowInsets.navigationBars)
+            } else {
+                Modifier
+            }
         )
     }
 }

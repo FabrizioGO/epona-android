@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SubmitSection(
@@ -34,7 +33,7 @@ fun SubmitSection(
         ) {
             Text(
                 text = stringResource(R.string.sighting_info),
-                style = EponaTypography.bodySmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(14.dp)
             )

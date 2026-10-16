@@ -1,13 +1,11 @@
 package com.fabriziogo.epona.core.ui.components
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun EponaConfirmDialog(
@@ -21,10 +19,10 @@ fun EponaConfirmDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(title, style = EponaTypography.headlineSmall)
+            Text(title)
         },
         text = {
-            Text(message, style = EponaTypography.bodyMedium)
+            Text(message)
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
@@ -35,7 +33,6 @@ fun EponaConfirmDialog(
             TextButton(onClick = onDismiss) {
                 Text(dismissText)
             }
-        },
-        shape = MaterialTheme.shapes.large
+        }
     )
 }

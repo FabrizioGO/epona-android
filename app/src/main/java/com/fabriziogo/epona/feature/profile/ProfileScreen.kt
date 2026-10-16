@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.profile
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.luminance
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.BuildConfig
@@ -45,7 +47,6 @@ import com.fabriziogo.epona.core.ui.components.TabHero
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.profile.components.DeleteAccountDialog
 import com.fabriziogo.epona.feature.profile.components.ProfileHeader
@@ -70,7 +71,7 @@ fun ProfileScreen(
     val cameraDeniedMessage = stringResource(R.string.photo_camera_denied)
 
     // White glyphs read against the teal hero regardless of the app theme.
-    StatusBarIcons(darkIcons = false)
+    StatusBarIcons(darkIcons = MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5f)
 
     // Owned by the screen rather than by the stateless header below, so previews
     // of the header do not need an ActivityResultRegistry to render. Single slot:
@@ -265,14 +266,14 @@ private fun ProfileSections(
 
         Text(
             text = stringResource(R.string.profile_version, BuildConfig.VERSION_NAME),
-            style = EponaTypography.bodySmall,
-            color = MaterialTheme.colorScheme.outline,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 24.dp)
         )
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ProfileScreenPreview() {
     EponaTheme(dynamicColor = false) {
@@ -288,7 +289,7 @@ private fun ProfileScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun ProfileScreenLoadingPreview() {
     EponaTheme(dynamicColor = false) {

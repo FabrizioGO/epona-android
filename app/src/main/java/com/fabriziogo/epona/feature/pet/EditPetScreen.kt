@@ -1,8 +1,10 @@
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
@@ -131,12 +134,13 @@ fun EditPetScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
             .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .constrainedWidth()
                 .padding(16.dp)
         ) {
             // ---- Basic Info Section ----
@@ -309,7 +313,7 @@ fun EditPetScreenContent(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun EditPetScreenPreview() {
     EditPetScreenContent(

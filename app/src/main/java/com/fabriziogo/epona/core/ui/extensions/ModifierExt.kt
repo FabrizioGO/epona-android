@@ -1,7 +1,9 @@
 package com.fabriziogo.epona.core.ui.extensions
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -23,14 +25,16 @@ fun Modifier.pressScale(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (isPressed) scaleFactor else 1f,
-        animationSpec = tween(100),
+        animationSpec = spring(stiffness = Spring.StiffnessMedium),
         label = "pressScale"
     )
     this
         .scale(scale)
         .clickable(
             interactionSource = interactionSource,
-            indication = null,
+            // Keep the default state layer so press, focus and hover stay visible
+            // (keyboard and D-pad users get no other cue), on top of the scale.
+            indication = LocalIndication.current,
             role = Role.Button,
             onClick = onClick
         )

@@ -1,7 +1,10 @@
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -21,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,10 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
 import com.fabriziogo.epona.core.domain.model.Species
+import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTextField
@@ -93,12 +100,35 @@ fun AddPetScreen(
         }
     }
 
+    val isDirty = state.petName.isNotBlank() || state.breed.isNotBlank() ||
+        state.color.isNotBlank() || state.ageYears.isNotBlank() ||
+        state.microchipId.isNotBlank() || state.description.isNotBlank() ||
+        state.photos.isNotEmpty()
+    var showDiscardDialog by remember { mutableStateOf(false) }
+    val requestExit = { if (isDirty) showDiscardDialog = true else onNavigateBack() }
+
+    BackHandler(enabled = isDirty) { showDiscardDialog = true }
+
+    if (showDiscardDialog) {
+        EponaConfirmDialog(
+            title = stringResource(R.string.discard_title),
+            message = stringResource(R.string.discard_message),
+            confirmText = stringResource(R.string.discard_confirm),
+            dismissText = stringResource(R.string.discard_keep_editing),
+            onConfirm = {
+                showDiscardDialog = false
+                onNavigateBack()
+            },
+            onDismiss = { showDiscardDialog = false }
+        )
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
             EponaTopAppBar(
                 title = stringResource(R.string.create_add_pet),
-                onCloseClick = onNavigateBack
+                onCloseClick = requestExit
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -113,7 +143,7 @@ fun AddPetScreen(
             state = state,
             paddingValues = paddingValues,
             onEvent = { viewModel.onEvent(it) },
-            onCancel = onNavigateBack,
+            onCancel = requestExit,
             onAddPhotoClick = photoPicker::open
         )
     }
@@ -131,12 +161,13 @@ fun AddPetScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
             .imePadding()
             .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .constrainedWidth()
                 .padding(16.dp)
         ) {
             // ---- Basic Info Section ----
@@ -309,7 +340,7 @@ fun AddPetScreenContent(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun AddPetScreenPreview() {
     AddPetScreenContent(

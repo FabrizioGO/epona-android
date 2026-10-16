@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.core.ui.media
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -120,7 +121,7 @@ private fun PhotoSourceRow(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun PhotoSourceSheetContentPreview() {
     EponaTheme {

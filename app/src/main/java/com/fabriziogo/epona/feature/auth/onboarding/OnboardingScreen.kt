@@ -1,11 +1,7 @@
 package com.fabriziogo.epona.feature.auth.onboarding
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,20 +12,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,9 +36,8 @@ import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTextButton
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
-import com.fabriziogo.epona.feature.auth.login.LoginContent
-import com.fabriziogo.epona.feature.auth.login.LoginUiState
+import com.fabriziogo.epona.core.ui.theme.EponaTheme
+import kotlinx.coroutines.launch
 
 data class OnboardingPage(
     val emoji: String,
@@ -71,11 +69,19 @@ fun OnboardingScreen(
         )
     )
 
-    var currentPage by remember { mutableIntStateOf(0) }
+    val pagerState = rememberPagerState(pageCount = { pages.size })
+    val scope = rememberCoroutineScope()
+    val currentPage = pagerState.currentPage
+
+    // Back steps to the previous page instead of leaving onboarding.
+    BackHandler(enabled = currentPage > 0) {
+        scope.launch { pagerState.animateScrollToPage(currentPage - 1) }
+    }
 
     Column(
         modifier = modifier
             .fillMaxSize()
+            .safeDrawingPadding()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -87,25 +93,24 @@ fun OnboardingScreen(
             if (currentPage < pages.lastIndex) {
                 EponaTextButton(
                     text = stringResource(R.string.onboarding_skip),
-                    onClick = { currentPage = pages.lastIndex }
+                    onClick = {
+                        scope.launch { pagerState.animateScrollToPage(pages.lastIndex) }
+                    }
                 )
             }
         }
 
-        Spacer(Modifier.weight(1f))
-
-        // Animated page content
-        AnimatedContent(
-            targetState = currentPage,
-            transitionSpec = {
-                (slideInHorizontally { it } + fadeIn())
-                    .togetherWith(slideOutHorizontally { -it } + fadeOut())
-            },
-            label = "onboarding_page"
+        // Swipeable pages; the pager gives the transition and the swipe gesture.
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) { page ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
             ) {
                 // Big emoji illustration
                 Box(
@@ -117,7 +122,8 @@ fun OnboardingScreen(
                 ) {
                     Text(
                         text = pages[page].emoji,
-                        style = EponaTypography.displayLarge
+                        style = MaterialTheme.typography.displayLarge,
+                        modifier = Modifier.clearAndSetSemantics {}
                     )
                 }
 
@@ -125,7 +131,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = pages[page].title,
-                    style = EponaTypography.headlineMedium,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
@@ -134,7 +140,7 @@ fun OnboardingScreen(
 
                 Text(
                     text = pages[page].description,
-                    style = EponaTypography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(horizontal = 16.dp)
@@ -142,12 +148,15 @@ fun OnboardingScreen(
             }
         }
 
-        Spacer(Modifier.weight(1f))
-
         // Page indicators
+        val pageDescription = stringResource(
+            R.string.onboarding_page_progress, currentPage + 1, pages.size
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier
+                .padding(vertical = 32.dp)
+                .semantics(mergeDescendants = true) { stateDescription = pageDescription }
         ) {
             pages.forEachIndexed { i, _ ->
                 Box(
@@ -166,7 +175,9 @@ fun OnboardingScreen(
         if (currentPage < pages.lastIndex) {
             EponaFilledButton(
                 text = stringResource(R.string.onboarding_next),
-                onClick = { currentPage++ },
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(currentPage + 1) }
+                },
                 fullWidth = true
             )
         } else {
@@ -189,11 +200,13 @@ fun OnboardingScreen(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
-fun OnboardingScreenPreview(){
-    OnboardingScreen(
-        onNavigateToLogin = {},
-        onNavigateToRegister = {}
-    )
+fun OnboardingScreenPreview() {
+    EponaTheme(dynamicColor = false) {
+        OnboardingScreen(
+            onNavigateToLogin = {},
+            onNavigateToRegister = {}
+        )
+    }
 }

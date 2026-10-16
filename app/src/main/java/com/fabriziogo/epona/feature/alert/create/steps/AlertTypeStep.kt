@@ -15,13 +15,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun AlertTypeStep(
@@ -32,13 +35,13 @@ fun AlertTypeStep(
     Column(modifier = modifier.padding(top = 24.dp)) {
         Text(
             text = stringResource(R.string.create_step_type_title),
-            style = EponaTypography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.create_step_type_subtitle),
-            style = EponaTypography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(28.dp))
@@ -46,18 +49,23 @@ fun AlertTypeStep(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min),
+                .height(IntrinsicSize.Min)
+                .selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AlertType.entries.forEach { type ->
                 val selected = selectedType == type
                 Surface(
-                    onClick = { onTypeSelected(type) },
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight(),
+                        .fillMaxHeight()
+                        .selectable(
+                            selected = selected,
+                            onClick = { onTypeSelected(type) },
+                            role = Role.RadioButton
+                        ),
                     shape = MaterialTheme.shapes.medium,
-                    color = if (selected) MaterialTheme.colorScheme.primaryContainer
+                    color = if (selected) MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.surfaceContainerLow,
                     border = if (selected) androidx.compose.foundation.BorderStroke(
                         2.dp, MaterialTheme.colorScheme.primary
@@ -69,24 +77,25 @@ fun AlertTypeStep(
                     ) {
                         Text(
                             text = if (type == AlertType.LOST) "😿" else "🐾",
-                            style = EponaTypography.displaySmall
+                            style = MaterialTheme.typography.displaySmall,
+                            modifier = Modifier.clearAndSetSemantics {}
                         )
                         Spacer(Modifier.height(12.dp))
                         Text(
                             text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost)
                             else stringResource(R.string.create_type_found),
-                            style = EponaTypography.titleMedium.copy(textAlign = TextAlign.Center),
+                            style = MaterialTheme.typography.titleMedium.copy(textAlign = TextAlign.Center),
                             color = if (selected)
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.onSecondaryContainer
                             else MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             text = if (type == AlertType.LOST) stringResource(R.string.create_type_lost_desc)
                             else stringResource(R.string.create_type_found_desc),
-                            style = EponaTypography.bodySmall.copy(textAlign = TextAlign.Center),
+                            style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
                             color = if (selected)
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.onSecondaryContainer
                             else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
