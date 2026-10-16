@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.sighting.list
 
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.fabriziogo.epona.core.ui.layout.contentGutter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,7 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.SightingCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,9 +37,16 @@ fun SightingListScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
+        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.sighting_list_title, state.sightings.size),
                 onBackClick = onNavigateBack
             )
@@ -42,7 +54,7 @@ fun SightingListScreen(
     ) { padding ->
         when {
             state.isLoading -> {
-                LoadingIndicator(modifier = Modifier.padding(padding))
+                FullScreenProgress(modifier = Modifier.padding(padding))
             }
 
             state.sightings.isEmpty() -> {
@@ -59,7 +71,10 @@ fun SightingListScreen(
                     modifier = modifier
                         .fillMaxSize()
                         .padding(padding),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp + contentGutter(),
+                        vertical = 16.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(

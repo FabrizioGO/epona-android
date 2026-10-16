@@ -8,20 +8,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.domain.model.NotificationType
-import com.fabriziogo.epona.core.ui.theme.EponaColors
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 
 @Composable
 fun NotificationIcon(
     type: NotificationType,
     modifier: Modifier = Modifier
 ) {
+    val extended = MaterialTheme.extendedColors
     val bg = when (type) {
-        NotificationType.NEW_ALERT -> EponaColors.LostContainer
+        NotificationType.NEW_ALERT -> extended.lostContainer
         NotificationType.SIGHTING -> MaterialTheme.colorScheme.secondaryContainer
-        NotificationType.RESOLVED -> EponaColors.FoundContainer
+        NotificationType.RESOLVED -> extended.foundContainer
         NotificationType.MESSAGE -> MaterialTheme.colorScheme.surfaceContainerHigh
     }
     val emoji = when (type) {
@@ -37,7 +38,12 @@ fun NotificationIcon(
         color = bg
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Text(text = emoji, style = EponaTypography.titleMedium)
+            // The emoji is decorative; the notification text carries the meaning.
+            Text(
+                text = emoji,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.clearAndSetSemantics {}
+            )
         }
     }
 }

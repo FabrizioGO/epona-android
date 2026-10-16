@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * The pet's lasting identifying traits (markings, scars, chip, temperament).
@@ -51,21 +51,21 @@ fun DetailPetFeatures(
                 )
                 Text(
                     text = stringResource(R.string.pet_features_label),
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Spacer(Modifier.height(8.dp))
             Text(
                 text = description,
-                style = EponaTypography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun DetailPetFeaturesPreview() {
     EponaTheme {

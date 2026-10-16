@@ -13,7 +13,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaTextField
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SightingNoteField(
@@ -24,12 +23,12 @@ fun SightingNoteField(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.sighting_note_title),
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = stringResource(R.string.sighting_note_desc),
-            style = EponaTypography.bodySmall,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 

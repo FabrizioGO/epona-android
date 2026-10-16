@@ -18,10 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.fabriziogo.epona.R
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SightingCard(
@@ -38,20 +39,20 @@ fun SightingCard(
             ) {
                 Text(
                     text = sighting.reporterName,
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = formatTimeAgo(sighting.sighting.spottedAt),
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             sighting.sighting.note?.let { note ->
                 Text(
                     text = note,
-                    style = EponaTypography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
@@ -64,7 +65,7 @@ fun SightingCard(
                         .padding(top = 6.dp)
                         .clickable(
                             role = Role.Button,
-                            onClickLabel = "Open in Google Maps"
+                            onClickLabel = stringResource(R.string.sighting_open_in_maps)
                         ) {
                             openInGoogleMaps(
                                 context = context,
@@ -82,7 +83,7 @@ fun SightingCard(
                     )
                     Text(
                         text = addr,
-                        style = EponaTypography.labelMedium,
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }

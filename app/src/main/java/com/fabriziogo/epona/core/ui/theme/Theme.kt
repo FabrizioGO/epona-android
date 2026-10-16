@@ -8,8 +8,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
-import com.epona.core.ui.theme.EponaShapes
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -40,7 +40,12 @@ private val LightColorScheme = lightColorScheme(
     inverseOnSurface = md_theme_light_inverseOnSurface,
     inversePrimary = md_theme_light_inversePrimary,
     surfaceTint = md_theme_light_surfaceTint,
-    scrim = md_theme_light_scrim
+    scrim = md_theme_light_scrim,
+    surfaceContainerLowest = md_theme_light_surfaceContainerLowest,
+    surfaceContainerLow = md_theme_light_surfaceContainerLow,
+    surfaceContainer = md_theme_light_surfaceContainer,
+    surfaceContainerHigh = md_theme_light_surfaceContainerHigh,
+    surfaceContainerHighest = md_theme_light_surfaceContainerHighest
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -72,7 +77,12 @@ private val DarkColorScheme = darkColorScheme(
     inverseOnSurface = md_theme_dark_inverseOnSurface,
     inversePrimary = md_theme_dark_inversePrimary,
     surfaceTint = md_theme_dark_surfaceTint,
-    scrim = md_theme_dark_scrim
+    scrim = md_theme_dark_scrim,
+    surfaceContainerLowest = md_theme_dark_surfaceContainerLowest,
+    surfaceContainerLow = md_theme_dark_surfaceContainerLow,
+    surfaceContainer = md_theme_dark_surfaceContainer,
+    surfaceContainerHigh = md_theme_dark_surfaceContainerHigh,
+    surfaceContainerHighest = md_theme_dark_surfaceContainerHighest
 )
 
 @Composable
@@ -92,10 +102,14 @@ fun EponaTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = EponaTypography,
-        shapes = EponaShapes,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalExtendedColors provides if (darkTheme) DarkExtendedColors else LightExtendedColors
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = EponaTypography,
+            shapes = EponaShapes,
+            content = content
+        )
+    }
 }

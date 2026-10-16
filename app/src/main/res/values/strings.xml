@@ -405,6 +405,12 @@
     <string name="action_filters">Filters</string>
     <string name="action_more_options">More options</string>
 
+    <!-- Discard unsaved changes -->
+    <string name="discard_title">Discard changes?</string>
+    <string name="discard_message">You have unsaved changes. If you leave now they will be lost.</string>
+    <string name="discard_confirm">Discard</string>
+    <string name="discard_keep_editing">Keep editing</string>
+
     <!-- Reporting (UGC moderation) -->
     <string name="report_flag_alert">Flag as inappropriate</string>
     <string name="report_dialog_title">Report content</string>
@@ -439,6 +445,14 @@
     <string name="cd_add_photo">Add photo</string>
     <string name="cd_remove_photo">Remove photo</string>
     <string name="cd_selected">Selected</string>
+    <string name="cd_opens_in_browser">Opens in browser</string>
+    <string name="cd_accept_terms">Accept the Terms of Service and Privacy Policy</string>
+    <string name="create_step_progress">Step %1$d of %2$d</string>
+    <string name="notification_unread">Unread</string>
+    <string name="onboarding_page_progress">Page %1$d of %2$d</string>
+    <string name="state_expanded">Expanded</string>
+    <string name="state_collapsed">Collapsed</string>
+    <string name="sighting_open_in_maps">Open in Google Maps</string>
     <string name="cd_create_alert">Create alert</string>
     <string name="cd_profile">Profile</string>
     <string name="cd_hide_password">Hide password</string>

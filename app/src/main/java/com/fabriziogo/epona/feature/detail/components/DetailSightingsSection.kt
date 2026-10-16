@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.detail.components
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 import com.fabriziogo.epona.core.ui.components.SightingCard
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun DetailSightingsSection(
@@ -33,8 +34,9 @@ fun DetailSightingsSection(
     ) {
         Text(
             text = stringResource(R.string.detail_sightings, sightings.size),
-            style = EponaTypography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
 
         Spacer(Modifier.height(10.dp))
@@ -57,8 +59,8 @@ fun DetailSightingsSection(
             sightings.isEmpty() -> {
                 Text(
                     text = stringResource(R.string.detail_no_sightings),
-                    style = EponaTypography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.login
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,13 +31,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.luminance
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.auth.GOOGLE_SIGN_IN_ENABLED
 import com.fabriziogo.epona.feature.auth.components.AuthHeroCard
@@ -57,7 +58,7 @@ fun LoginScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     // White glyphs read against the teal hero regardless of the app theme.
-    StatusBarIcons(darkIcons = false)
+    StatusBarIcons(darkIcons = MaterialTheme.colorScheme.primaryContainer.luminance() > 0.5f)
 
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
@@ -161,7 +162,7 @@ fun LoginContent(
                 ) {
                     Text(
                         stringResource(R.string.auth_forgot_password),
-                        style = EponaTypography.labelLarge,
+                        style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -186,7 +187,7 @@ fun LoginContent(
                 ) {
                     Text(
                         text = stringResource(R.string.auth_no_account),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center
                     )
@@ -211,7 +212,7 @@ fun LoginContent(
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun LoginScreenPreview() {
     EponaTheme(dynamicColor = false) {

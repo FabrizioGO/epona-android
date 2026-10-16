@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.map
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,9 +33,11 @@ import com.fabriziogo.epona.feature.map.components.LocationPermissionBanner
 import com.fabriziogo.epona.feature.map.components.MapControls
 import com.fabriziogo.epona.feature.map.components.MapFilterBar
 import com.fabriziogo.epona.feature.map.components.RadiusCircleOverlay
+import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import com.fabriziogo.epona.feature.map.components.SightingTrailOverlay
 import com.fabriziogo.epona.core.ui.components.EponaFAB
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
+import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
@@ -53,6 +56,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapScreen(
     onNavigateToDetail: (String) -> Unit,
     onNavigateToCreateAlert: () -> Unit,
+    focus: Pair<Double, Double>?,
+    onFocusConsumed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel()
 ) {
@@ -65,6 +70,15 @@ fun MapScreen(
                 is MapNavEvent.NavigateToDetail -> onNavigateToDetail(event.alertId)
                 MapNavEvent.NavigateToCreateAlert -> onNavigateToCreateAlert()
             }
+        }
+    }
+
+    // "View on map" handed us a coordinate: move the camera there. Self-terminating —
+    // consuming it re-emits null, the effect restarts on null and no-ops.
+    LaunchedEffect(focus) {
+        focus?.let {
+            viewModel.onEvent(MapEvent.FocusOn(it.first, it.second))
+            onFocusConsumed()
         }
     }
 
@@ -82,7 +96,7 @@ fun MapScreen(
     StatusBarIcons(darkIcons = true)
 
     if (state.isLoading) {
-        LoadingIndicator()
+        FullScreenProgress()
         return
     }
 
@@ -149,6 +163,11 @@ fun MapScreen(
         }
     }
 
+    // Back closes the open alert sheet before it leaves the Map tab.
+    BackHandler(enabled = state.selectedAlert != null) {
+        viewModel.onEvent(MapEvent.SheetDismissed)
+    }
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
@@ -180,7 +199,8 @@ fun MapScreen(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
                 properties = MapProperties(
-                    isMyLocationEnabled = locationPermission.isGranted
+                    isMyLocationEnabled = locationPermission.isGranted,
+                    mapStyleOptions = rememberMapStyle()
                 ),
                 uiSettings = MapUiSettings(
                     zoomControlsEnabled = false,
@@ -214,6 +234,7 @@ fun MapScreen(
                     MarkerComposable(
                         keys = arrayOf(alertWithDetails.alert.id),
                         state = MarkerState(LatLng(loc.latitude, loc.longitude)),
+                        title = petDisplayName(alertWithDetails.pet),
                         onClick = {
                             viewModel.onEvent(MapEvent.MarkerClicked(alertWithDetails.alert.id))
                             true

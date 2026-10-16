@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
-import com.fabriziogo.epona.core.ui.theme.EponaColors
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * The poster's own account of this specific alert, shown as a quote with an
@@ -43,8 +42,8 @@ fun DetailAlertStory(
         AlertType.FOUND -> R.string.alert_story_label_found
     }
     val accent = when (alertType) {
-        AlertType.LOST -> EponaColors.Lost
-        AlertType.FOUND -> EponaColors.Found
+        AlertType.LOST -> MaterialTheme.extendedColors.lost
+        AlertType.FOUND -> MaterialTheme.extendedColors.found
     }
 
     Column(
@@ -54,7 +53,7 @@ fun DetailAlertStory(
     ) {
         Text(
             text = stringResource(title),
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
 
@@ -65,20 +64,20 @@ fun DetailAlertStory(
                 Modifier
                     .width(3.dp)
                     .fillMaxHeight()
-                    .clip(RoundedCornerShape(50))
+                    .clip(CircleShape)
                     .background(accent)
             )
             Column(modifier = Modifier.padding(start = 12.dp)) {
                 Text(
                     text = description,
-                    style = EponaTypography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.detail_story_attribution, ownerName),
-                    style = EponaTypography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

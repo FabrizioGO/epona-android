@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.profile.myalerts
 
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.fabriziogo.epona.core.ui.layout.contentGutter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +37,7 @@ import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.feature.profile.myalerts.components.MyAlertCard
 
@@ -72,9 +77,16 @@ internal fun MyAlertsContent(
         }
     }
 
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
+        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.profile_my_alerts),
                 onBackClick = onNavigateBack
             )
@@ -83,7 +95,7 @@ internal fun MyAlertsContent(
     ) { padding ->
         when {
             state.isLoading -> {
-                LoadingIndicator(modifier = Modifier.padding(padding))
+                FullScreenProgress(modifier = Modifier.padding(padding))
             }
 
             state.alerts.isEmpty() -> {
@@ -100,7 +112,10 @@ internal fun MyAlertsContent(
                     modifier = modifier
                         .fillMaxSize()
                         .padding(padding),
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp + contentGutter(),
+                        vertical = 16.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(
@@ -108,6 +123,7 @@ internal fun MyAlertsContent(
                         key = { it.alert.id }
                     ) { item ->
                         MyAlertCard(
+                            modifier = Modifier.animateItem(),
                             alertWithDetails = item,
                             onClick = { onNavigateToDetail(item.alert.id) }
                         )

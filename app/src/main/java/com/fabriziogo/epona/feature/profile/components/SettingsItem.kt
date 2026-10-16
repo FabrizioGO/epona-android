@@ -1,29 +1,30 @@
 package com.fabriziogo.epona.feature.profile.components
 
-import androidx.compose.foundation.layout.Arrangement
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun SettingsItem(
@@ -35,29 +36,18 @@ fun SettingsItem(
     showChevron: Boolean = true,
     onClick: () -> Unit
 ) {
-    val contentColor = if (isDestructive)
-        MaterialTheme.colorScheme.error
-    else MaterialTheme.colorScheme.onSurface
-
     val iconBg = if (isDestructive)
         MaterialTheme.colorScheme.errorContainer
-    else MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
+    else MaterialTheme.colorScheme.secondaryContainer
 
     val iconTint = if (isDestructive)
-        MaterialTheme.colorScheme.error
-    else MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.onErrorContainer
+    else MaterialTheme.colorScheme.onSecondaryContainer
 
-    Surface(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-        shadowElevation = 1.dp
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        headlineContent = { Text(label) },
+        supportingContent = subtitle?.let { { Text(it) } },
+        leadingContent = {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = iconBg,
@@ -70,38 +60,30 @@ fun SettingsItem(
                     modifier = Modifier.padding(8.dp)
                 )
             }
-
-            Spacer(Modifier.width(14.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = label,
-                    style = EponaTypography.bodyLarge,
-                    color = contentColor
-                )
-                subtitle?.let {
-                    Text(
-                        text = it,
-                        style = EponaTypography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            if (showChevron) {
+        },
+        trailingContent = if (showChevron) {
+            {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    contentDescription = null
                 )
             }
-        }
-    }
+        } else null,
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            headlineColor = if (isDestructive) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.onSurface
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.medium)
+            .clickable(role = Role.Button, onClick = onClick)
+    )
 
     Spacer(modifier = Modifier.size(8.dp))
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun SettingsItemPreview() {
     EponaTheme(dynamicColor = false) {

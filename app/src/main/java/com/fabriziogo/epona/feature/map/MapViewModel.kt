@@ -32,6 +32,13 @@ class MapViewModel @Inject constructor(
     private val _navEvents = Channel<MapNavEvent>(Channel.BUFFERED)
     val navEvents = _navEvents.receiveAsFlow()
 
+    /**
+     * Set once "View on map" has placed the camera. From then on, the current
+     * location must not move it — otherwise the async initial load, or a permission
+     * grant arriving right after, yanks the camera back to the user.
+     */
+    private var cameraFocused = false
+
     init { loadMapData() }
 
     fun onEvent(event: MapEvent) {
@@ -46,6 +53,7 @@ class MapViewModel @Inject constructor(
             MapEvent.CreateAlertClicked -> emitNav(MapNavEvent.NavigateToCreateAlert)
             MapEvent.RetryLoad -> loadMapData()
             MapEvent.ErrorDismissed -> _state.update { it.copy(error = null) }
+            is MapEvent.FocusOn -> focusOn(Location(event.latitude, event.longitude))
         }
     }
 
@@ -68,16 +76,40 @@ class MapViewModel @Inject constructor(
                 _state.value.userLocation ?: Location(40.7128, -74.0060)
             }
 
+            // Alerts are fetched around whatever the camera lands on, so a focused
+            // alert's marker is actually in view.
+            val target = if (cameraFocused) {
+                Location(_state.value.cameraLat, _state.value.cameraLng)
+            } else {
+                location
+            }
+
             _state.update {
                 it.copy(
                     userLocation = location,
-                    cameraLat = location.latitude,
-                    cameraLng = location.longitude
+                    cameraLat = target.latitude,
+                    cameraLng = target.longitude
                 )
             }
 
-            fetchAlertsAround(location)
+            fetchAlertsAround(target)
         }
+    }
+
+    /**
+     * "View on map" from an alert: move the camera to the alert rather than to the
+     * user, and refetch matches there so its marker is present.
+     */
+    private fun focusOn(location: Location) {
+        cameraFocused = true
+        _state.update {
+            it.copy(
+                cameraLat = location.latitude,
+                cameraLng = location.longitude,
+                cameraZoom = FOCUS_ZOOM
+            )
+        }
+        viewModelScope.launch { fetchAlertsAround(location) }
     }
 
     /**
@@ -89,6 +121,11 @@ class MapViewModel @Inject constructor(
     private fun onLocationPermissionGranted() {
         viewModelScope.launch {
             val location = getCurrentLocation().getOrNull() ?: return@launch
+            // Granting must not steal a camera that "View on map" already placed.
+            if (cameraFocused) {
+                _state.update { it.copy(userLocation = location) }
+                return@launch
+            }
             _state.update {
                 it.copy(
                     userLocation = location,
@@ -188,6 +225,8 @@ class MapViewModel @Inject constructor(
 
     private fun recenter() {
         val loc = _state.value.userLocation ?: return
+        // The user is done looking at the alert; the camera is theirs again.
+        cameraFocused = false
         _state.update {
             it.copy(
                 cameraLat = loc.latitude,
@@ -209,5 +248,10 @@ class MapViewModel @Inject constructor(
 
     private fun emitNav(event: MapNavEvent) {
         viewModelScope.launch { _navEvents.send(event) }
+    }
+
+    private companion object {
+        /** Street-level, so a focused alert is legible against its surroundings. */
+        const val FOCUS_ZOOM = 16f
     }
 }

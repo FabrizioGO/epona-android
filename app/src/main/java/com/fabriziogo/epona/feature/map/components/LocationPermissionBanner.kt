@@ -1,11 +1,11 @@
 package com.fabriziogo.epona.feature.map.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.LocationOff
 import androidx.compose.material3.Icon
@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Shown over the map while location is not granted. The map still works from the
@@ -35,9 +34,9 @@ fun LocationPermissionBanner(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(20.dp),
-        shadowElevation = 4.dp,
-        color = MaterialTheme.colorScheme.surface
+        shape = MaterialTheme.shapes.large,
+        shadowElevation = 3.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh
     ) {
         Row(
             modifier = Modifier.padding(start = 14.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
@@ -54,7 +53,7 @@ fun LocationPermissionBanner(
 
             Text(
                 text = stringResource(R.string.map_location_banner_message),
-                style = EponaTypography.bodySmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f)
             )
@@ -66,14 +65,14 @@ fun LocationPermissionBanner(
                     } else {
                         stringResource(R.string.map_location_banner_enable)
                     },
-                    style = EponaTypography.labelLarge
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun LocationPermissionBannerPreview() {
     EponaTheme {
@@ -84,7 +83,7 @@ fun LocationPermissionBannerPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 fun LocationPermissionBannerPermanentlyDeniedPreview() {
     EponaTheme {

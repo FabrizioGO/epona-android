@@ -11,14 +11,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.FoundCustody
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * "Where is the pet now?" — the FOUND-only question that decides whether the
@@ -36,19 +38,27 @@ fun CustodySelector(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.create_custody_question),
-            style = EponaTypography.titleMedium,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(12.dp))
 
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(
+            modifier = Modifier.selectableGroup(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             FoundCustody.entries.forEach { custody ->
                 val isSelected = selected == custody
                 Surface(
-                    onClick = { onSelected(custody) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = isSelected,
+                            onClick = { onSelected(custody) },
+                            role = Role.RadioButton
+                        ),
                     shape = MaterialTheme.shapes.medium,
-                    color = if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                    color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.surfaceContainerLow,
                     border = if (isSelected) {
                         BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
@@ -59,9 +69,9 @@ fun CustodySelector(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = stringResource(custody.label),
-                            style = EponaTypography.titleSmall,
+                            style = MaterialTheme.typography.titleSmall,
                             color = if (isSelected) {
-                                MaterialTheme.colorScheme.onPrimaryContainer
+                                MaterialTheme.colorScheme.onSecondaryContainer
                             } else {
                                 MaterialTheme.colorScheme.onSurface
                             }
@@ -69,9 +79,9 @@ fun CustodySelector(
                         Spacer(Modifier.height(4.dp))
                         Text(
                             text = stringResource(custody.description),
-                            style = EponaTypography.bodySmall,
+                            style = MaterialTheme.typography.bodySmall,
                             color = if (isSelected) {
-                                MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                                MaterialTheme.colorScheme.onSecondaryContainer
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             }

@@ -3,13 +3,16 @@ package com.fabriziogo.epona.feature.map.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.RadioButtonChecked
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
+import androidx.compose.material3.FilledIconToggleButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,19 +41,18 @@ fun MapControls(
 
         Spacer(Modifier.height(8.dp))
 
-        // Radius toggle button
-        SmallFloatingActionButton(
-            onClick = onToggleRadius,
-            containerColor = if (showRadiusCircle) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            },
-            contentColor = if (showRadiusCircle) {
-                MaterialTheme.colorScheme.onPrimaryContainer
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            }
+        // Radius toggle: a toggle button exposes its on/off state to TalkBack, which a FAB
+        // that only swaps colors does not.
+        FilledIconToggleButton(
+            checked = showRadiusCircle,
+            onCheckedChange = { onToggleRadius() },
+            modifier = Modifier.size(40.dp),
+            colors = IconButtonDefaults.filledIconToggleButtonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                checkedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                checkedContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         ) {
             Icon(
                 if (showRadiusCircle) Icons.Outlined.RadioButtonChecked

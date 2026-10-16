@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 /**
  * Shown instead of the sighting actions when the finder took the pet with them.
@@ -44,25 +44,25 @@ fun DetailCustodyNotice(modifier: Modifier = Modifier) {
                 Icon(
                     Icons.Outlined.Home,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Text(
                     text = stringResource(R.string.detail_custody_title),
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.detail_custody_notice),
-                style = EponaTypography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+@EponaPreviews
 @Composable
 private fun DetailCustodyNoticePreview() {
     EponaTheme { DetailCustodyNotice(modifier = Modifier.padding(20.dp)) }

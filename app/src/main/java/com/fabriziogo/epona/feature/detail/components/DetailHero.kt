@@ -41,8 +41,7 @@ import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.emoji
 import com.fabriziogo.epona.core.ui.components.petDisplayName
-import com.fabriziogo.epona.core.ui.theme.EponaColors
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.core.ui.theme.extendedColors
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 
 /** Artwork height below the status bar; the hero itself grows to cover the bar too. */
@@ -59,7 +58,7 @@ fun DetailHero(
     onFlagClick: (() -> Unit)? = null
 ) {
     val bgColor = if (alertType == AlertType.LOST)
-        EponaColors.LostContainer else EponaColors.FoundContainer
+        MaterialTheme.extendedColors.lostContainer else MaterialTheme.extendedColors.foundContainer
 
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
@@ -78,15 +77,15 @@ fun DetailHero(
         if (pet.photoUrls.isNotEmpty()) {
             AsyncImage(
                 model = pet.photoUrls.first(),
-                contentDescription = petDisplayName(pet),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else {
             Text(
                 text = pet.species.emoji(),
-                style = EponaTypography.displayLarge.copy(
-                    fontSize = EponaTypography.displayLarge.fontSize * 2
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = MaterialTheme.typography.displayLarge.fontSize * 2
                 )
             )
         }

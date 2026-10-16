@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun OrDivider(modifier: Modifier = Modifier) {
@@ -26,8 +25,8 @@ fun OrDivider(modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(R.string.auth_or),
-            style = EponaTypography.bodySmall,
-            color = MaterialTheme.colorScheme.outline,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         HorizontalDivider(

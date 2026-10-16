@@ -33,7 +33,6 @@ import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.InSafeHandsBadge
 import com.fabriziogo.epona.core.ui.components.SightingCard
 import com.fabriziogo.epona.core.ui.components.petDisplayName
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 @Composable
 fun AlertPreviewSheet(
@@ -62,12 +61,12 @@ fun AlertPreviewSheet(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = petDisplayName(pet),
-                        style = EponaTypography.titleLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = listOfNotNull(pet.breed, pet.color).joinToString(" · "),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -98,7 +97,7 @@ fun AlertPreviewSheet(
                     )
                     Text(
                         text = address,
-                        style = EponaTypography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(start = 4.dp)
                     )
@@ -111,7 +110,7 @@ fun AlertPreviewSheet(
             item {
                 Text(
                     text = desc,
-                    style = EponaTypography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 8.dp),
                     maxLines = 3
@@ -147,7 +146,7 @@ fun AlertPreviewSheet(
                 Spacer(Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.map_sighting_trail_count, sightings.size),
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(8.dp))

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.home.components
 
+import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,23 +19,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaAvatar
 import com.fabriziogo.epona.core.ui.components.EponaSearchBar
 import com.fabriziogo.epona.core.ui.components.HeroIconButton
-import com.fabriziogo.epona.core.ui.theme.EponaTealDark
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 import com.fabriziogo.epona.feature.home.AlertFilter
 
 /**
  * The teal hero at the top of Home: avatar + greeting, notification/map shortcuts, headline,
- * inline search and the All/Lost/Found category row. Deliberately always-dark — see
- * [EponaTealDark] usage — so it reads correctly regardless of the app theme or Material You.
+ * inline search and the All/Lost/Found category row. Content colors come from
+ * `onPrimaryContainer`, so it stays legible in light, dark and Material You themes.
  */
 @Composable
 fun HomeHero(
@@ -50,14 +49,17 @@ fun HomeHero(
     onFilterSelected: (AlertFilter) -> Unit,
     onNotificationsClick: () -> Unit,
     onMapClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentInset: Dp = 0.dp
 ) {
+    val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp + contentInset)
             .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Row(
@@ -70,16 +72,16 @@ fun HomeHero(
                     url = userAvatar,
                     name = userName,
                     size = 40.dp,
-                    containerColor = Color.White.copy(alpha = 0.16f),
-                    contentColor = Color.White
+                    containerColor = contentColor.copy(alpha = 0.16f),
+                    contentColor = contentColor
                 )
                 Spacer(Modifier.size(10.dp))
                 Text(
                     text = if (userName.isNotBlank())
                         stringResource(R.string.home_hero_greeting, userName)
                     else greetingText(),
-                    style = EponaTypography.titleMedium,
-                    color = Color.White
+                    style = MaterialTheme.typography.titleMedium,
+                    color = contentColor
                 )
             }
 
@@ -102,8 +104,8 @@ fun HomeHero(
 
         Text(
             text = stringResource(R.string.home_hero_headline),
-            style = EponaTypography.headlineMedium,
-            color = Color.White,
+            style = MaterialTheme.typography.headlineMedium,
+            color = contentColor,
             modifier = Modifier.fillMaxWidth(0.75f)
         )
 
@@ -112,8 +114,7 @@ fun HomeHero(
         EponaSearchBar(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
-            containerColor = Color.White,
-            contentColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
         )
 
         Spacer(Modifier.height(20.dp))
@@ -138,7 +139,7 @@ private fun greetingText(): String {
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0F4F44)
+@EponaPreviews
 @Composable
 private fun HomeHeroPreview() {
     EponaTheme(dynamicColor = false) {

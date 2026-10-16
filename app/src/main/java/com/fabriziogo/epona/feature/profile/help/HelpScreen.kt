@@ -1,7 +1,12 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.profile.help
 
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,12 +34,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaCard
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
 
 private data class FaqItem(val question: String, val answer: String)
 
@@ -69,9 +77,16 @@ fun HelpScreen(
         )
     )
 
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
+        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.profile_help),
                 onBackClick = onNavigateBack
             )
@@ -82,12 +97,14 @@ fun HelpScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
+                .constrainedWidth()
                 .padding(16.dp)
         ) {
             Text(
                 text = stringResource(R.string.help_faq_title),
-                style = EponaTypography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.semantics { heading() }
             )
             Spacer(Modifier.height(12.dp))
 
@@ -102,13 +119,13 @@ fun HelpScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = stringResource(R.string.help_contact_title),
-                        style = EponaTypography.titleMedium,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = stringResource(R.string.help_contact_desc),
-                        style = EponaTypography.bodyMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(16.dp))
@@ -136,9 +153,13 @@ fun HelpScreen(
 @Composable
 private fun FaqCard(faq: FaqItem, modifier: Modifier = Modifier) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val expandedText = stringResource(R.string.state_expanded)
+    val collapsedText = stringResource(R.string.state_collapsed)
 
     EponaCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { stateDescription = if (expanded) expandedText else collapsedText },
         onClick = { expanded = !expanded }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -148,7 +169,7 @@ private fun FaqCard(faq: FaqItem, modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = faq.question,
-                    style = EponaTypography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
@@ -158,13 +179,15 @@ private fun FaqCard(faq: FaqItem, modifier: Modifier = Modifier) {
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            if (expanded) {
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = faq.answer,
-                    style = EponaTypography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            AnimatedVisibility(visible = expanded) {
+                Column {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = faq.answer,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

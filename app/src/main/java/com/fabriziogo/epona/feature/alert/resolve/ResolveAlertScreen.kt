@@ -20,8 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
-import com.fabriziogo.epona.core.ui.theme.EponaTypography
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 
 @Composable
 fun ResolveAlertScreen(
@@ -33,7 +32,7 @@ fun ResolveAlertScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if (state.isLoading) {
-        LoadingIndicator()
+        FullScreenProgress()
         return
     }
 
@@ -44,11 +43,11 @@ fun ResolveAlertScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("🎉", style = EponaTypography.displayLarge)
+        Text("🎉", style = MaterialTheme.typography.displayLarge)
         Spacer(Modifier.height(24.dp))
         Text(
             stringResource(R.string.resolve_success_title),
-            style = EponaTypography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(12.dp))
@@ -57,7 +56,7 @@ fun ResolveAlertScreen(
                 R.string.resolve_success_message,
                 state.petName.ifBlank { stringResource(R.string.resolve_default_pet_name) }
             ),
-            style = EponaTypography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
