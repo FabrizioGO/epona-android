@@ -36,7 +36,7 @@ import com.fabriziogo.epona.feature.map.components.RadiusCircleOverlay
 import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import com.fabriziogo.epona.feature.map.components.SightingTrailOverlay
 import com.fabriziogo.epona.core.ui.components.EponaFAB
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.petDisplayName
 import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
@@ -96,7 +96,7 @@ fun MapScreen(
     StatusBarIcons(darkIcons = true)
 
     if (state.isLoading) {
-        LoadingIndicator()
+        FullScreenProgress()
         return
     }
 

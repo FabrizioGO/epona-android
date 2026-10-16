@@ -44,7 +44,7 @@ import com.fabriziogo.epona.feature.map.components.rememberMapStyle
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -93,7 +93,7 @@ fun PickLocationScreen(
     // dark glyphs would break dark theme.
 
     if (state.isResolvingCamera) {
-        LoadingIndicator()
+        FullScreenProgress()
         return
     }
 

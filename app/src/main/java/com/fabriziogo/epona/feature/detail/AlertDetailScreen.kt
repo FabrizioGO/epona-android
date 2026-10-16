@@ -10,7 +10,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.graphics.luminance
+import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,6 +34,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.fabriziogo.epona.core.ui.layout.contentGutter
+import com.fabriziogo.epona.core.ui.layout.fullBleed
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +70,7 @@ import com.fabriziogo.epona.core.ui.components.AlertStatusBadge
 import com.fabriziogo.epona.core.ui.components.AlertTypeBadge
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.RewardBadge
 import com.fabriziogo.epona.core.ui.components.petDisplayName
 
@@ -155,7 +169,7 @@ fun AlertDetailScreen(
 
         when {
             state.isLoading -> {
-                LoadingIndicator(
+                FullScreenProgress(
                     modifier = Modifier
                         .padding(paddingValues)
                         .statusBarsPadding()
@@ -185,18 +199,33 @@ fun AlertDetailScreen(
                 val pet = detail.pet
                 val isResolved = alert.status == AlertStatus.RESOLVED
 
+                // Zero on phones; on wide windows the details stay in a readable column
+                // while the hero image still runs edge to edge.
+                val gutter = contentGutter()
+                val listState = rememberLazyListState()
+                // The hero's floating back/share buttons scroll away with the photo, so once
+                // it is off screen a regular top app bar takes over.
+                val showPinnedBar by remember {
+                    derivedStateOf { listState.firstVisibleItemIndex > 0 }
+                }
+
+                Box(modifier = modifier.fillMaxSize()) {
                 LazyColumn(
-                    modifier = modifier.fillMaxSize(),
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
                     // Bottom inset lives in the content padding rather than the modifier
                     // so the list scrolls under the navigation bar instead of stopping
                     // short of it.
                     contentPadding = PaddingValues(
+                        start = gutter,
+                        end = gutter,
                         bottom = paddingValues.calculateBottomPadding() + 32.dp
                     )
                 ) {
                     // Hero image with back/share buttons
                     item(key = "hero") {
                         DetailHero(
+                            modifier = Modifier.fullBleed(gutter),
                             pet = pet,
                             alertType = alert.type,
                             onBackClick = {
@@ -308,6 +337,29 @@ fun AlertDetailScreen(
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
                     }
+                }
+
+                AnimatedVisibility(
+                    visible = showPinnedBar,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.align(Alignment.TopCenter)
+                ) {
+                    // The bar is opaque surface, not the hero photo: use glyphs that contrast.
+                    StatusBarIcons(darkIcons = MaterialTheme.colorScheme.surface.luminance() > 0.5f)
+                    EponaTopAppBar(
+                        title = petDisplayName(pet),
+                        onBackClick = { viewModel.onEvent(AlertDetailEvent.BackClicked) },
+                        actions = {
+                            IconButton(onClick = { viewModel.onEvent(AlertDetailEvent.ShareClicked) }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Share,
+                                    contentDescription = stringResource(R.string.action_share)
+                                )
+                            }
+                        }
+                    )
+                }
                 }
             }
         }

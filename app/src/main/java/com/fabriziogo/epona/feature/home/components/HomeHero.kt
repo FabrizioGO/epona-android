@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaAvatar
@@ -48,7 +49,8 @@ fun HomeHero(
     onFilterSelected: (AlertFilter) -> Unit,
     onNotificationsClick: () -> Unit,
     onMapClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentInset: Dp = 0.dp
 ) {
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
 
@@ -57,7 +59,7 @@ fun HomeHero(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp + contentInset)
             .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Row(

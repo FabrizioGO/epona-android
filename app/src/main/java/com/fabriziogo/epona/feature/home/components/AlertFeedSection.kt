@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.home.components
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,7 +48,8 @@ fun AlertFeedSection(
         Text(
             text = stringResource(R.string.home_nearby_alerts),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         TextButton(
             onClick = onViewMapClick,

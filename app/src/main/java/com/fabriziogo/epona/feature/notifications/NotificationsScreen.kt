@@ -39,10 +39,14 @@ import com.fabriziogo.epona.core.domain.model.NotificationType
 import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.HeroIconButton
 import com.fabriziogo.epona.core.ui.components.HeroSheetEdge
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.TabHero
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import com.fabriziogo.epona.core.ui.layout.contentGutter
+import com.fabriziogo.epona.core.ui.layout.fullBleed
 import com.fabriziogo.epona.feature.notifications.components.NotificationItem
 
 @Composable
@@ -95,6 +99,10 @@ fun NotificationsScreenContent(
     onEvent: (NotificationsEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Zero on phones. On wide windows the rows stay in a readable column while the hero and
+    // the sheet edge still run edge to edge.
+    val gutter = contentGutter()
+
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
         onRefresh = { onEvent(NotificationsEvent.Refresh) },
@@ -105,10 +113,12 @@ fun NotificationsScreenContent(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 24.dp)
+            contentPadding = PaddingValues(start = gutter, end = gutter, bottom = 24.dp)
         ) {
             item(key = "hero") {
                 TabHero(
+                    modifier = Modifier.fullBleed(gutter),
+                    contentInset = gutter,
                     title = stringResource(R.string.notifications_title),
                     subtitle = if (state.isLoading) null else if (state.unreadCount > 0)
                         pluralStringResource(
@@ -130,12 +140,14 @@ fun NotificationsScreenContent(
             }
 
             item(key = "sheet_header") {
-                HeroSheetEdge {
+                HeroSheetEdge(modifier = Modifier.fullBleed(gutter)) {
                     Text(
                         text = stringResource(R.string.notifications_section_recent),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp + gutter, vertical = 12.dp)
+                            .semantics { heading() }
                     )
                 }
             }
@@ -148,7 +160,7 @@ fun NotificationsScreenContent(
                             .height(240.dp)
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
-                        LoadingIndicator()
+                        FullScreenProgress()
                     }
                 }
 
@@ -179,6 +191,7 @@ fun NotificationsScreenContent(
                             onEvent(NotificationsEvent.NotificationClicked(notification))
                         },
                         modifier = Modifier
+                            .animateItem()
                             .background(MaterialTheme.colorScheme.surface)
                             .padding(horizontal = 16.dp)
                     )

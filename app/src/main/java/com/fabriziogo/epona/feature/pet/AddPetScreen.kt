@@ -1,5 +1,14 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.feature.pet.components.PetFormState
+import com.fabriziogo.epona.feature.pet.components.PetFormContent
+import com.fabriziogo.epona.feature.pet.components.PetFormActions
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -21,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,7 +55,7 @@ import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
 import com.fabriziogo.epona.feature.pet.components.PhotoPickerSection
@@ -123,19 +133,34 @@ fun AddPetScreen(
         )
     }
 
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.create_add_pet),
-                onCloseClick = requestExit
+                onCloseClick = requestExit,
+                // Full-screen form pattern: Close on the left, the one primary action on the right.
+                actions = {
+                    TextButton(
+                        onClick = { viewModel.onEvent(AddPetEvent.SavePet) },
+                        enabled = state.isFormValid && !state.isLoading
+                    ) {
+                        Text(stringResource(R.string.pet_save))
+                    }
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
 
         if (state.isLoading) {
-            LoadingIndicator(modifier = Modifier.padding(paddingValues))
+            FullScreenProgress(modifier = Modifier.padding(paddingValues))
             return@Scaffold
         }
 
@@ -143,7 +168,6 @@ fun AddPetScreen(
             state = state,
             paddingValues = paddingValues,
             onEvent = { viewModel.onEvent(it) },
-            onCancel = requestExit,
             onAddPhotoClick = photoPicker::open
         )
     }
@@ -154,199 +178,44 @@ fun AddPetScreenContent(
     state: AddPetUiState,
     paddingValues: PaddingValues,
     onEvent: (AddPetEvent) -> Unit,
-    onCancel: () -> Unit,
     onAddPhotoClick: () -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .consumeWindowInsets(paddingValues)
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Column(
-            modifier = Modifier
-                .constrainedWidth()
-                .padding(16.dp)
-        ) {
-            // ---- Basic Info Section ----
-            Text(
-                text = stringResource(R.string.pet_section_info),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            // Pet name (required)
-            EponaTextField(
-                value = state.petName,
-                onValueChange = { onEvent(AddPetEvent.NameChanged(it)) },
-                label = stringResource(R.string.pet_name_label),
-                placeholder = stringResource(R.string.pet_name_placeholder),
-                errorText = state.nameError,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            // Species selection
-            Text(
-                text = stringResource(R.string.pet_species_label),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            SelectionChips(
-                options = Species.entries,
-                selected = state.selectedSpecies,
-                label = { stringResource(it.label) },
-                onSelected = { onEvent(AddPetEvent.SpeciesChanged(it)) },
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Breed
-            EponaTextField(
-                value = state.breed,
-                onValueChange = { onEvent(AddPetEvent.BreedChanged(it)) },
-                label = stringResource(R.string.pet_breed_label),
-                placeholder = stringResource(R.string.pet_breed_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            // Color
-            EponaTextField(
-                value = state.color,
-                onValueChange = { onEvent(AddPetEvent.ColorChanged(it)) },
-                label = stringResource(R.string.pet_color_label),
-                placeholder = stringResource(R.string.pet_color_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // ---- Physical Traits Section ----
-            Text(
-                text = stringResource(R.string.pet_section_physical_traits),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            // Size selection
-            Text(
-                text = stringResource(R.string.pet_size_label),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            SelectionChips(
-                options = PetSize.entries,
-                selected = state.selectedSize,
-                label = { stringResource(it.label) },
-                onSelected = { onEvent(AddPetEvent.SizeChanged(it)) },
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Age
-            EponaTextField(
-                value = state.ageYears,
-                onValueChange = { onEvent(AddPetEvent.AgeChanged(it)) },
-                label = stringResource(R.string.pet_age_label),
-                placeholder = stringResource(R.string.pet_age_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            // Gender selection
-            Text(
-                text = stringResource(R.string.pet_gender_label),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            SelectionChips(
-                options = PetGender.entries,
-                selected = state.selectedGender,
-                label = { stringResource(it.label) },
-                onSelected = { onEvent(AddPetEvent.GenderChanged(it)) },
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // ---- Additional Info Section ----
-            Text(
-                text = stringResource(R.string.pet_section_additional_info),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            // Microchip ID
-            EponaTextField(
-                value = state.microchipId,
-                onValueChange = { onEvent(AddPetEvent.MicrochipIdChanged(it)) },
-                label = stringResource(R.string.pet_microchip_label),
-                placeholder = stringResource(R.string.pet_optional_placeholder),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            // Description
-            EponaTextField(
-                value = state.description,
-                onValueChange = { onEvent(AddPetEvent.DescriptionChanged(it)) },
-                label = stringResource(R.string.pet_features_label),
-                placeholder = stringResource(R.string.pet_description_placeholder),
-                singleLine = false,
-                maxLines = 4,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // ---- Photos Section ----
-            PhotoPickerSection(
-                photos = state.photos,
-                onAddClick = onAddPhotoClick,
-                onRemove = { onEvent(AddPetEvent.PhotoRemoved(it)) },
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-
-            // ---- Action Buttons ----
-            EponaFilledButton(
-                text = stringResource(R.string.pet_save),
-                onClick = { onEvent(AddPetEvent.SavePet) },
-                enabled = state.isFormValid,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            )
-
-            EponaOutlinedButton(
-                text = stringResource(R.string.action_cancel),
-                onClick = onCancel,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-        }
-    }
+    PetFormContent(
+        state = PetFormState(
+            petName = state.petName,
+            selectedSpecies = state.selectedSpecies,
+            breed = state.breed,
+            color = state.color,
+            selectedSize = state.selectedSize,
+            ageYears = state.ageYears,
+            selectedGender = state.selectedGender,
+            microchipId = state.microchipId,
+            description = state.description,
+            photos = state.photos,
+            nameError = state.nameError
+        ),
+        actions = PetFormActions(
+            onNameChanged = { onEvent(AddPetEvent.NameChanged(it)) },
+            onSpeciesChanged = { onEvent(AddPetEvent.SpeciesChanged(it)) },
+            onBreedChanged = { onEvent(AddPetEvent.BreedChanged(it)) },
+            onColorChanged = { onEvent(AddPetEvent.ColorChanged(it)) },
+            onSizeChanged = { onEvent(AddPetEvent.SizeChanged(it)) },
+            onAgeChanged = { onEvent(AddPetEvent.AgeChanged(it)) },
+            onGenderChanged = { onEvent(AddPetEvent.GenderChanged(it)) },
+            onMicrochipChanged = { onEvent(AddPetEvent.MicrochipIdChanged(it)) },
+            onDescriptionChanged = { onEvent(AddPetEvent.DescriptionChanged(it)) },
+            onPhotoRemoved = { onEvent(AddPetEvent.PhotoRemoved(it)) },
+            onAddPhotoClick = onAddPhotoClick
+        ),
+        paddingValues = paddingValues
+    )
 }
-
 @EponaPreviews
 @Composable
 fun AddPetScreenPreview() {
     AddPetScreenContent(
         state = AddPetUiState(),
         paddingValues = PaddingValues(),
-        onEvent = {},
-        onCancel = {}
+        onEvent = {}
     )
 }

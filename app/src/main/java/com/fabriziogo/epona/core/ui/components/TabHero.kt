@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 
@@ -41,6 +42,7 @@ fun TabHero(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    contentInset: Dp = 0.dp,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -50,7 +52,7 @@ fun TabHero(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp + contentInset)
             .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Row(

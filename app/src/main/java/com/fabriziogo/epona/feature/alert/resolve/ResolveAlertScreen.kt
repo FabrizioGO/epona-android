@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 
 @Composable
 fun ResolveAlertScreen(
@@ -32,7 +32,7 @@ fun ResolveAlertScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if (state.isLoading) {
-        LoadingIndicator()
+        FullScreenProgress()
         return
     }
 

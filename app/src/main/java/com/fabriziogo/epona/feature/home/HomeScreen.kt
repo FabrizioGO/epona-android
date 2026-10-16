@@ -42,7 +42,8 @@ import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.HeroSheetEdge
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
+import com.fabriziogo.epona.core.ui.layout.fullBleed
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.home.components.AlertFeedSection
@@ -145,6 +146,8 @@ fun HomeScreenContent(
             item(span = { GridItemSpan(maxLineSpan) }, key = "hero") {
                 HomeHero(
                     modifier = Modifier.fullBleed(sidePadding),
+                    // The hero background is full width; keep its content in the cards' column.
+                    contentInset = sidePadding - GridGutter,
                     userName = state.userName,
                     userAvatar = state.userAvatar,
                     unreadCount = state.unreadNotificationCount,
@@ -177,7 +180,7 @@ fun HomeScreenContent(
                             .fillMaxWidth()
                             .height(240.dp)
                     ) {
-                        LoadingIndicator()
+                        FullScreenProgress()
                     }
                 }
 
@@ -231,18 +234,6 @@ fun HomeScreenContent(
 private val GridGutter = 16.dp
 private val MaxContentWidth = 840.dp
 
-/**
- * Lets a full-span grid item ignore the grid's horizontal content padding so backgrounds
- * (the hero, the sheet edge) still run edge to edge while the cards stay inset/centred.
- */
-private fun Modifier.fullBleed(horizontal: Dp): Modifier = layout { measurable, constraints ->
-    val extra = horizontal.roundToPx() * 2
-    val width = constraints.maxWidth + extra
-    val placeable = measurable.measure(constraints.copy(minWidth = width, maxWidth = width))
-    layout(constraints.maxWidth, placeable.height) {
-        placeable.place(-extra / 2, 0)
-    }
-}
 
 @EponaPreviews
 @Composable

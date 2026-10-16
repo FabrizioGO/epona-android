@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.fabriziogo.epona.feature.profile.mypets
 
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.fabriziogo.epona.core.ui.layout.contentGutter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,7 +34,7 @@ import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.EponaFAB
 import com.fabriziogo.epona.core.ui.components.EponaFilledButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,9 +76,16 @@ fun MyPetsScreen(
         )
     }
 
+    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+
+    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
+
+
     Scaffold(
+        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
+                scrollBehavior = topBarScroll,
                 title = stringResource(R.string.my_pets_title),
                 onBackClick = onNavigateBack
             )
@@ -89,7 +101,7 @@ fun MyPetsScreen(
     ) { padding ->
         when {
             state.isLoading -> {
-                LoadingIndicator(modifier = Modifier.padding(padding))
+                FullScreenProgress(modifier = Modifier.padding(padding))
             }
 
             state.pets.isEmpty() -> {
@@ -114,7 +126,12 @@ fun MyPetsScreen(
                         .fillMaxSize()
                         .padding(padding),
                     // Bottom: clears the FAB (56dp + 16dp margin) so the last card's buttons stay reachable.
-                    contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 88.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp + contentGutter(),
+                        top = 16.dp,
+                        end = 16.dp + contentGutter(),
+                        bottom = 88.dp
+                    ),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(
@@ -122,6 +139,7 @@ fun MyPetsScreen(
                         key = { it.id }
                     ) { pet ->
                         MyPetCard(
+                            modifier = Modifier.animateItem(),
                             pet = pet,
                             onEditClick = { onNavigateToEditPet(pet.id) },
                             onDeleteClick = { viewModel.onDeleteRequest(pet) }

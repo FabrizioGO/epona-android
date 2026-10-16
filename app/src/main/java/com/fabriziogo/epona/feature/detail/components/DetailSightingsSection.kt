@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.detail.components
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +35,8 @@ fun DetailSightingsSection(
         Text(
             text = stringResource(R.string.detail_sightings, sightings.size),
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
 
         Spacer(Modifier.height(10.dp))

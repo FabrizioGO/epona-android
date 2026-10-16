@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +35,7 @@ import coil3.compose.AsyncImage
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 
 @Composable
 fun PetSelectionStep(
@@ -48,7 +50,8 @@ fun PetSelectionStep(
         Text(
             stringResource(R.string.create_step_pet_title),
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         Spacer(Modifier.height(4.dp))
         Text(
@@ -59,7 +62,7 @@ fun PetSelectionStep(
         Spacer(Modifier.height(24.dp))
 
         when {
-            isLoading -> LoadingIndicator()
+            isLoading -> FullScreenProgress()
 
             pets.isEmpty() -> {
                 Column(

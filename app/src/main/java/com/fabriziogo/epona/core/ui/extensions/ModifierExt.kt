@@ -25,7 +25,9 @@ fun Modifier.pressScale(
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (isPressed) scaleFactor else 1f,
-        animationSpec = spring(stiffness = Spring.StiffnessMedium),
+        // A spring, as MD3 Expressive prescribes for spatial changes. MotionScheme itself is
+        // not public in the stable material3 this app is on, so the spec is spelled out.
+        animationSpec = spring(dampingRatio = 0.8f, stiffness = Spring.StiffnessMedium),
         label = "pressScale"
     )
     this

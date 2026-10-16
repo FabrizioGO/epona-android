@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 
 /**
  * Shared auth-screen frame: a teal hero (title/subtitle) that transitions into a
@@ -66,8 +67,11 @@ fun AuthHeroCard(
                         bottomEnd = ZeroCornerSize
                     )
                 )
-                .padding(horizontal = 24.dp, vertical = 28.dp),
-            content = content
-        )
+                .padding(horizontal = 24.dp, vertical = 28.dp)
+        ) {
+            // The sheet background stays full width; the form itself is capped and centred
+            // so fields and buttons do not stretch across a tablet.
+            Column(modifier = Modifier.constrainedWidth(), content = content)
+        }
     }
 }

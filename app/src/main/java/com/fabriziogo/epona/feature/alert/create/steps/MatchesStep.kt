@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.heading
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +28,7 @@ import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.Pet
 import com.fabriziogo.epona.core.domain.model.Species
 import com.fabriziogo.epona.core.ui.components.EmptyState
-import com.fabriziogo.epona.core.ui.components.LoadingIndicator
+import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.components.PetCard
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 
@@ -52,7 +54,8 @@ fun MatchesStep(
         Text(
             stringResource(R.string.create_step_matches_title),
             style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.semantics { heading() }
         )
         Spacer(Modifier.height(4.dp))
         Text(
@@ -63,7 +66,7 @@ fun MatchesStep(
         Spacer(Modifier.height(24.dp))
 
         when {
-            isLoading -> LoadingIndicator(modifier = Modifier.fillMaxWidth())
+            isLoading -> FullScreenProgress(modifier = Modifier.fillMaxWidth())
 
             matches.isEmpty() -> EmptyState(
                 icon = Icons.Outlined.Search,
