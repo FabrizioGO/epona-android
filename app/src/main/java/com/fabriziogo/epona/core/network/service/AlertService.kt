@@ -6,7 +6,6 @@ import com.fabriziogo.epona.core.network.dto.AlertDto
 import com.fabriziogo.epona.core.network.dto.AlertInsertParams
 import com.fabriziogo.epona.core.network.dto.FoundAlertInsertParams
 import com.fabriziogo.epona.core.network.dto.NearbyAlertDto
-import com.fabriziogo.epona.core.network.dto.UserToNotifyDto
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.rpc
@@ -91,20 +90,6 @@ class AlertService @Inject constructor(
             filter { eq("id", alertId) }
         }
     }
-
-    suspend fun getUsersToNotify(
-        lat: Double,
-        lng: Double,
-        excludeUserId: String? = null
-    ): List<UserToNotifyDto> =
-        supabase.client.postgrest.rpc(
-            "get_users_to_notify",
-            buildJsonObject {
-                put("p_alert_lat", lat)
-                put("p_alert_lng", lng)
-                excludeUserId?.let { put("p_exclude_user_id", it) }
-            }
-        ).decodeList()
 
     /**
      * Observe realtime changes to the alerts table.
