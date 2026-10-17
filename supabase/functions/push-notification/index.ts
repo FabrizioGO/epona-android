@@ -16,6 +16,7 @@
 // trade for an app whose notification IS a deep link.
 
 import { getAccessToken, serviceAccount } from "../_shared/googleAuth.ts";
+import { secretsEqual } from "../_shared/secrets.ts";
 
 type PushMessage = {
   notification_id?: string;
@@ -95,7 +96,7 @@ Deno.serve(async (req) => {
 
   const expected = Deno.env.get("PUSH_SHARED_SECRET") ?? "";
   const got = req.headers.get("x-epona-push-key") ?? "";
-  if (expected.length === 0 || got !== expected) return json({ error: "unauthorized" }, 401);
+  if (!(await secretsEqual(got, expected))) return json({ error: "unauthorized" }, 401);
 
   let messages: PushMessage[];
   try {

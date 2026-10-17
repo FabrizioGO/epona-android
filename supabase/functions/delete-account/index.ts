@@ -21,8 +21,11 @@
 // instead of erroring. The storage removal and the admin user delete are treated
 // the same way: "already gone" is success, not failure.
 
+import { secretsEqual } from "../_shared/secrets.ts";
+
 const CONCURRENCY = 5;
 const PHOTO_BUCKETS = ["avatars", "pets", "sightings"];
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function json(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
@@ -36,10 +39,10 @@ async function resolveUserId(req: Request, supabaseUrl: string, anonKey: string)
   const adminKey = req.headers.get("x-epona-admin-key");
   const expectedAdminKey = Deno.env.get("ACCOUNT_DELETION_ADMIN_KEY") ?? "";
 
-  if (adminKey && expectedAdminKey.length > 0 && adminKey === expectedAdminKey) {
+  if (adminKey && (await secretsEqual(adminKey, expectedAdminKey))) {
     const body = await req.json().catch(() => ({}));
     const userId = typeof body?.user_id === "string" ? body.user_id : "";
-    if (userId.length === 0) throw new HttpError(400, "user_id is required");
+    if (!UUID.test(userId)) throw new HttpError(400, "user_id must be a uuid");
     return userId;
   }
 
@@ -83,21 +86,26 @@ async function listUserObjects(
   bucket: string,
   userId: string,
 ): Promise<string[]> {
-  const res = await fetch(`${supabaseUrl}/storage/v1/object/list/${bucket}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${serviceKey}`,
-      apikey: serviceKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prefix: `${userId}/`, limit: 1000 }),
-  });
-  if (!res.ok) return []; // an empty/missing folder listing is not fatal
-  const entries = await res.json().catch(() => []);
-  if (!Array.isArray(entries)) return [];
-  return entries
-    .filter((e) => typeof e?.name === "string")
-    .map((e) => `${userId}/${e.name}`);
+  const pageSize = 1000;
+  const paths: string[] = [];
+  for (let offset = 0; ; offset += pageSize) {
+    const res = await fetch(`${supabaseUrl}/storage/v1/object/list/${bucket}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${serviceKey}`,
+        apikey: serviceKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prefix: `${userId}/`, limit: pageSize, offset }),
+    });
+    if (!res.ok) return paths; // an empty/missing folder listing is not fatal
+    const entries = await res.json().catch(() => []);
+    if (!Array.isArray(entries)) return paths;
+    for (const e of entries) {
+      if (typeof e?.name === "string") paths.push(`${userId}/${e.name}`);
+    }
+    if (entries.length < pageSize) return paths;
+  }
 }
 
 /** Supabase's bulk-delete endpoint calls these "prefixes"; they are exact object keys. */
@@ -160,10 +168,18 @@ Deno.serve(async (req) => {
   // each bucket (covers the normal case), plus whatever the RPC's returned URLs
   // point at (a defensive second pass in case a path ever drifts from that
   // convention -- see StorageService's own note about PhotoUploader owning it).
+  //
+  // Those URLs live in columns the user writes themselves (avatar_url,
+  // photo_urls), so they are untrusted: anything outside this account's own
+  // "{uid}/" folder in our own buckets is skipped. Otherwise someone could point
+  // their avatar at another user's photo, delete their account, and have this
+  // function remove the victim's file with the service key.
   const extraByBucket = new Map<string, Set<string>>();
   for (const url of photoUrls) {
     const parsed = parsePublicUrl(url);
     if (!parsed) continue;
+    if (!PHOTO_BUCKETS.includes(parsed.bucket)) continue;
+    if (!parsed.path.startsWith(`${userId}/`) || parsed.path.includes("..")) continue;
     const set = extraByBucket.get(parsed.bucket) ?? new Set<string>();
     set.add(parsed.path);
     extraByBucket.set(parsed.bucket, set);

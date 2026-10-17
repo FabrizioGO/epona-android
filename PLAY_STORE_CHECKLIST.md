@@ -21,12 +21,33 @@ depends on, and the plan this was built from for the full rationale.
       ```
       supabase link --project-ref uantchroigqmbwordchb
       supabase db push
-      supabase functions deploy delete-account
+      supabase functions deploy delete-account push-notification
       supabase secrets set ACCOUNT_DELETION_ADMIN_KEY=<a long random value>
       ```
       `ACCOUNT_DELETION_ADMIN_KEY` is only for deletion requests that arrive by
       email (see `docs/delete-account.md`) — keep it out of the app and out of
       git.
+- [ ] **Supabase dashboard → Authentication** (`config.toml` only affects local
+      dev; set these on the live project too): confirm email **on**, minimum
+      password length **8**, secure password change **on**, leaked-password
+      protection **on**. Consider CAPTCHA (hCaptcha/Turnstile) on sign-up.
+- [ ] **Verify RLS on the tables this repo doesn't create** (`users`, `pets`,
+      `alerts`, `sightings`). Their policies exist only in the live project.
+      Run `select tablename, policyname, cmd, roles, qual, with_check from
+      pg_policies where schemaname = 'public' order by 1, 3;` and the
+      dashboard's **Advisors → Security** report. What to look for:
+      - RLS enabled on all four.
+      - INSERT / UPDATE / DELETE limited to the owner (`owner_id` / `user_id`
+        = `auth.uid()`) in **both** USING and WITH CHECK, so an owner can't
+        reassign a row to someone else.
+      - `users` must not let other users read `email`, `phone`, `fcm_token`
+        or `location`. If SELECT is open to `authenticated`, revoke table
+        SELECT and grant only the public columns (`id`, `display_name`,
+        `avatar_url`, …).
+      - Once settled, export the policies into a migration so they're in git.
+- [ ] Restrict the Firebase API key from `app/google-services.json` in Google
+      Cloud Console → Credentials (Android apps: package `com.fabriziogo.epona`
+      + release/Play signing SHA-1).
 - [ ] Read through `docs/privacy.md` and `docs/terms.md` yourself, and have
       someone who can speak to Venezuelan/consumer law review them before
       launch. They're accurate to what the app's code does today, but they are
@@ -48,11 +69,11 @@ full detail):
 |---|---|---|---|
 | Name | Yes | Yes, with other users | Display name shown on every alert/sighting |
 | Email address | Yes | No | Account only |
-| Phone number | Yes (optional, per-alert) | Yes, with other users | `contact_phone` on an alert |
+| Phone number | Yes (optional per alert; required per adoption post) | Yes, with other users | `contact_phone` on an alert or adoption post |
 | Precise location | Yes | Yes, with other users | Attached to alerts/sightings; foreground only |
 | Approximate location | Yes | No | Used for the nearby feed |
-| Photos | Yes | Yes, publicly (direct URL) | Pet/sighting/avatar photos, public storage buckets |
-| Other user-generated content | Yes | Yes, with other users | Alert/sighting descriptions |
+| Photos | Yes | Yes, publicly (direct URL) | Pet/sighting/adoption/avatar photos, public storage buckets |
+| Other user-generated content | Yes | Yes, with other users | Alert/sighting/adoption-post descriptions |
 | Device or other IDs | Yes | No | FCM push token |
 
 - **Data is encrypted in transit**: Yes (HTTPS/TLS to Supabase and Google).
@@ -104,8 +125,10 @@ Flagging these so they're a decision, not a surprise at review time:
 - **Release signing is configured** (`RELEASE_STORE_*` / `RELEASE_KEY_*` in
   `local.properties` or env vars; release builds fail if they or the API keys
   are missing). You still need to generate the upload keystore and back it up.
-  `isMinifyEnabled = false` — decide whether to turn on R8 (needs keep rules for
-  serialization/Supabase DTOs) before shipping.
+  R8 is on for release (`proguard-rules.pro` keeps the DTO serializers and the
+  Ktor engine). Smoke-test a signed release build on a device before uploading,
+  and upload `app/build/outputs/mapping/release/mapping.txt` with the bundle so
+  crash reports deobfuscate.
 - **No explicit permission-rationale screen** before the system location
   prompt. Not required by Play, but Google Play's location policy expects the
   in-context request to make clear why it's needed — `LocationPermissionBanner`

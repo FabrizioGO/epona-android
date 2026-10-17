@@ -9,7 +9,7 @@ import com.fabriziogo.epona.core.domain.usecase.auth.UpdatePasswordUseCase
 import com.fabriziogo.epona.core.domain.usecase.auth.VerifyPasswordResetCodeUseCase
 import com.fabriziogo.epona.feature.auth.login.mapAuthError
 import com.fabriziogo.epona.feature.auth.login.validateEmail
-import com.fabriziogo.epona.feature.auth.login.validatePassword
+import com.fabriziogo.epona.feature.auth.login.validateNewPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -129,7 +129,7 @@ class ForgotPasswordViewModel @Inject constructor(
 
     private fun savePassword() {
         val s = _state.value
-        val passErr = validatePassword(s.newPassword)
+        val passErr = validateNewPassword(s.newPassword)
         val confirmErr = when {
             s.confirmPassword.isBlank() -> "Please confirm your password"
             s.confirmPassword != s.newPassword -> "Passwords don't match"

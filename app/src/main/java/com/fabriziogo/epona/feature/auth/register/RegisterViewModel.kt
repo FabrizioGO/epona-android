@@ -8,7 +8,7 @@ import com.fabriziogo.epona.core.domain.usecase.auth.SignUpUseCase
 import com.fabriziogo.epona.feature.auth.login.mapAuthError
 import com.fabriziogo.epona.feature.auth.login.validateDisplayName
 import com.fabriziogo.epona.feature.auth.login.validateEmail
-import com.fabriziogo.epona.feature.auth.login.validatePassword
+import com.fabriziogo.epona.feature.auth.login.validateNewPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,7 +74,7 @@ class RegisterViewModel @Inject constructor(
         val firstNameErr = validateDisplayName(s.firstName)
         val lastNameErr = validateDisplayName(s.lastName)
         val emailErr = validateEmail(s.email)
-        val passErr = validatePassword(s.password)
+        val passErr = validateNewPassword(s.password)
         val confirmErr = when {
             s.confirmPassword.isBlank() -> "Please confirm your password"
             s.confirmPassword != s.password -> "Passwords don't match"

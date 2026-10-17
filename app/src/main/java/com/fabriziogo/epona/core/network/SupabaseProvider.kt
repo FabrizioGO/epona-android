@@ -1,11 +1,13 @@
 package com.fabriziogo.epona.core.network
 
+import com.fabriziogo.epona.BuildConfig
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.functions.Functions
 import io.github.jan.supabase.functions.functions
+import io.github.jan.supabase.logging.LogLevel
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.Realtime
@@ -26,6 +28,9 @@ class SupabaseProvider @Inject constructor() {
             supabaseUrl = url,
             supabaseKey = anonKey
         ) {
+            // Release builds log nothing: supabase-kt's default level can print request
+            // details, and logcat is readable by anyone with the device on a cable.
+            if (!BuildConfig.DEBUG) defaultLogLevel = LogLevel.NONE
             install(Auth) {
                 alwaysAutoRefresh = true
                 autoLoadFromStorage = true

@@ -27,6 +27,9 @@ Al publicar una alerta de mascota perdida o encontrada, recopilamos: la ubicaci�
 ### Información de avistamientos
 Al reportar que viste la mascota de otra persona, recopilamos: la ubicación y dirección donde la viste, hasta tres fotos, una nota opcional y la hora.
 
+### Publicaciones de adopción
+Al ofrecer una mascota en adopción, recopilamos: un título, la especie, raza, nombre, etapa de edad, tamaño y sexo de la mascota, una descripción, una tarifa de adopción opcional, hasta tres fotos y un **teléfono de contacto**. Consulta [Qué pueden ver otros usuarios](#3-qué-pueden-ver-otros-usuarios) más abajo: esta información no es privada.
+
 ### Datos de ubicación
 La App solicita la ubicación **precisa o aproximada** de tu dispositivo (solo en primer plano — nunca recopilamos ubicación en segundo plano). La usamos para:
 - mostrarte alertas cercanas y calcular la distancia,
@@ -61,6 +64,7 @@ Epona es una app comunitaria basada en publicaciones públicas. Si publicas una 
 - tu **nombre visible**, **foto de perfil**, los **datos y fotos de la mascota**, la **ubicación/dirección** donde fue vista por última vez, y el **teléfono de contacto** que ingreses son visibles para **todos los demás usuarios** con sesión iniciada en la App, y los archivos de fotos son accesibles por cualquiera que tenga su enlace directo, use o no la App.
 - Las alertas pueden compartirse fuera de la App (por ejemplo, mediante un enlace), lo que hace esa información visible más ampliamente todavía.
 - Si reportas un avistamiento, tu **nombre** y **foto de perfil** son visibles para el dueño de la alerta y para cualquiera que vea el historial de avistamientos de esa alerta.
+- Si publicas una mascota en adopción, tu **nombre visible**, **foto de perfil**, los datos y fotos de la publicación, y el **teléfono de contacto** que ingreses son visibles para todos los demás usuarios con sesión iniciada mientras la publicación esté activa.
 
 Por favor no incluyas en una descripción o nota información que no quieras que sea pública, y piensa bien antes de compartir un número de teléfono personal.
 

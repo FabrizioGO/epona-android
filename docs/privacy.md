@@ -27,6 +27,9 @@ When you post a lost or found alert, we collect: the pet's last-seen location (c
 ### Sighting information
 When you report seeing someone else's pet, we collect: the location and address where you saw it, up to three photos, an optional note, and the time.
 
+### Adoption posts
+When you offer a pet for adoption, we collect: a title, the pet's species, breed, name, age stage, size and sex, a description, an optional adoption fee, up to three photos, and a **contact phone number**. See [What other users can see](#3-what-other-users-can-see) below — this information is not private.
+
 ### Location data
 The App asks for your device's **precise or approximate location** (foreground use only — we never collect location in the background). We use it to:
 - show you alerts near you and calculate distance,
@@ -61,6 +64,7 @@ Epona is a community app built around public posts. If you post an alert:
 - your **display name**, **profile photo**, the **pet's details and photos**, the **last-seen location/address**, and the **contact phone number you entered** are visible to **every other signed-in user** of the App, and photo files are reachable by anyone with their direct link, whether or not they use the App.
 - Alerts can be shared outside the App (e.g., via a link), which makes that information visible even more widely.
 - If you report a sighting, your **name** and **profile photo** are visible to the alert's owner and to anyone else viewing that alert's sighting trail.
+- If you publish an adoption post, your **display name**, **profile photo**, the post's details and photos, and the **contact phone number you entered** are visible to every other signed-in user while the post is active.
 
 Please don't include information in a description or note that you don't want to be public, and think carefully before sharing a personal phone number.
 

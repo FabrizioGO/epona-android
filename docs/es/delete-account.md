@@ -27,6 +27,7 @@ Al eliminar tu cuenta, eliminamos permanentemente:
 - tu perfil (nombre, correo, avatar);
 - tus mascotas, y cualquier alerta de perdido/encontrado que hayas publicado, incluyendo sus fotos;
 - los reportes de avistamiento que hayas presentado en alertas de otras personas, incluyendo sus fotos;
+- las publicaciones de adopción que hayas creado, incluyendo sus fotos y teléfono de contacto;
 - tu token de notificaciones push y tu historial de notificaciones;
 - tus credenciales de autenticación.
 
