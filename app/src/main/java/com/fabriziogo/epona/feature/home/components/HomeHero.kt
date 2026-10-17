@@ -4,6 +4,7 @@ import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +33,7 @@ import com.fabriziogo.epona.feature.home.AlertFilter
 
 /**
  * The teal hero at the top of Home: avatar + greeting, notification/map shortcuts, headline,
- * inline search and the All/Lost/Found category row. Content colors come from
+ * inline search and the scrollable category chips. Content colors come from
  * `onPrimaryContainer`, so it stays legible in light, dark and Material You themes.
  */
 @Composable
@@ -42,10 +43,6 @@ fun HomeHero(
     unreadCount: Int,
     searchQuery: String,
     selectedFilter: AlertFilter,
-    totalCount: Int,
-    lostCount: Int,
-    foundCount: Int,
-    adoptionCount: Int,
     onSearchQueryChanged: (String) -> Unit,
     onFilterSelected: (AlertFilter) -> Unit,
     onNotificationsClick: () -> Unit,
@@ -54,17 +51,18 @@ fun HomeHero(
     contentInset: Dp = 0.dp
 ) {
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    // The category chips scroll edge to edge, so the inset is applied per row, not on the Column.
+    val horizontalPadding = 20.dp + contentInset
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primaryContainer)
             .statusBarsPadding()
-            .padding(horizontal = 20.dp + contentInset)
             .padding(top = 8.dp, bottom = 24.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -107,7 +105,9 @@ fun HomeHero(
             text = stringResource(R.string.home_hero_headline),
             style = MaterialTheme.typography.headlineMedium,
             color = contentColor,
-            modifier = Modifier.fillMaxWidth(0.75f)
+            modifier = Modifier
+                .fillMaxWidth(0.75f)
+                .padding(start = horizontalPadding)
         )
 
         Spacer(Modifier.height(20.dp))
@@ -115,18 +115,16 @@ fun HomeHero(
         EponaSearchBar(
             value = searchQuery,
             onValueChange = onSearchQueryChanged,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            modifier = Modifier.padding(horizontal = horizontalPadding)
         )
 
         Spacer(Modifier.height(20.dp))
 
         AlertCategoryRow(
             selectedFilter = selectedFilter,
-            totalCount = totalCount,
-            lostCount = lostCount,
-            foundCount = foundCount,
-            adoptionCount = adoptionCount,
-            onFilterSelected = onFilterSelected
+            onFilterSelected = onFilterSelected,
+            contentPadding = PaddingValues(horizontal = horizontalPadding)
         )
     }
 }
@@ -151,10 +149,6 @@ private fun HomeHeroPreview() {
             unreadCount = 3,
             searchQuery = "",
             selectedFilter = AlertFilter.ALL,
-            totalCount = 12,
-            lostCount = 8,
-            foundCount = 4,
-            adoptionCount = 3,
             onSearchQueryChanged = {},
             onFilterSelected = {},
             onNotificationsClick = {},

@@ -1,79 +1,84 @@
 package com.fabriziogo.epona.feature.home.components
 
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.feature.home.AlertFilter
 
 private data class Category(
     val filter: AlertFilter,
-    val label: Int,
-    val count: Int
+    val label: Int
+)
+
+private val categories = listOf(
+    Category(AlertFilter.ALL, R.string.home_filter_all),
+    Category(AlertFilter.LOST, R.string.home_filter_lost),
+    Category(AlertFilter.FOUND, R.string.home_filter_found),
+    Category(AlertFilter.ADOPTION, R.string.home_filter_adoption)
 )
 
 /**
  * All / Lost / Found / Adoption selector for the home hero, driven by [AlertFilter]. Colors are
  * derived from the theme so it reads on the hero's `primaryContainer` surface.
  *
- * Four segments leave about 80dp each on a 360dp phone, so only the selected segment spells out
- * its count and the icon slot carries just the selection check.
+ * Chips size to their label and the row scrolls horizontally, so longer translations or larger
+ * font scales never truncate. [contentPadding] keeps the chips aligned with the hero content at
+ * rest while letting them scroll edge to edge.
  */
 @Composable
 fun AlertCategoryRow(
     selectedFilter: AlertFilter,
-    totalCount: Int,
-    lostCount: Int,
-    foundCount: Int,
-    adoptionCount: Int,
     onFilterSelected: (AlertFilter) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    val categories = listOf(
-        Category(AlertFilter.ALL, R.string.home_filter_all, totalCount),
-        Category(AlertFilter.LOST, R.string.home_filter_lost, lostCount),
-        Category(AlertFilter.FOUND, R.string.home_filter_found, foundCount),
-        Category(AlertFilter.ADOPTION, R.string.home_filter_adoption, adoptionCount)
-    )
-
     val onHero = MaterialTheme.colorScheme.onPrimaryContainer
-    val colors = SegmentedButtonDefaults.colors(
-        activeContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-        activeContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        activeBorderColor = onHero.copy(alpha = 0.38f),
-        inactiveContainerColor = Color.Transparent,
-        inactiveContentColor = onHero,
-        inactiveBorderColor = onHero.copy(alpha = 0.38f)
+    val colors = FilterChipDefaults.filterChipColors(
+        containerColor = Color.Transparent,
+        labelColor = onHero,
+        selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer
     )
 
-    SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
-        categories.forEachIndexed { index, category ->
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(contentPadding)
+            .selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        categories.forEach { category ->
             val selected = category.filter == selectedFilter
-            SegmentedButton(
+            FilterChip(
                 selected = selected,
                 onClick = { onFilterSelected(category.filter) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = categories.size),
+                label = { Text(stringResource(category.label)) },
                 colors = colors,
-                icon = { SegmentedButtonDefaults.Icon(active = selected) },
-                label = {
-                    val name = stringResource(category.label)
-                    Text(
-                        text = if (selected) "$name · ${category.count}" else name,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = selected,
+                    borderColor = onHero.copy(alpha = 0.38f),
+                    selectedBorderColor = Color.Transparent
+                )
             )
         }
     }
@@ -86,11 +91,22 @@ private fun AlertCategoryRowPreview() {
         Surface(color = MaterialTheme.colorScheme.primaryContainer) {
             AlertCategoryRow(
                 selectedFilter = AlertFilter.ALL,
-                totalCount = 12,
-                lostCount = 8,
-                foundCount = 4,
-                adoptionCount = 3,
-                onFilterSelected = {}
+                onFilterSelected = {},
+                contentPadding = PaddingValues(horizontal = 20.dp)
+            )
+        }
+    }
+}
+
+@EponaPreviews
+@Composable
+private fun AlertCategoryRowAdoptionPreview() {
+    EponaTheme(dynamicColor = false) {
+        Surface(color = MaterialTheme.colorScheme.primaryContainer) {
+            AlertCategoryRow(
+                selectedFilter = AlertFilter.ADOPTION,
+                onFilterSelected = {},
+                contentPadding = PaddingValues(horizontal = 20.dp)
             )
         }
     }
