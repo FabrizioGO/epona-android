@@ -10,11 +10,13 @@ sealed interface HomeEvent {
     data object CreateAlertClicked : HomeEvent
     data object ViewMapClicked : HomeEvent
     data class AlertClicked(val alertId: String) : HomeEvent
+    data class AdoptionClicked(val postId: String) : HomeEvent
     data object ErrorDismissed : HomeEvent
 }
 
 sealed interface HomeNavigationEvent {
     data class NavigateToDetail(val alertId: String) : HomeNavigationEvent
+    data class NavigateToAdoptionDetail(val postId: String) : HomeNavigationEvent
     data object NavigateToSearch : HomeNavigationEvent
     data object NavigateToNotifications : HomeNavigationEvent
     data object NavigateToCreateAlert : HomeNavigationEvent

@@ -115,3 +115,59 @@ fun InSafeHandsBadge(modifier: Modifier = Modifier) {
             .padding(horizontal = 10.dp, vertical = 3.dp)
     )
 }
+
+/** Type badge for adoption posts; the counterpart of [AlertTypeBadge] for LOST / FOUND. */
+@Composable
+fun AdoptionBadge(modifier: Modifier = Modifier) {
+    val extended = MaterialTheme.extendedColors
+    Text(
+        text = stringResource(R.string.adoption_badge).uppercase(),
+        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+        color = extended.onAdoptionContainer,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .background(extended.adoptionContainer)
+            .padding(horizontal = 10.dp, vertical = 3.dp)
+    )
+}
+
+/** Shown on a post its owner has marked as adopted. */
+@Composable
+fun AdoptedStatusBadge(modifier: Modifier = Modifier) {
+    val extended = MaterialTheme.extendedColors
+    Text(
+        text = stringResource(R.string.adoption_status_adopted).uppercase(),
+        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+        color = extended.onFoundContainer,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.small)
+            .background(extended.foundContainer)
+            .padding(horizontal = 10.dp, vertical = 3.dp)
+    )
+}
+
+/** Adoption fee, or "Free" when the post carries no price. */
+@Composable
+fun AdoptionPriceBadge(
+    price: Double?,
+    modifier: Modifier = Modifier
+) {
+    val text = if (price == null || price <= 0.0) {
+        stringResource(R.string.adoption_price_free)
+    } else {
+        stringResource(R.string.adoption_price_amount, formatAdoptionPrice(price))
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+        color = MaterialTheme.extendedColors.onRewardContainer,
+        modifier = modifier
+            .clip(MaterialTheme.shapes.medium)
+            .background(MaterialTheme.extendedColors.rewardContainer)
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    )
+}
+
+/** "25" for whole amounts, "25.50" otherwise. */
+fun formatAdoptionPrice(price: Double): String =
+    if (price % 1.0 == 0.0) price.toLong().toString() else String.format(java.util.Locale.getDefault(), "%.2f", price)

@@ -22,6 +22,10 @@ import com.fabriziogo.epona.core.ui.navigation.popBackStackWithLocation
 import com.fabriziogo.epona.core.ui.navigation.popBackStackWithMessage
 import com.fabriziogo.epona.feature.alert.navigation.CREATE_ALERT_ROUTE
 import com.fabriziogo.epona.feature.alert.navigation.alertScreens
+import com.fabriziogo.epona.feature.adoption.navigation.ADOPTION_CREATE_ROUTE
+import com.fabriziogo.epona.feature.adoption.navigation.adoptionScreens
+import com.fabriziogo.epona.feature.adoption.navigation.navigateToAdoptionDetail
+import com.fabriziogo.epona.feature.adoption.navigation.navigateToCreateAdoption
 import com.fabriziogo.epona.feature.alert.navigation.navigateToCreateAlert
 import com.fabriziogo.epona.feature.auth.navigation.AUTH_GRAPH_ROUTE
 import com.fabriziogo.epona.feature.auth.navigation.authGraph
@@ -111,6 +115,9 @@ fun EponaNavHost(
 
         // ---- Home ----
         homeScreen(
+            onNavigateToAdoptionDetail = { postId ->
+                navController.navigateToAdoptionDetail(postId)
+            },
             onNavigateToDetail = { alertId ->
                 navController.navigateToDetail(alertId)
             },
@@ -192,6 +199,11 @@ fun EponaNavHost(
                 navController.navigateToAddPet()
             },
             onNavigateToPickLocation = { navController.navigateToPickLocation(it) },
+            onNavigateToCreateAdoption = {
+                navController.navigateToCreateAdoption(
+                    navOptions { popUpTo(CREATE_ALERT_ROUTE) { inclusive = true } }
+                )
+            },
             onNavigateToSuccess = { alertId ->
                 navController.navigateToDetail(
                     alertId,
@@ -209,6 +221,19 @@ fun EponaNavHost(
                     popUpTo(0) { inclusive = true }
                 }
             }
+        )
+
+        // ---- Adoption ----
+        adoptionScreens(
+            onNavigateBack = { navController.popBackStack() },
+            onNavigateToDetail = { postId ->
+                navController.navigateToAdoptionDetail(
+                    postId,
+                    navOptions { popUpTo(ADOPTION_CREATE_ROUTE) { inclusive = true } }
+                )
+            },
+            onShare = onShareAlert,
+            onDialPhone = onDialPhone
         )
 
         // ---- Sighting ----
@@ -229,6 +254,9 @@ fun EponaNavHost(
 
         // ---- My Alerts ----
         myAlertsScreen(
+            onNavigateToAdoptionDetail = { postId ->
+                navController.navigateToAdoptionDetail(postId)
+            },
             onNavigateBack = { navController.popBackStack() },
             onNavigateToDetail = { alertId ->
                 navController.navigateToDetail(alertId)

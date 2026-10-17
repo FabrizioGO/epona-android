@@ -13,9 +13,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.fabriziogo.epona.core.ui.layout.contentGutter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,12 +43,14 @@ import com.fabriziogo.epona.core.ui.components.EmptyState
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.components.FullScreenProgress
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
+import com.fabriziogo.epona.feature.profile.myalerts.components.MyAdoptionCard
 import com.fabriziogo.epona.feature.profile.myalerts.components.MyAlertCard
 
 @Composable
 fun MyAlertsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToAdoptionDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyAlertsViewModel = hiltViewModel()
 ) {
@@ -54,6 +60,7 @@ fun MyAlertsScreen(
         state = state,
         onNavigateBack = onNavigateBack,
         onNavigateToDetail = onNavigateToDetail,
+        onNavigateToAdoptionDetail = onNavigateToAdoptionDetail,
         onErrorDismissed = viewModel::onErrorDismissed,
         modifier = modifier
     )
@@ -65,6 +72,7 @@ internal fun MyAlertsContent(
     state: MyAlertsUiState,
     onNavigateBack: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToAdoptionDetail: (String) -> Unit,
     onErrorDismissed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -98,7 +106,7 @@ internal fun MyAlertsContent(
                 FullScreenProgress(modifier = Modifier.padding(padding))
             }
 
-            state.alerts.isEmpty() -> {
+            state.alerts.isEmpty() && state.adoptionPosts.isEmpty() -> {
                 EmptyState(
                     icon = Icons.Outlined.Campaign,
                     title = stringResource(R.string.my_alerts_empty_title),
@@ -118,6 +126,13 @@ internal fun MyAlertsContent(
                     ),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+                    val hasBoth = state.alerts.isNotEmpty() && state.adoptionPosts.isNotEmpty()
+
+                    if (hasBoth) {
+                        item(key = "alerts_header") {
+                            SectionHeader(stringResource(R.string.my_alerts_section_alerts))
+                        }
+                    }
                     items(
                         items = state.alerts,
                         key = { it.alert.id }
@@ -127,6 +142,24 @@ internal fun MyAlertsContent(
                             alertWithDetails = item,
                             onClick = { onNavigateToDetail(item.alert.id) }
                         )
+                    }
+
+                    if (state.adoptionPosts.isNotEmpty()) {
+                        if (hasBoth) {
+                            item(key = "adoption_header") {
+                                SectionHeader(stringResource(R.string.my_alerts_section_adoption))
+                            }
+                        }
+                        items(
+                            items = state.adoptionPosts,
+                            key = { "adoption_${it.post.id}" }
+                        ) { item ->
+                            MyAdoptionCard(
+                                modifier = Modifier.animateItem(),
+                                item = item,
+                                onClick = { onNavigateToAdoptionDetail(item.post.id) }
+                            )
+                        }
                     }
                 }
             }
@@ -169,6 +202,7 @@ private fun MyAlertsContentLoadingPreview() {
             state = MyAlertsUiState(isLoading = true),
             onNavigateBack = {},
             onNavigateToDetail = {},
+            onNavigateToAdoptionDetail = {},
             onErrorDismissed = {}
         )
     }
@@ -182,6 +216,7 @@ private fun MyAlertsContentEmptyPreview() {
             state = MyAlertsUiState(isLoading = false),
             onNavigateBack = {},
             onNavigateToDetail = {},
+            onNavigateToAdoptionDetail = {},
             onErrorDismissed = {}
         )
     }
@@ -195,7 +230,20 @@ private fun MyAlertsContentListPreview() {
             state = MyAlertsUiState(isLoading = false, alerts = previewAlerts),
             onNavigateBack = {},
             onNavigateToDetail = {},
+            onNavigateToAdoptionDetail = {},
             onErrorDismissed = {}
         )
     }
+}
+
+@Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .semantics { heading() }
+    )
 }

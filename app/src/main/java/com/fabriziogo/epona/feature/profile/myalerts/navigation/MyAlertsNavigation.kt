@@ -14,12 +14,14 @@ fun NavController.navigateToMyAlerts(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.myAlertsScreen(
     onNavigateBack: () -> Unit,
-    onNavigateToDetail: (String) -> Unit
+    onNavigateToDetail: (String) -> Unit,
+    onNavigateToAdoptionDetail: (String) -> Unit
 ) {
     composable(route = MY_ALERTS_ROUTE) {
         MyAlertsScreen(
             onNavigateBack = onNavigateBack,
-            onNavigateToDetail = onNavigateToDetail
+            onNavigateToDetail = onNavigateToDetail,
+            onNavigateToAdoptionDetail = onNavigateToAdoptionDetail
         )
     }
 }

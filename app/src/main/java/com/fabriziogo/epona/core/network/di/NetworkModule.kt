@@ -1,6 +1,7 @@
 package com.fabriziogo.epona.core.network.di
 
 import com.fabriziogo.epona.core.network.SupabaseProvider
+import com.fabriziogo.epona.core.network.service.AdoptionService
 import com.fabriziogo.epona.core.network.service.AlertService
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.NotificationService
@@ -41,6 +42,12 @@ object NetworkModule {
     fun providePetService(
         supabase: SupabaseProvider
     ): PetService = PetService(supabase)
+
+    @Provides
+    @Singleton
+    fun provideAdoptionService(
+        supabase: SupabaseProvider
+    ): AdoptionService = AdoptionService(supabase)
 
     @Provides
     @Singleton

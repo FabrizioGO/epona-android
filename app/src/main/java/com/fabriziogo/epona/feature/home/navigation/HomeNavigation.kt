@@ -14,6 +14,7 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.homeScreen(
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToAdoptionDetail: (String) -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToCreateAlert: () -> Unit,
@@ -22,6 +23,7 @@ fun NavGraphBuilder.homeScreen(
     composable(route = HOME_ROUTE) {
         HomeScreen(
             onNavigateToDetail = onNavigateToDetail,
+            onNavigateToAdoptionDetail = onNavigateToAdoptionDetail,
             onNavigateToSearch = onNavigateToSearch,
             onNavigateToNotifications = onNavigateToNotifications,
             onNavigateToCreateAlert = onNavigateToCreateAlert,

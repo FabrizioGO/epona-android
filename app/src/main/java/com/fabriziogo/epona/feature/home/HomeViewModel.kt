@@ -3,8 +3,10 @@ package com.fabriziogo.epona.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.AlertType
+import com.fabriziogo.epona.core.domain.model.AdoptionPostWithOwner
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.Location
+import com.fabriziogo.epona.core.domain.usecase.adoption.GetAdoptionPostsUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.GetNearbyAlertsUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ObserveNearbyAlertsUseCase
 import com.fabriziogo.epona.core.domain.usecase.auth.GetCurrentUserUseCase
@@ -28,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getNearbyAlerts: GetNearbyAlertsUseCase,
+    private val getAdoptionPosts: GetAdoptionPostsUseCase,
     private val observeNearbyAlerts: ObserveNearbyAlertsUseCase,
     private val getCurrentLocation: GetCurrentLocationUseCase,
     private val calculateDistance: CalculateDistanceUseCase,
@@ -67,6 +70,7 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.CreateAlertClicked -> emitNav(HomeNavigationEvent.NavigateToCreateAlert)
             is HomeEvent.ViewMapClicked -> emitNav(HomeNavigationEvent.NavigateToMap)
             is HomeEvent.AlertClicked -> emitNav(HomeNavigationEvent.NavigateToDetail(event.alertId))
+            is HomeEvent.AdoptionClicked -> emitNav(HomeNavigationEvent.NavigateToAdoptionDetail(event.postId))
             is HomeEvent.ErrorDismissed -> _state.update { it.copy(error = null) }
         }
     }
@@ -96,6 +100,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadInitialData() {
+        // Independent of location: adoption posts have none, so they load in parallel.
+        viewModelScope.launch { fetchAdoptionPosts() }
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, error = null) }
 
@@ -113,6 +120,7 @@ class HomeViewModel @Inject constructor(
     private fun refreshAlerts() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
+            fetchAdoptionPosts()
             // Re-resolve on every refresh: the device may have moved since the last fetch.
             val location = resolveLocation()
             _state.update { it.copy(userLocation = location) }
@@ -216,8 +224,54 @@ class HomeViewModel @Inject constructor(
         _state.update {
             it.copy(
                 searchQuery = query,
-                filteredAlerts = applyFilters(it.alerts, it.selectedFilter, query)
+                filteredAlerts = applyFilters(it.alerts, it.selectedFilter, query),
+                filteredAdoptionPosts = filterAdoptionPosts(it.adoptionPosts, query)
             )
+        }
+    }
+
+    /**
+     * A failure here stays quiet unless it is the only thing on screen: the lost/found feed
+     * has its own error handling, and a flaky adoption request should not cover it with a
+     * snackbar. The empty state tells the user nothing came back.
+     */
+    private suspend fun fetchAdoptionPosts() {
+        getAdoptionPosts()
+            .onSuccess { posts ->
+                _state.update {
+                    it.copy(
+                        isLoadingAdoption = false,
+                        adoptionPosts = posts,
+                        filteredAdoptionPosts = filterAdoptionPosts(posts, it.searchQuery)
+                    )
+                }
+            }
+            .onFailure { err ->
+                _state.update {
+                    it.copy(
+                        isLoadingAdoption = false,
+                        error = if (it.selectedFilter == AlertFilter.ADOPTION) {
+                            err.message ?: "Failed to load adoption posts"
+                        } else it.error
+                    )
+                }
+            }
+    }
+
+    private fun filterAdoptionPosts(
+        posts: List<AdoptionPostWithOwner>,
+        query: String
+    ): List<AdoptionPostWithOwner> {
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) return posts
+
+        return posts.filter { item ->
+            listOfNotNull(
+                item.post.title,
+                item.post.petName,
+                item.post.breed,
+                item.post.species.value
+            ).any { it.contains(trimmedQuery, ignoreCase = true) }
         }
     }
 
@@ -230,6 +284,8 @@ class HomeViewModel @Inject constructor(
             AlertFilter.ALL -> alerts
             AlertFilter.LOST -> alerts.filter { it.alert.type == AlertType.LOST }
             AlertFilter.FOUND -> alerts.filter { it.alert.type == AlertType.FOUND }
+            // Adoption posts live in their own list; no alert belongs to this segment.
+            AlertFilter.ADOPTION -> emptyList()
         }
 
         val trimmedQuery = query.trim()

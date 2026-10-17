@@ -8,7 +8,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 /**
- * Lost / Found / Reward roles that Material's scheme has no slot for. Each color has an `on*`
+ * Lost / Found / Reward / Adoption roles that Material's scheme has no slot for. Each color has an `on*`
  * partner and a light and a dark set, all checked to at least 4.5:1 for their pairings, so
  * unlike fixed constants they stay legible against dark surfaces.
  *
@@ -27,7 +27,11 @@ data class ExtendedColors(
     val reward: Color,
     val onReward: Color,
     val rewardContainer: Color,
-    val onRewardContainer: Color
+    val onRewardContainer: Color,
+    val adoption: Color,
+    val onAdoption: Color,
+    val adoptionContainer: Color,
+    val onAdoptionContainer: Color
 )
 
 val LightExtendedColors = ExtendedColors(
@@ -42,7 +46,11 @@ val LightExtendedColors = ExtendedColors(
     reward = Color(0xFFB45309),
     onReward = Color.White,
     rewardContainer = Color(0xFFFEF3C7),
-    onRewardContainer = Color(0xFF92400E)
+    onRewardContainer = Color(0xFF92400E),
+    adoption = Color(0xFF6D28D9),
+    onAdoption = Color.White,
+    adoptionContainer = Color(0xFFEDE9FE),
+    onAdoptionContainer = Color(0xFF5B21B6)
 )
 
 val DarkExtendedColors = ExtendedColors(
@@ -57,7 +65,11 @@ val DarkExtendedColors = ExtendedColors(
     reward = Color(0xFFFBBF24),
     onReward = Color(0xFF451A03),
     rewardContainer = Color(0xFF78350F),
-    onRewardContainer = Color(0xFFFDE68A)
+    onRewardContainer = Color(0xFFFDE68A),
+    adoption = Color(0xFFA78BFA),
+    onAdoption = Color(0xFF2E1065),
+    adoptionContainer = Color(0xFF4C1D95),
+    onAdoptionContainer = Color(0xFFDDD6FE)
 )
 
 val LocalExtendedColors = staticCompositionLocalOf { LightExtendedColors }

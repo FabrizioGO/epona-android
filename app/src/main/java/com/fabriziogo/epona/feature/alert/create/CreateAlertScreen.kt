@@ -66,6 +66,7 @@ import kotlinx.coroutines.launch
 fun CreateAlertScreen(
     onNavigateBack: () -> Unit,
     onNavigateToAddPet: () -> Unit,
+    onNavigateToCreateAdoption: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
     onNavigateToMatch: (String) -> Unit,
     onNavigateToPickLocation: (Location?) -> Unit,
@@ -119,6 +120,7 @@ fun CreateAlertScreen(
             when (event) {
                 CreateAlertNavEvent.NavigateBack -> onNavigateBack()
                 CreateAlertNavEvent.NavigateToAddPet -> onNavigateToAddPet()
+                CreateAlertNavEvent.NavigateToCreateAdoption -> onNavigateToCreateAdoption()
                 is CreateAlertNavEvent.NavigateToSuccess ->
                     onNavigateToSuccess(event.alertId)
                 is CreateAlertNavEvent.NavigateToMatch ->
@@ -221,6 +223,9 @@ fun CreateAlertScreen(
                         selectedType = state.alertType,
                         onTypeSelected = {
                             viewModel.onEvent(CreateAlertEvent.AlertTypeSelected(it))
+                        },
+                        onAdoptionClick = {
+                            viewModel.onEvent(CreateAlertEvent.AdoptionSelected)
                         }
                     )
                     2 -> if (state.alertType == AlertType.LOST) {

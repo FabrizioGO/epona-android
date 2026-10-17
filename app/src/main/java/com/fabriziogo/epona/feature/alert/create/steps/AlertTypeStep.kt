@@ -32,6 +32,7 @@ import com.fabriziogo.epona.core.domain.model.AlertType
 fun AlertTypeStep(
     selectedType: AlertType,
     onTypeSelected: (AlertType) -> Unit,
+    onAdoptionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
@@ -103,6 +104,51 @@ fun AlertTypeStep(
                         )
                     }
                 }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+        AdoptionEntryCard(onClick = onAdoptionClick)
+    }
+}
+
+/**
+ * Not a third [AlertType]: an adoption post has no location or pet record, so it leaves
+ * this wizard for its own form instead of selecting a type here.
+ */
+@Composable
+private fun AdoptionEntryCard(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerLow
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "🏡",
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier.clearAndSetSemantics {}
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.create_type_adoption),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.create_type_adoption_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
