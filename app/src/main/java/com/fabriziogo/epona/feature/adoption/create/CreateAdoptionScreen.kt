@@ -237,7 +237,6 @@ fun CreateAdoptionContent(
                 value = state.petName,
                 onValueChange = { onEvent(CreateAdoptionEvent.PetNameChanged(it)) },
                 label = stringResource(R.string.adoption_field_name),
-                supportingText = stringResource(R.string.adoption_field_name_hint),
                 modifier = Modifier.fillMaxWidth()
             )
 

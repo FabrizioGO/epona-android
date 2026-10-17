@@ -146,7 +146,7 @@ fun AdoptedStatusBadge(modifier: Modifier = Modifier) {
     )
 }
 
-/** Adoption fee, or "Free" when the post carries no price. */
+/** Adoption fee, or "Free" when the post carries no price (the home feed card hides the chip instead). */
 @Composable
 fun AdoptionPriceBadge(
     price: Double?,

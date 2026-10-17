@@ -97,12 +97,15 @@ fun AdoptionGridCard(
                 .padding(8.dp)
         )
 
-        AdoptionPriceBadge(
-            price = post.price,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp)
-        )
+        // No price means free, and a "Free" chip on most cards is noise; only priced posts get one.
+        if (post.price != null && post.price > 0.0) {
+            AdoptionPriceBadge(
+                price = post.price,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            )
+        }
 
         Column(
             modifier = Modifier

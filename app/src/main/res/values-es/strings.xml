@@ -457,7 +457,6 @@
     <string name="adoption_title_required">Escribe un título de al menos 3 caracteres</string>
     <string name="adoption_section_about">Sobre la(s) mascota(s)</string>
     <string name="adoption_field_name">Nombre (opcional)</string>
-    <string name="adoption_field_name_hint">Déjalo vacío si son varias mascotas</string>
     <string name="adoption_field_age">Edad</string>
     <string name="adoption_field_description">Descripción (opcional)</string>
     <string name="adoption_field_description_placeholder">Salud, carácter, vacunas, cuántos hay disponibles…</string>

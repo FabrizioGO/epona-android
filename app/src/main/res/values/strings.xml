@@ -506,7 +506,6 @@
     <string name="adoption_title_required">Enter a title of at least 3 characters</string>
     <string name="adoption_section_about">About the pet(s)</string>
     <string name="adoption_field_name">Name (optional)</string>
-    <string name="adoption_field_name_hint">Leave empty if there are several pets</string>
     <string name="adoption_field_age">Age</string>
     <string name="adoption_field_description">Description (optional)</string>
     <string name="adoption_field_description_placeholder">Health, temperament, vaccines, how many are available…</string>
