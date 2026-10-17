@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.adoption.detail
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.AdoptionPost
 import com.fabriziogo.epona.core.domain.model.AdoptionPostWithOwner
 import com.fabriziogo.epona.core.domain.model.AdoptionStatus
@@ -11,7 +13,7 @@ data class AdoptionDetailUiState(
     val isUpdating: Boolean = false,
     val showMarkAdoptedDialog: Boolean = false,
     val showDeleteDialog: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 ) {
     val isAdopted: Boolean get() = detail?.post?.status == AdoptionStatus.ADOPTED
 }

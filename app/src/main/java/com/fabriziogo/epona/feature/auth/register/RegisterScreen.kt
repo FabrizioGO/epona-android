@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.register
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -91,12 +92,7 @@ private fun RegisterContent(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            onEvent(RegisterEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { onEvent(RegisterEvent.ErrorDismissed) }
 
     state.pendingConfirmationEmail?.let { email ->
         AlertDialog(
@@ -162,7 +158,7 @@ private fun RegisterContent(
                         value = state.firstName,
                         onValueChange = { onEvent(RegisterEvent.FirstNameChanged(it)) },
                         label = stringResource(R.string.auth_first_name),
-                        errorText = state.firstNameError,
+                        errorText = state.firstNameError?.let { stringResource(it) },
                         imeAction = ImeAction.Next,
                         modifier = Modifier.weight(1f)
                     )
@@ -170,7 +166,7 @@ private fun RegisterContent(
                         value = state.lastName,
                         onValueChange = { onEvent(RegisterEvent.LastNameChanged(it)) },
                         label = stringResource(R.string.auth_last_name),
-                        errorText = state.lastNameError,
+                        errorText = state.lastNameError?.let { stringResource(it) },
                         imeAction = ImeAction.Next,
                         modifier = Modifier.weight(1f)
                     )
@@ -184,7 +180,7 @@ private fun RegisterContent(
                     onValueChange = { onEvent(RegisterEvent.EmailChanged(it)) },
                     label = stringResource(R.string.auth_email),
                     placeholder = stringResource(R.string.auth_email_placeholder),
-                    errorText = state.emailError,
+                    errorText = state.emailError?.let { stringResource(it) },
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next,
                     modifier = Modifier.fillMaxWidth()
@@ -197,7 +193,7 @@ private fun RegisterContent(
                     value = state.password,
                     onValueChange = { onEvent(RegisterEvent.PasswordChanged(it)) },
                     label = stringResource(R.string.auth_password),
-                    errorText = state.passwordError,
+                    errorText = state.passwordError?.let { stringResource(it) },
                     imeAction = ImeAction.Next
                 )
 
@@ -208,7 +204,7 @@ private fun RegisterContent(
                     value = state.confirmPassword,
                     onValueChange = { onEvent(RegisterEvent.ConfirmPasswordChanged(it)) },
                     label = stringResource(R.string.auth_confirm_password),
-                    errorText = state.confirmPasswordError,
+                    errorText = state.confirmPasswordError?.let { stringResource(it) },
                     imeAction = ImeAction.Done,
                     onImeAction = { onEvent(RegisterEvent.SignUpClicked) }
                 )

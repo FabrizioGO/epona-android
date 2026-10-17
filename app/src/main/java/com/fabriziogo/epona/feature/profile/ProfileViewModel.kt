@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -68,7 +70,7 @@ class ProfileViewModel @Inject constructor(
                 }
                 .onFailure { err ->
                     _state.update {
-                        it.copy(isLoading = false, error = err.message)
+                        it.copy(isLoading = false, error = uiTextOf(err.message, R.string.error_generic))
                     }
                 }
 
@@ -96,7 +98,7 @@ class ProfileViewModel @Inject constructor(
             val local = imageProcessor.process(source).getOrElse { err ->
                 Timber.e(err, "Profile: avatar processing failed")
                 _state.update {
-                    it.copy(isUploadingAvatar = false, error = AVATAR_PROCESS_ERROR)
+                    it.copy(isUploadingAvatar = false, error = uiTextOf(R.string.photo_error_process))
                 }
                 return@launch
             }
@@ -118,7 +120,7 @@ class ProfileViewModel @Inject constructor(
                         it.copy(
                             avatarPreviewUri = null,
                             isUploadingAvatar = false,
-                            error = err.message ?: AVATAR_UPLOAD_ERROR
+                            error = uiTextOf(err.message, R.string.error_update_photo)
                         )
                     }
                 }
@@ -137,7 +139,7 @@ class ProfileViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isSigningOut = false,
-                            error = err.message ?: "Failed to sign out"
+                            error = uiTextOf(err.message, R.string.error_sign_out)
                         )
                     }
                 }
@@ -156,7 +158,7 @@ class ProfileViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isDeletingAccount = false,
-                            error = err.message ?: "Failed to delete account"
+                            error = uiTextOf(err.message, R.string.error_delete_account)
                         )
                     }
                 }
@@ -167,8 +169,4 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch { _navEvents.send(event) }
     }
 
-    private companion object {
-        const val AVATAR_PROCESS_ERROR = "That photo could not be opened. Try another one."
-        const val AVATAR_UPLOAD_ERROR = "Could not update your photo. Please try again."
-    }
 }

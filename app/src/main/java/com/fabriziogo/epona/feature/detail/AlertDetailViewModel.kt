@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -124,7 +126,7 @@ class AlertDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            error = err.message ?: "Failed to load alert"
+                            error = uiTextOf(err.message, R.string.error_load_alert)
                         )
                     }
                 }
@@ -190,7 +192,7 @@ class AlertDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isResolving = false,
-                            error = err.message ?: "Failed to resolve alert"
+                            error = uiTextOf(err.message, R.string.error_resolve_alert)
                         )
                     }
                 }
@@ -209,7 +211,7 @@ class AlertDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isDeleting = false,
-                            error = err.message ?: "Failed to delete alert"
+                            error = uiTextOf(err.message, R.string.error_delete_alert)
                         )
                     }
                 }
@@ -225,7 +227,7 @@ class AlertDetailViewModel @Inject constructor(
                         it.copy(
                             isSubmittingFlag = false,
                             showFlagDialog = false,
-                            flagSuccessMessage = "Thanks, we'll review it"
+                            flagSuccessMessage = uiTextOf(R.string.detail_report_thanks)
                         )
                     }
                 }
@@ -233,7 +235,7 @@ class AlertDetailViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isSubmittingFlag = false,
-                            error = err.message ?: "Failed to submit report"
+                            error = uiTextOf(err.message, R.string.error_submit_report)
                         )
                     }
                 }
@@ -252,7 +254,7 @@ class AlertDetailViewModel @Inject constructor(
         if (phone != null) {
             emitNav(DetailNavEvent.DialPhone(phone))
         } else {
-            _state.update { it.copy(error = "No contact number available") }
+            _state.update { it.copy(error = uiTextOf(R.string.detail_no_phone)) }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
@@ -107,18 +108,10 @@ fun AlertDetailScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(AlertDetailEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(AlertDetailEvent.ErrorDismissed) }
 
-    LaunchedEffect(state.flagSuccessMessage) {
-        state.flagSuccessMessage?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(AlertDetailEvent.FlagSuccessMessageShown)
-        }
+    ErrorSnackbarEffect(state.flagSuccessMessage, snackbarHostState) {
+        viewModel.onEvent(AlertDetailEvent.FlagSuccessMessageShown)
     }
 
     // Confirmation handed back by the report-sighting screen, which otherwise just pops.

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.forgotpassword
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -80,12 +81,7 @@ fun ForgotPasswordContent(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            onEvent(ForgotPasswordEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { onEvent(ForgotPasswordEvent.ErrorDismissed) }
 
     val (title, subtitle) = when (state.step) {
         ForgotPasswordStep.EnterEmail ->
@@ -138,7 +134,7 @@ private fun EmailStep(
         onValueChange = { onEvent(ForgotPasswordEvent.EmailChanged(it)) },
         label = stringResource(R.string.auth_email),
         placeholder = stringResource(R.string.auth_email_placeholder),
-        errorText = state.emailError,
+        errorText = state.emailError?.let { stringResource(it) },
         keyboardType = KeyboardType.Email,
         imeAction = ImeAction.Done,
         onImeAction = { onEvent(ForgotPasswordEvent.SendCodeClicked) },
@@ -166,7 +162,7 @@ private fun ColumnScope.CodeStep(
         onValueChange = { onEvent(ForgotPasswordEvent.CodeChanged(it)) },
         label = stringResource(R.string.forgot_code_label),
         placeholder = "000000",
-        errorText = state.codeError,
+        errorText = state.codeError?.let { stringResource(it) },
         keyboardType = KeyboardType.NumberPassword,
         imeAction = ImeAction.Done,
         onImeAction = { onEvent(ForgotPasswordEvent.VerifyCodeClicked) },
@@ -211,7 +207,7 @@ private fun NewPasswordStep(
         value = state.newPassword,
         onValueChange = { onEvent(ForgotPasswordEvent.NewPasswordChanged(it)) },
         label = stringResource(R.string.forgot_new_password_label),
-        errorText = state.newPasswordError,
+        errorText = state.newPasswordError?.let { stringResource(it) },
         imeAction = ImeAction.Next
     )
 
@@ -221,7 +217,7 @@ private fun NewPasswordStep(
         value = state.confirmPassword,
         onValueChange = { onEvent(ForgotPasswordEvent.ConfirmPasswordChanged(it)) },
         label = stringResource(R.string.auth_confirm_password),
-        errorText = state.confirmPasswordError,
+        errorText = state.confirmPasswordError?.let { stringResource(it) },
         imeAction = ImeAction.Done,
         onImeAction = { onEvent(ForgotPasswordEvent.SavePasswordClicked) }
     )

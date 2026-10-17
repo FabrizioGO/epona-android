@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile.settings
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.usecase.auth.GetCurrentUserUseCase
@@ -46,7 +48,7 @@ class SettingsViewModel @Inject constructor(
                 }
                 .onFailure { err ->
                     _state.update {
-                        it.copy(isSaving = false, error = err.message)
+                        it.copy(isSaving = false, error = uiTextOf(err.message, R.string.error_generic))
                     }
                 }
         }

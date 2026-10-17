@@ -2,6 +2,7 @@
 
 package com.fabriziogo.epona.feature.profile.mypets
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -50,12 +51,7 @@ fun MyPetsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onErrorDismissed()
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onErrorDismissed() }
 
     // Confirmation handed back by the add/edit screens, which otherwise just pop.
     LaunchedEffect(confirmationMessage) {

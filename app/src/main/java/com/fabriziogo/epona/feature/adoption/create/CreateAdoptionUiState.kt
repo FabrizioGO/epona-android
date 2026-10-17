@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.adoption.create
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.AgeStage
 import com.fabriziogo.epona.core.domain.model.PetGender
 import com.fabriziogo.epona.core.domain.model.PetSize
@@ -25,7 +27,7 @@ data class CreateAdoptionUiState(
     val isSubmitting: Boolean = false,
     /** Set after the first publish attempt so required-field errors do not show while typing. */
     val showErrors: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 ) {
     val trimmedTitle: String get() = title.trim()
 

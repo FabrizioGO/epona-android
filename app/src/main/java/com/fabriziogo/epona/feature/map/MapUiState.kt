@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.map
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.Location
@@ -21,5 +23,5 @@ data class MapUiState(
     val cameraLat: Double = 0.0,
     val cameraLng: Double = 0.0,
     val cameraZoom: Float = 13f,
-    val error: String? = null
+    val error: UiText? = null
 )

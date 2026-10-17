@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile.mypets
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.Pet
@@ -36,7 +38,7 @@ class MyPetsViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            error = error.message ?: "Could not load your pets"
+                            error = uiTextOf(error.message, R.string.error_load_pets)
                         )
                     }
                 }
@@ -58,7 +60,7 @@ class MyPetsViewModel @Inject constructor(
             _state.update { it.copy(showDeleteDialog = false, petToDelete = null) }
             deletePet(pet.id)
                 .onFailure { err ->
-                    _state.update { it.copy(error = err.message) }
+                    _state.update { it.copy(error = uiTextOf(err.message, R.string.error_generic)) }
                 }
         }
     }

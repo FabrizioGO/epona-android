@@ -2,6 +2,7 @@
 
 package com.fabriziogo.epona.feature.alert.create
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.activity.compose.BackHandler
@@ -130,12 +131,7 @@ fun CreateAlertScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(CreateAlertEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(CreateAlertEvent.ErrorDismissed) }
 
     // Past the first step the user has made choices; leaving should not silently drop them.
     var showDiscardDialog by remember { mutableStateOf(false) }
@@ -304,7 +300,7 @@ fun CreateAlertScreen(
                             address = state.address,
                             description = state.description,
                             isLoadingLocation = state.isLoadingLocation,
-                            locationError = state.locationError,
+                            locationError = state.locationError?.let { stringResource(it) },
                             onUseCurrentLocation = {
                                 if (locationPermission.isGranted) {
                                     viewModel.onEvent(CreateAlertEvent.UseCurrentLocation)
@@ -325,7 +321,7 @@ fun CreateAlertScreen(
                         4 -> MatchesStep(
                             matches = state.matches,
                             isLoading = state.isLoadingMatches,
-                            error = state.matchesError,
+                            error = state.matchesError?.asString(),
                             lookingFor = if (state.alertType == AlertType.LOST) {
                                 AlertType.FOUND
                             } else {

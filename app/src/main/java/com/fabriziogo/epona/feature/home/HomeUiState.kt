@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.home
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.AdoptionPostWithOwner
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
@@ -24,7 +26,7 @@ data class HomeUiState(
     val userName: String = "",
     val userAvatar: String? = null,
     val unreadNotificationCount: Int = 0,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 enum class AlertFilter(val label: String) {

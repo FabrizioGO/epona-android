@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.map.pick
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -123,7 +125,7 @@ class PickLocationViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLocating = false,
-                            error = "Could not get location"
+                            error = uiTextOf(R.string.error_location_unavailable)
                         )
                     }
                 }

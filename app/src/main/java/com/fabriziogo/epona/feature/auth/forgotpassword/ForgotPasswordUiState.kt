@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.auth.forgotpassword
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 enum class ForgotPasswordStep { EnterEmail, EnterCode, NewPassword }
 
 data class ForgotPasswordUiState(
@@ -8,11 +10,11 @@ data class ForgotPasswordUiState(
     val code: String = "",
     val newPassword: String = "",
     val confirmPassword: String = "",
-    val emailError: String? = null,
-    val codeError: String? = null,
-    val newPasswordError: String? = null,
-    val confirmPasswordError: String? = null,
+    val emailError: Int? = null,
+    val codeError: Int? = null,
+    val newPasswordError: Int? = null,
+    val confirmPasswordError: Int? = null,
     val isLoading: Boolean = false,
     val resendCooldownSeconds: Int = 0,
-    val error: String? = null
+    val error: UiText? = null
 )

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,12 +78,7 @@ fun EditPetScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(EditPetEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(EditPetEvent.ErrorDismissed) }
 
     // A failed Save puts focus on the first invalid field; focusing scrolls it into view.
     val nameFocus = remember { FocusRequester() }

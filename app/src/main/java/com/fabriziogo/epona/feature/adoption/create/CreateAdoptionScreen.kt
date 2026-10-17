@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.adoption.create
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -86,12 +87,7 @@ fun CreateAdoptionScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(CreateAdoptionEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(CreateAdoptionEvent.ErrorDismissed) }
 
     var showDiscardDialog by remember { mutableStateOf(false) }
     val requestClose = {
@@ -326,7 +322,7 @@ private fun CreateAdoptionContentPreview() {
                 species = Species.DOG,
                 ageStage = AgeStage.BABY,
                 price = "50",
-                phone = "+1 555 000 0000",
+                phone = "0000-000-0000",
                 photos = listOf(PhotoItem.Remote("https://example.com/a.jpg"))
             ),
             snackbarHostState = remember { SnackbarHostState() },

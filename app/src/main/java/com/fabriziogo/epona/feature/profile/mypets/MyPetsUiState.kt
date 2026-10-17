@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile.mypets
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.Pet
 
 data class MyPetsUiState(
@@ -7,5 +9,5 @@ data class MyPetsUiState(
     val pets: List<Pet> = emptyList(),
     val showDeleteDialog: Boolean = false,
     val petToDelete: Pet? = null,
-    val error: String? = null
+    val error: UiText? = null
 )

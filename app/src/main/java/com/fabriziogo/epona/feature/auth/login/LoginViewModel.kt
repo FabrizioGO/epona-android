@@ -1,8 +1,12 @@
 package com.fabriziogo.epona.feature.auth.login
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.usecase.auth.SignInUseCase
+import com.fabriziogo.epona.core.ui.text.UiText
+import com.fabriziogo.epona.core.ui.text.uiTextOf
 import com.fabriziogo.epona.core.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -37,7 +41,7 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.SignInClicked -> signInWithEmail()
             is LoginEvent.GoogleSignInResult -> signInWithGoogle(event.idToken)
             is LoginEvent.GoogleSignInFailed -> {
-                _state.update { it.copy(isGoogleLoading = false, error = "Google sign-in failed") }
+                _state.update { it.copy(isGoogleLoading = false, error = uiTextOf(R.string.error_google_sign_in)) }
             }
             is LoginEvent.NavigateToRegister -> {
                 viewModelScope.launch { _navEvents.send(LoginNavEvent.NavigateToRegister) }
@@ -103,49 +107,53 @@ class LoginViewModel @Inject constructor(
 }
 
 // Shared validation & error mapping
-internal fun validateEmail(email: String): String? = when {
-    email.isBlank() -> "Email is required"
-    !email.contains("@") || !email.contains(".") -> "Enter a valid email"
+@StringRes
+internal fun validateEmail(email: String): Int? = when {
+    email.isBlank() -> R.string.error_email_required
+    !email.contains("@") || !email.contains(".") -> R.string.error_email_invalid
     else -> null
 }
 
-internal fun validatePassword(password: String): String? = when {
-    password.isBlank() -> "Password is required"
-    password.length < 6 -> "Must be at least 6 characters"
+@StringRes
+internal fun validatePassword(password: String): Int? = when {
+    password.isBlank() -> R.string.error_password_required
+    password.length < 6 -> R.string.error_password_short
     else -> null
 }
 
 // For passwords being set (sign-up, reset). Matches the project's server-side
 // minimum_password_length; sign-in keeps the old 6 so existing accounts still work.
-internal fun validateNewPassword(password: String): String? = when {
-    password.isBlank() -> "Password is required"
-    password.length < 8 -> "Must be at least 8 characters"
+@StringRes
+internal fun validateNewPassword(password: String): Int? = when {
+    password.isBlank() -> R.string.error_password_required
+    password.length < 8 -> R.string.error_password_short_new
     else -> null
 }
 
-internal fun validateDisplayName(name: String): String? = when {
-    name.isBlank() -> "Name is required"
-    name.length < 2 -> "Must be at least 2 characters"
+@StringRes
+internal fun validateDisplayName(name: String): Int? = when {
+    name.isBlank() -> R.string.error_name_required
+    name.length < 2 -> R.string.error_name_short
     else -> null
 }
 
-internal fun mapAuthError(err: Throwable): String = when {
-    err.message?.contains("invalid_credentials", true) == true ->
-        "Incorrect email or password"
-    err.message?.contains("email_not_confirmed", true) == true ->
-        "Please verify your email first"
-    err.message?.contains("user_already_exists", true) == true ->
-        "An account with this email already exists"
-    err.message?.contains("weak_password", true) == true ->
-        "Password is too weak"
-    err.message?.contains("otp_expired", true) == true ||
-        err.message?.contains("token has expired or is invalid", true) == true ->
-        "Code is invalid or has expired"
-    err.message?.contains("same_password", true) == true ->
-        "New password must be different from the old one"
-    err.message?.contains("rate_limit", true) == true ->
-        "Too many requests. Please wait a moment."
-    err.message?.contains("network", true) == true ->
-        "No internet connection. Please try again."
-    else -> err.message ?: "Something went wrong. Please try again."
+/**
+ * Known backend codes become localized text; anything else keeps the server's own message,
+ * with a generic localized fallback when there is none.
+ */
+internal fun mapAuthError(err: Throwable): UiText {
+    val message = err.message
+    fun has(code: String) = message?.contains(code, true) == true
+    return when {
+        has("invalid_credentials") -> uiTextOf(R.string.error_invalid_credentials)
+        has("email_not_confirmed") -> uiTextOf(R.string.error_email_not_confirmed)
+        has("user_already_exists") -> uiTextOf(R.string.error_user_exists)
+        has("weak_password") -> uiTextOf(R.string.error_weak_password)
+        has("otp_expired") || has("token has expired or is invalid") ->
+            uiTextOf(R.string.error_code_invalid)
+        has("same_password") -> uiTextOf(R.string.error_password_same_as_old)
+        has("rate_limit") -> uiTextOf(R.string.error_rate_limited)
+        has("network") -> uiTextOf(R.string.error_network)
+        else -> uiTextOf(message, R.string.error_generic)
+    }
 }

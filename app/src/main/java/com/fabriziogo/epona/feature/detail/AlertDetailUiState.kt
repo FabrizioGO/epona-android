@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 
@@ -16,6 +18,6 @@ data class AlertDetailUiState(
     /** Whether FlagContentDialog is showing, for this alert. */
     val showFlagDialog: Boolean = false,
     val isSubmittingFlag: Boolean = false,
-    val flagSuccessMessage: String? = null,
-    val error: String? = null
+    val flagSuccessMessage: UiText? = null,
+    val error: UiText? = null
 )

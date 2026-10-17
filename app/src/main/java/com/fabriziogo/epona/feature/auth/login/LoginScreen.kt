@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.auth.login
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -89,12 +90,7 @@ fun LoginContent(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            onEvent(LoginEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { onEvent(LoginEvent.ErrorDismissed) }
 
     Scaffold(
         modifier = modifier,
@@ -135,7 +131,7 @@ fun LoginContent(
                     onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
                     label = stringResource(R.string.auth_email),
                     placeholder = stringResource(R.string.auth_email_placeholder),
-                    errorText = state.emailError,
+                    errorText = state.emailError?.let { stringResource(it) },
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next,
                     modifier = Modifier.fillMaxWidth()
@@ -148,7 +144,7 @@ fun LoginContent(
                     value = state.password,
                     onValueChange = { onEvent(LoginEvent.PasswordChanged(it)) },
                     label = stringResource(R.string.auth_password),
-                    errorText = state.passwordError,
+                    errorText = state.passwordError?.let { stringResource(it) },
                     imeAction = ImeAction.Done,
                     onImeAction = { onEvent(LoginEvent.SignInClicked) }
                 )

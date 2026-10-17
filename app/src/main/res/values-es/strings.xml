@@ -487,4 +487,38 @@
     <string name="share_text_adoption">🏡 %1$s — disponible en adopción en Epona. #Epona</string>
     <string name="my_alerts_section_alerts">Alertas</string>
     <string name="my_alerts_section_adoption">Publicaciones en adopción</string>
+
+    <!-- Errors shown from ViewModels (resolved in the screen through UiText) -->
+    <string name="error_password_short_new">Debe tener al menos 8 caracteres</string>
+    <string name="error_code_invalid">El código no es válido o ha caducado</string>
+    <string name="error_code_required">Introduce el código del correo</string>
+    <string name="error_password_same_as_old">La nueva contraseña debe ser distinta de la anterior</string>
+    <string name="error_rate_limited">Demasiadas solicitudes. Espera un momento.</string>
+    <string name="error_google_sign_in">Error al iniciar sesión con Google</string>
+    <string name="error_location_permission_pick_map">Permiso de ubicación denegado: elige la ubicación en el mapa o actívalo en Ajustes.</string>
+    <string name="error_location_permission_set_manually">Permiso de ubicación denegado: indica la ubicación manualmente o actívalo en Ajustes.</string>
+    <string name="error_location_unavailable">No se pudo obtener la ubicación</string>
+    <string name="error_photos_partial">No se pudieron añadir algunas fotos</string>
+    <string name="error_load_alerts">No se pudieron cargar las alertas</string>
+    <string name="error_load_alert">No se pudo cargar la alerta</string>
+    <string name="error_resolve_alert">No se pudo resolver la alerta</string>
+    <string name="error_delete_alert">No se pudo eliminar la alerta</string>
+    <string name="error_publish_alert">No se pudo publicar la alerta</string>
+    <string name="error_submit_report">No se pudo enviar el reporte</string>
+    <string name="error_report_sighting">No se pudo reportar el avistamiento</string>
+    <string name="error_load_pets">No se pudieron cargar tus mascotas</string>
+    <string name="error_load_pet">No se pudo cargar la mascota</string>
+    <string name="error_save_pet">No se pudo guardar la mascota</string>
+    <string name="error_load_nearby_posts">No se pudieron cargar las publicaciones cercanas</string>
+    <string name="error_load_adoption_posts">No se pudieron cargar las publicaciones de adopción</string>
+    <string name="error_load_post">No se pudo cargar la publicación</string>
+    <string name="error_update_post">No se pudo actualizar la publicación</string>
+    <string name="error_delete_post">No se pudo eliminar la publicación</string>
+    <string name="error_publish_post">No se pudo publicar la publicación</string>
+    <string name="error_refresh_notifications">No se pudieron actualizar las notificaciones</string>
+    <string name="error_mark_read">No se pudo marcar como leída</string>
+    <string name="error_sign_out">No se pudo cerrar sesión</string>
+    <string name="error_delete_account">No se pudo eliminar la cuenta</string>
+    <string name="error_update_photo">No se pudo actualizar tu foto. Inténtalo de nuevo.</string>
+    <string name="detail_report_thanks">Gracias, lo revisaremos</string>
 </resources>

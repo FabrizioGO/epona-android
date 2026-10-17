@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.adoption.create
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -86,7 +88,7 @@ class CreateAdoptionViewModel @Inject constructor(
                 it.copy(
                     photos = it.photos + added.map { image -> PhotoItem.Local(image) },
                     isProcessingPhotos = false,
-                    error = if (added.size < wanted.size) PHOTO_ERROR else it.error
+                    error = if (added.size < wanted.size) uiTextOf(R.string.error_photos_partial) else it.error
                 )
             }
         }
@@ -139,14 +141,13 @@ class CreateAdoptionViewModel @Inject constructor(
                 }
                 .onFailure { err ->
                     _state.update {
-                        it.copy(isSubmitting = false, error = err.message ?: "Failed to publish post")
+                        it.copy(isSubmitting = false, error = uiTextOf(err.message, R.string.error_publish_post))
                     }
                 }
         }
     }
 
     private companion object {
-        const val PHOTO_ERROR = "Some photos could not be added"
         const val PRICE_MAX_CHARS = 10
     }
 }

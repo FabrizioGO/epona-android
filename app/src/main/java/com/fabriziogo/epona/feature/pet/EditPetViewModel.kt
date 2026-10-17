@@ -1,5 +1,9 @@
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -43,7 +47,7 @@ data class EditPetUiState(
     val photos: List<PhotoItem> = emptyList(),
     val isProcessingPhotos: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val nameError: Int? = null,
     val ageError: Int? = null,
     /** True while an update is in flight; [isLoading] covers only the initial load. */
@@ -162,13 +166,13 @@ class EditPetViewModel @Inject constructor(
                 }.onFailure { exception ->
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        error = exception.message ?: "Failed to load pet"
+                        error = uiTextOf(exception.message, R.string.error_load_pet)
                     )
                 }
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Failed to load pet"
+                    error = uiTextOf(e.message, R.string.error_load_pet)
                 )
             }
         }
@@ -190,7 +194,7 @@ class EditPetViewModel @Inject constructor(
                 photos = _state.value.photos + added.map { PhotoItem.Local(it) },
                 isProcessingPhotos = false,
                 // One unreadable pick should not sink the rest of the selection.
-                error = if (added.size < wanted.size) PHOTO_ERROR else _state.value.error
+                error = if (added.size < wanted.size) uiTextOf(R.string.error_photos_partial) else _state.value.error
             )
         }
     }
@@ -255,20 +259,17 @@ class EditPetViewModel @Inject constructor(
                     Timber.e(exception, "EditPet: update failed")
                     _state.value = _state.value.copy(
                         isSaving = false,
-                        error = exception.message ?: "Failed to save pet"
+                        error = uiTextOf(exception.message, R.string.error_save_pet)
                     )
                 }
             } catch (e: Exception) {
                 Timber.e(e, "EditPet: update failed")
                 _state.value = _state.value.copy(
                     isSaving = false,
-                    error = e.message ?: "Failed to save pet"
+                    error = uiTextOf(e.message, R.string.error_save_pet)
                 )
             }
         }
     }
 
-    private companion object {
-        const val PHOTO_ERROR = "Some photos could not be added"
-    }
 }

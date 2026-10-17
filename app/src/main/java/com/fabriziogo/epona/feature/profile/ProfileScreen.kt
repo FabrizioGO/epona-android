@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.profile
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -111,12 +112,7 @@ fun ProfileScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(ProfileEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(ProfileEvent.ErrorDismissed) }
 
     if (state.showSignOutDialog) {
         EponaConfirmDialog(

@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.notifications
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.Notification
@@ -77,7 +79,7 @@ class NotificationsViewModel @Inject constructor(
             refreshNotifications()
                 .onFailure { err ->
                     _state.update {
-                        it.copy(error = err.message ?: "Failed to refresh notifications")
+                        it.copy(error = uiTextOf(err.message, R.string.error_refresh_notifications))
                     }
                 }
             // The list itself is not assigned here: the refresh writes Room and the
@@ -92,7 +94,7 @@ class NotificationsViewModel @Inject constructor(
             markAllRead()
                 .onFailure { err ->
                     _state.update {
-                        it.copy(error = err.message ?: "Failed to mark as read")
+                        it.copy(error = uiTextOf(err.message, R.string.error_mark_read))
                     }
                 }
         }

@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.sighting.report
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -96,12 +97,7 @@ fun ReportSightingScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(ReportSightingEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(ReportSightingEvent.ErrorDismissed) }
 
     val isDirty = state.note.isNotBlank() || state.photos.isNotEmpty()
     var showDiscardDialog by remember { mutableStateOf(false) }
@@ -165,7 +161,7 @@ fun ReportSightingScreen(
             location = state.location,
             address = state.address,
             isLoading = state.isLoadingLocation,
-            errorText = state.locationError,
+            errorText = state.locationError?.let { stringResource(it) },
             onUseCurrentLocation = {
                 if (locationPermission.isGranted) {
                     viewModel.onEvent(ReportSightingEvent.UseCurrentLocation)

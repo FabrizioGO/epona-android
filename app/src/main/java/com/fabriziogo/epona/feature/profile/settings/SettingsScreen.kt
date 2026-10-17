@@ -2,6 +2,7 @@
 
 package com.fabriziogo.epona.feature.profile.settings
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.clickable
@@ -57,12 +58,7 @@ fun SettingsScreen(
     val notificationPermission = rememberNotificationPermissionState()
     val uriHandler = LocalUriHandler.current
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onErrorDismissed()
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onErrorDismissed() }
 
     // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
 

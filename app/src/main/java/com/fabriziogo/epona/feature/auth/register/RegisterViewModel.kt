@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.auth.register
 
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.text.uiTextOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.SignUpResult
@@ -54,7 +56,7 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.SignUpClicked -> signUpWithEmail()
             is RegisterEvent.GoogleSignInResult -> signInWithGoogle(event.idToken)
             is RegisterEvent.GoogleSignInFailed -> {
-                _state.update { it.copy(isGoogleLoading = false, error = "Google sign-in failed") }
+                _state.update { it.copy(isGoogleLoading = false, error = uiTextOf(R.string.error_google_sign_in)) }
             }
             is RegisterEvent.NavigateToLogin -> {
                 viewModelScope.launch { _navEvents.send(RegisterNavEvent.NavigateToLogin) }
@@ -76,8 +78,8 @@ class RegisterViewModel @Inject constructor(
         val emailErr = validateEmail(s.email)
         val passErr = validateNewPassword(s.password)
         val confirmErr = when {
-            s.confirmPassword.isBlank() -> "Please confirm your password"
-            s.confirmPassword != s.password -> "Passwords don't match"
+            s.confirmPassword.isBlank() -> R.string.error_confirm_password
+            s.confirmPassword != s.password -> R.string.error_password_mismatch
             else -> null
         }
 

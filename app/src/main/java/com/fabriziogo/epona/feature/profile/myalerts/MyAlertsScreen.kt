@@ -2,6 +2,7 @@
 
 package com.fabriziogo.epona.feature.profile.myalerts
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -78,12 +79,7 @@ internal fun MyAlertsContent(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            onErrorDismissed()
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { onErrorDismissed() }
 
     // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
 

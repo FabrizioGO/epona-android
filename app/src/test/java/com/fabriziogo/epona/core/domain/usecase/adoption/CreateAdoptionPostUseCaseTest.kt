@@ -23,7 +23,7 @@ class CreateAdoptionPostUseCaseTest {
 
     private fun post(
         title: String = "Golden Retriever puppies in adoption",
-        phone: String = "+1 555 000 0000",
+        phone: String = "0414-111-1111",
         price: Double? = null,
         photos: List<String> = emptyList()
     ) = AdoptionPost(

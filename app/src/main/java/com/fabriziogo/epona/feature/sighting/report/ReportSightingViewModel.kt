@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.sighting.report
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -54,8 +56,7 @@ class ReportSightingViewModel @Inject constructor(
             ReportSightingEvent.LocationPermissionDenied -> _state.update {
                 it.copy(
                     isLoadingLocation = false,
-                    locationError = "Location permission denied — set the location " +
-                            "manually, or enable it in Settings."
+                    locationError = R.string.error_location_permission_set_manually
                 )
             }
             is ReportSightingEvent.LocationPicked -> setLocation(event.location)
@@ -96,7 +97,7 @@ class ReportSightingViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoadingLocation = false,
-                            locationError = "Could not get location. Please set it manually."
+                            locationError = R.string.sighting_location_error
                         )
                     }
                 }
@@ -139,7 +140,7 @@ class ReportSightingViewModel @Inject constructor(
                     photos = s.photos + added.map { PhotoItem.Local(it) },
                     isProcessingPhotos = false,
                     // One unreadable pick should not sink the rest of the selection.
-                    error = if (added.size < wanted.size) PHOTO_ERROR else s.error
+                    error = if (added.size < wanted.size) uiTextOf(R.string.error_photos_partial) else s.error
                 )
             }
         }
@@ -160,7 +161,7 @@ class ReportSightingViewModel @Inject constructor(
 
         val loc = s.location
         if (loc == null) {
-            _state.update { it.copy(locationError = "Please set the sighting location") }
+            _state.update { it.copy(locationError = R.string.sighting_location_required) }
             return
         }
 
@@ -189,7 +190,7 @@ class ReportSightingViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isSubmitting = false,
-                            error = err.message ?: "Failed to report sighting"
+                            error = uiTextOf(err.message, R.string.error_report_sighting)
                         )
                     }
                 }
@@ -200,7 +201,4 @@ class ReportSightingViewModel @Inject constructor(
         viewModelScope.launch { _navEvents.send(event) }
     }
 
-    private companion object {
-        const val PHOTO_ERROR = "Some photos could not be added"
-    }
 }

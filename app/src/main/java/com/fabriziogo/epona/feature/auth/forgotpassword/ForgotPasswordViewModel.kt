@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.auth.forgotpassword
 
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.text.uiTextOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -109,7 +111,7 @@ class ForgotPasswordViewModel @Inject constructor(
     private fun verifyResetCode() {
         val s = _state.value
         if (s.code.length !in RESET_CODE_MIN_LENGTH..RESET_CODE_MAX_LENGTH) {
-            _state.update { it.copy(codeError = "Enter the code from the email") }
+            _state.update { it.copy(codeError = R.string.error_code_required) }
             return
         }
 
@@ -131,8 +133,8 @@ class ForgotPasswordViewModel @Inject constructor(
         val s = _state.value
         val passErr = validateNewPassword(s.newPassword)
         val confirmErr = when {
-            s.confirmPassword.isBlank() -> "Please confirm your password"
-            s.confirmPassword != s.newPassword -> "Passwords don't match"
+            s.confirmPassword.isBlank() -> R.string.error_confirm_password
+            s.confirmPassword != s.newPassword -> R.string.error_password_mismatch
             else -> null
         }
         if (passErr != null || confirmErr != null) {

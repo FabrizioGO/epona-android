@@ -135,7 +135,7 @@
     <string name="create_step_contact_title">Contact &amp; Review</string>
     <string name="create_step_contact_subtitle">How can people reach you?</string>
     <string name="create_contact_phone">Contact Phone</string>
-    <string name="create_contact_phone_placeholder" translatable="false">+1 (555) 000–0000</string>
+    <string name="create_contact_phone_placeholder" translatable="false">0000-000-0000</string>
     <string name="create_reward">Reward (optional)</string>
     <string name="create_reward_hint">Offering a reward can increase response</string>
     <string name="alert_story_label_lost">What happened</string>
@@ -537,4 +537,38 @@
     <string name="share_text_adoption">🏡 %1$s — available for adoption on Epona! #Epona</string>
     <string name="my_alerts_section_alerts">Alerts</string>
     <string name="my_alerts_section_adoption">Adoption posts</string>
+
+    <!-- Errors shown from ViewModels (resolved in the screen through UiText) -->
+    <string name="error_password_short_new">Must be at least 8 characters</string>
+    <string name="error_code_invalid">Code is invalid or has expired</string>
+    <string name="error_code_required">Enter the code from the email</string>
+    <string name="error_password_same_as_old">New password must be different from the old one</string>
+    <string name="error_rate_limited">Too many requests. Please wait a moment.</string>
+    <string name="error_google_sign_in">Google sign-in failed</string>
+    <string name="error_location_permission_pick_map">Location permission denied — pick the location on the map, or enable it in Settings.</string>
+    <string name="error_location_permission_set_manually">Location permission denied — set the location manually, or enable it in Settings.</string>
+    <string name="error_location_unavailable">Could not get location</string>
+    <string name="error_photos_partial">Some photos could not be added</string>
+    <string name="error_load_alerts">Failed to load alerts</string>
+    <string name="error_load_alert">Failed to load alert</string>
+    <string name="error_resolve_alert">Failed to resolve alert</string>
+    <string name="error_delete_alert">Failed to delete alert</string>
+    <string name="error_publish_alert">Failed to publish alert</string>
+    <string name="error_submit_report">Failed to submit report</string>
+    <string name="error_report_sighting">Failed to report sighting</string>
+    <string name="error_load_pets">Could not load your pets</string>
+    <string name="error_load_pet">Failed to load pet</string>
+    <string name="error_save_pet">Failed to save pet</string>
+    <string name="error_load_nearby_posts">Could not load nearby posts</string>
+    <string name="error_load_adoption_posts">Failed to load adoption posts</string>
+    <string name="error_load_post">Failed to load post</string>
+    <string name="error_update_post">Failed to update post</string>
+    <string name="error_delete_post">Failed to delete post</string>
+    <string name="error_publish_post">Failed to publish post</string>
+    <string name="error_refresh_notifications">Failed to refresh notifications</string>
+    <string name="error_mark_read">Failed to mark as read</string>
+    <string name="error_sign_out">Failed to sign out</string>
+    <string name="error_delete_account">Failed to delete account</string>
+    <string name="error_update_photo">Could not update your photo. Please try again.</string>
+    <string name="detail_report_thanks">Thanks, we\'ll review it</string>
 </resources>

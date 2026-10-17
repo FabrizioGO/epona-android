@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.sighting.report
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.media.PhotoItem
 
@@ -15,8 +17,8 @@ data class ReportSightingUiState(
     val isLoadingLocation: Boolean = false,
     val isSubmitting: Boolean = false,
     val isSuccess: Boolean = false,
-    val locationError: String? = null,
-    val error: String? = null
+    val locationError: Int? = null,
+    val error: UiText? = null
 ) {
     val canSubmit: Boolean
         get() = location != null && !isSubmitting

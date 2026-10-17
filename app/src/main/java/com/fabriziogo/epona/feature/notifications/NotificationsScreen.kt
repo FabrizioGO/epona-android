@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.notifications
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -70,12 +71,7 @@ fun NotificationsScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(NotificationsEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(NotificationsEvent.ErrorDismissed) }
 
     Scaffold(
         modifier = modifier,

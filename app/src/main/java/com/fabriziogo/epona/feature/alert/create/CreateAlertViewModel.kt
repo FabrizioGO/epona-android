@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -85,8 +87,7 @@ class CreateAlertViewModel @Inject constructor(
             CreateAlertEvent.LocationPermissionDenied -> _state.update {
                 it.copy(
                     isLoadingLocation = false,
-                    locationError = "Location permission denied — pick the location " +
-                            "on the map, or enable it in Settings."
+                    locationError = R.string.error_location_permission_pick_map
                 )
             }
             is CreateAlertEvent.LocationPicked -> setLocation(event.location)
@@ -120,7 +121,7 @@ class CreateAlertViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoadingPets = false,
-                            error = error.message ?: "Could not load your pets"
+                            error = uiTextOf(error.message, R.string.error_load_pets)
                         )
                     }
                 }
@@ -195,7 +196,7 @@ class CreateAlertViewModel @Inject constructor(
                         it.copy(
                             isLoadingMatches = false,
                             matches = emptyList(),
-                            matchesError = err.message ?: "Could not load nearby posts"
+                            matchesError = uiTextOf(err.message, R.string.error_load_nearby_posts)
                         )
                     }
                 }
@@ -222,7 +223,7 @@ class CreateAlertViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoadingLocation = false,
-                            locationError = "Could not get location"
+                            locationError = R.string.error_location_unavailable
                         )
                     }
                 }
@@ -265,7 +266,7 @@ class CreateAlertViewModel @Inject constructor(
                         isProcessingPhotos = false
                     ),
                     // One unreadable pick should not sink the rest of the selection.
-                    error = if (added.size < wanted.size) PHOTO_ERROR else it.error
+                    error = if (added.size < wanted.size) uiTextOf(R.string.error_photos_partial) else it.error
                 )
             }
         }
@@ -288,7 +289,7 @@ class CreateAlertViewModel @Inject constructor(
         if (s.isSubmitting) return
 
         val loc = s.location ?: run {
-            _state.update { it.copy(error = "Please set the last seen location") }
+            _state.update { it.copy(error = uiTextOf(R.string.create_error_set_location)) }
             return
         }
 
@@ -297,7 +298,7 @@ class CreateAlertViewModel @Inject constructor(
 
             val result = if (s.alertType == AlertType.LOST) {
                 val pet = s.selectedPet ?: run {
-                    _state.update { it.copy(isSubmitting = false, error = "Please select a pet") }
+                    _state.update { it.copy(isSubmitting = false, error = uiTextOf(R.string.create_error_select_pet)) }
                     return@launch
                 }
                 val alert = Alert(
@@ -347,7 +348,7 @@ class CreateAlertViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isSubmitting = false,
-                            error = err.message ?: "Failed to publish alert"
+                            error = uiTextOf(err.message, R.string.error_publish_alert)
                         )
                     }
                 }
@@ -360,6 +361,5 @@ class CreateAlertViewModel @Inject constructor(
 
     private companion object {
         const val MATCHES_STEP = 4
-        const val PHOTO_ERROR = "Some photos could not be added"
     }
 }

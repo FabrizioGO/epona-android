@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.map.pick
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.Location
 
 const val DEFAULT_LAT = 40.7128
@@ -14,7 +16,7 @@ data class PickLocationUiState(
     val address: String = "",
     val isGeocoding: Boolean = false,
     val isLocating: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 ) {
     val canConfirm: Boolean get() = target != null
 }

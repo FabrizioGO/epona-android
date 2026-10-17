@@ -167,7 +167,7 @@ private fun AdoptionGridCardPreview() {
                     species = Species.DOG,
                     ageStage = AgeStage.BABY,
                     price = null,
-                    contactPhone = "+1 555 000 0000",
+                    contactPhone = "0000-000-0000",
                     createdAt = System.currentTimeMillis() - 7_200_000
                 ),
                 ownerName = "Alex"

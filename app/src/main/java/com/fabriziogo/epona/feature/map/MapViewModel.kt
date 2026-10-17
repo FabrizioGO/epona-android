@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.map
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.model.AlertType
@@ -155,7 +157,7 @@ class MapViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     isLoading = false,
-                    error = err.message ?: "Failed to load alerts"
+                    error = uiTextOf(err.message, R.string.error_load_alerts)
                 )
             }
         }

@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import androidx.annotation.StringRes
 import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
@@ -46,14 +48,14 @@ data class CreateAlertUiState(
     val address: String = "",
     val description: String = "",
     val isLoadingLocation: Boolean = false,
-    val locationError: String? = null,
+    val locationError: Int? = null,
     /** FOUND only: where the pet is now. No default — the finder has to answer. */
     val custody: FoundCustody? = null,
 
     // Step 4 (shared) — nearby alerts that might be the same animal
     val matches: List<AlertWithDetails> = emptyList(),
     val isLoadingMatches: Boolean = false,
-    val matchesError: String? = null,
+    val matchesError: UiText? = null,
 
     // Step 5 (shared)
     val contactPhone: String = "",
@@ -62,7 +64,7 @@ data class CreateAlertUiState(
     // Submission
     val isSubmitting: Boolean = false,
     val isSuccess: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 
     /** Set when Continue is tapped on a blocked step; shows [stepBlocker] under the step. */
     val showStepError: Boolean = false

@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile
 
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import com.fabriziogo.epona.core.domain.model.User
 import com.fabriziogo.epona.core.domain.model.UserStats
 
@@ -17,5 +19,5 @@ data class ProfileUiState(
      */
     val avatarPreviewUri: String? = null,
     val isUploadingAvatar: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )

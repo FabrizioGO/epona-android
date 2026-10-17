@@ -1,5 +1,9 @@
 package com.fabriziogo.epona.feature.pet
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
+import com.fabriziogo.epona.core.ui.text.UiText
+
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,7 +43,7 @@ data class AddPetUiState(
     val photos: List<PhotoItem> = emptyList(),
     val isProcessingPhotos: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val nameError: Int? = null,
     val ageError: Int? = null,
     /** Bumped on every Save tap that fails validation; errors go live once it is above 0. */
@@ -142,7 +146,7 @@ class AddPetViewModel @Inject constructor(
                 photos = _state.value.photos + added.map { PhotoItem.Local(it) },
                 isProcessingPhotos = false,
                 // One unreadable pick should not sink the rest of the selection.
-                error = if (added.size < wanted.size) PHOTO_ERROR else _state.value.error
+                error = if (added.size < wanted.size) uiTextOf(R.string.error_photos_partial) else _state.value.error
             )
         }
     }
@@ -202,20 +206,17 @@ class AddPetViewModel @Inject constructor(
                     Timber.e(exception, "AddPet: save failed")
                     _state.value = _state.value.copy(
                         isLoading = false,
-                        error = exception.message ?: "Failed to save pet"
+                        error = uiTextOf(exception.message, R.string.error_save_pet)
                     )
                 }
             } catch (e: Exception) {
                 Timber.e(e, "AddPet: save failed")
                 _state.value = _state.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Failed to save pet"
+                    error = uiTextOf(e.message, R.string.error_save_pet)
                 )
             }
         }
     }
 
-    private companion object {
-        const val PHOTO_ERROR = "Some photos could not be added"
-    }
 }

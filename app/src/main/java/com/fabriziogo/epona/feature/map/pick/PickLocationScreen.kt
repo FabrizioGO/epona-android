@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.map.pick
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,12 +76,7 @@ fun PickLocationScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(PickLocationEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(PickLocationEvent.ErrorDismissed) }
 
     // Manual pinning is the point of this screen, so only ask on the FAB tap —
     // never on entry.

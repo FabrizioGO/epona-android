@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.adoption.detail
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -103,12 +104,7 @@ fun AdoptionDetailScreen(
         }
     }
 
-    LaunchedEffect(state.error) {
-        state.error?.let {
-            snackbarHostState.showSnackbar(it)
-            viewModel.onEvent(AdoptionDetailEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(AdoptionDetailEvent.ErrorDismissed) }
 
     if (state.showMarkAdoptedDialog) {
         EponaConfirmDialog(
@@ -432,7 +428,7 @@ private fun AdoptionDetailPreview() {
                         ageStage = AgeStage.BABY,
                         description = "Six healthy puppies, vaccinated and dewormed.",
                         price = 50.0,
-                        contactPhone = "+1 555 000 0000",
+                        contactPhone = "0000-000-0000",
                         createdAt = System.currentTimeMillis() - 3_600_000
                     ),
                     ownerName = "Alex"

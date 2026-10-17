@@ -114,7 +114,7 @@ private fun MyAdoptionCardPreview() {
                     title = "Golden Retriever puppies in adoption",
                     species = Species.DOG,
                     price = 50.0,
-                    contactPhone = "+1 555 000 0000",
+                    contactPhone = "0000-000-0000",
                     createdAt = System.currentTimeMillis() - 3_600_000
                 ),
                 ownerName = "Alex"

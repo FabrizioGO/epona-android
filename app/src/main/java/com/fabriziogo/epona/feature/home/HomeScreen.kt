@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.home
 
+import com.fabriziogo.epona.core.ui.text.ErrorSnackbarEffect
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -91,12 +92,7 @@ fun HomeScreen(
     }
 
     // Show error in snackbar
-    LaunchedEffect(state.error) {
-        state.error?.let { error ->
-            snackbarHostState.showSnackbar(error)
-            viewModel.onEvent(HomeEvent.ErrorDismissed)
-        }
-    }
+    ErrorSnackbarEffect(state.error, snackbarHostState) { viewModel.onEvent(HomeEvent.ErrorDismissed) }
 
     Scaffold(
         modifier = modifier,

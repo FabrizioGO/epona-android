@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.profile.myalerts
 
+import com.fabriziogo.epona.core.ui.text.uiTextOf
+import com.fabriziogo.epona.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabriziogo.epona.core.domain.usecase.adoption.GetMyAdoptionPostsUseCase
@@ -58,7 +60,7 @@ class MyAlertsViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             adoptionPosts = adoptionPosts,
-                            error = err.message ?: "Failed to load alerts"
+                            error = uiTextOf(err.message, R.string.error_load_alerts)
                         )
                     }
                 }
