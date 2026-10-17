@@ -115,6 +115,14 @@ internal fun validatePassword(password: String): String? = when {
     else -> null
 }
 
+// For passwords being set (sign-up, reset). Matches the project's server-side
+// minimum_password_length; sign-in keeps the old 6 so existing accounts still work.
+internal fun validateNewPassword(password: String): String? = when {
+    password.isBlank() -> "Password is required"
+    password.length < 8 -> "Must be at least 8 characters"
+    else -> null
+}
+
 internal fun validateDisplayName(name: String): String? = when {
     name.isBlank() -> "Name is required"
     name.length < 2 -> "Must be at least 2 characters"

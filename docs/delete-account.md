@@ -27,6 +27,7 @@ When your account is deleted, we permanently remove:
 - your profile (name, email, avatar);
 - your pets, and any lost/found alerts you posted, including their photos;
 - sighting reports you filed on other people's alerts, including their photos;
+- adoption posts you published, including their photos and contact phone;
 - your push-notification token and notification history;
 - your authentication credentials.
 

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">supabase.co</domain>
-        <domain includeSubdomains="true">epona.app</domain>
-    </domain-config>
+    <!-- HTTPS only, trusting system CAs only (no user-installed certificates). -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
 
-    <!-- Allow cleartext for local development only -->
+    <!-- Debug builds also trust user-installed CAs, for proxy debugging (e.g. Charles). -->
     <debug-overrides>
         <trust-anchors>
             <certificates src="system" />

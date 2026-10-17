@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
+   Android 12+ backup and device-transfer rules.
    See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+
+   Nothing is backed up or transferred. Shared preferences hold the Supabase
+   session (including the refresh token), which must not leave the device, and
+   the Room database (epona_db) is only a cache of server data that is refetched
+   after sign-in.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- Only shared preferences go to cloud backup; the Room database is not included. -->
-        <include domain="sharedpref" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="database" path="." />
     </cloud-backup>
     <device-transfer>
-        <include domain="sharedpref" path="." />
-        <include domain="database" path="epona_db" />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="database" path="." />
     </device-transfer>
 </data-extraction-rules>
