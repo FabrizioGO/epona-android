@@ -45,6 +45,7 @@ fun HomeHero(
     totalCount: Int,
     lostCount: Int,
     foundCount: Int,
+    adoptionCount: Int,
     onSearchQueryChanged: (String) -> Unit,
     onFilterSelected: (AlertFilter) -> Unit,
     onNotificationsClick: () -> Unit,
@@ -124,6 +125,7 @@ fun HomeHero(
             totalCount = totalCount,
             lostCount = lostCount,
             foundCount = foundCount,
+            adoptionCount = adoptionCount,
             onFilterSelected = onFilterSelected
         )
     }
@@ -152,6 +154,7 @@ private fun HomeHeroPreview() {
             totalCount = 12,
             lostCount = 8,
             foundCount = 4,
+            adoptionCount = 3,
             onSearchQueryChanged = {},
             onFilterSelected = {},
             onNotificationsClick = {},

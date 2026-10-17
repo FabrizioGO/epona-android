@@ -50,6 +50,8 @@ class CreateAlertViewModel @Inject constructor(
         when (event) {
             CreateAlertEvent.NextStep -> nextStep()
             CreateAlertEvent.PreviousStep -> previousStep()
+            CreateAlertEvent.AdoptionSelected ->
+                emitNav(CreateAlertNavEvent.NavigateToCreateAdoption)
             CreateAlertEvent.CloseClicked ->
                 emitNav(CreateAlertNavEvent.NavigateBack)
 

@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Pets
+import androidx.compose.material.icons.outlined.VolunteerActivism
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,12 +49,14 @@ import com.fabriziogo.epona.core.ui.layout.fullBleed
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.core.ui.theme.StatusBarIcons
 import com.fabriziogo.epona.feature.home.components.AlertFeedSection
+import com.fabriziogo.epona.feature.home.components.AdoptionGridCard
 import com.fabriziogo.epona.feature.home.components.AlertGridCard
 import com.fabriziogo.epona.feature.home.components.HomeHero
 
 @Composable
 fun HomeScreen(
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToAdoptionDetail: (String) -> Unit,
     onNavigateToSearch: () -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToCreateAlert: () -> Unit,
@@ -70,6 +74,8 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.navEvents.collect { event ->
             when (event) {
+                is HomeNavigationEvent.NavigateToAdoptionDetail ->
+                    onNavigateToAdoptionDetail(event.postId)
                 is HomeNavigationEvent.NavigateToDetail ->
                     onNavigateToDetail(event.alertId)
                 HomeNavigationEvent.NavigateToSearch ->
@@ -120,6 +126,7 @@ fun HomeScreenContent(
     modifier: Modifier = Modifier
 ) {
     val gridState = rememberLazyGridState()
+    val isAdoption = state.selectedFilter == AlertFilter.ADOPTION
 
     PullToRefreshBox(
         isRefreshing = state.isRefreshing,
@@ -156,6 +163,7 @@ fun HomeScreenContent(
                     totalCount = state.totalActiveAlerts,
                     lostCount = state.lostCount,
                     foundCount = state.foundCount,
+                    adoptionCount = state.adoptionPosts.size,
                     onSearchQueryChanged = { onEvent(HomeEvent.SearchQueryChanged(it)) },
                     onFilterSelected = { onEvent(HomeEvent.FilterChanged(it)) },
                     onNotificationsClick = { onEvent(HomeEvent.NotificationsClicked) },
@@ -168,12 +176,19 @@ fun HomeScreenContent(
                 HeroSheetEdge(modifier = Modifier.fullBleed(sidePadding)) {
                     AlertFeedSection(
                         onViewMapClick = { onEvent(HomeEvent.ViewMapClicked) },
-                        horizontalPadding = sidePadding
+                        horizontalPadding = sidePadding,
+                        // Adoption posts have no location, so there is nothing to show on the map.
+                        showViewMap = !isAdoption
                     )
                 }
             }
 
             when {
+                isAdoption -> adoptionFeed(
+                    state = state,
+                    onEvent = onEvent
+                )
+
                 state.isLoading -> item(span = { GridItemSpan(maxLineSpan) }, key = "loading") {
                     Box(
                         modifier = Modifier
@@ -227,6 +242,60 @@ fun HomeScreenContent(
                 }
             }
         }
+        }
+    }
+}
+
+/** Grid items for the Adoption segment: newest first, not distance-filtered. */
+private fun LazyGridScope.adoptionFeed(
+    state: HomeUiState,
+    onEvent: (HomeEvent) -> Unit
+) {
+    when {
+        state.isLoadingAdoption -> item(span = { GridItemSpan(maxLineSpan) }, key = "adoption_loading") {
+            Box(modifier = Modifier.fillMaxWidth().height(240.dp)) {
+                FullScreenProgress()
+            }
+        }
+
+        state.adoptionPosts.isEmpty() -> item(span = { GridItemSpan(maxLineSpan) }, key = "adoption_empty") {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                EmptyState(
+                    icon = Icons.Outlined.VolunteerActivism,
+                    title = stringResource(R.string.adoption_empty_title),
+                    description = stringResource(R.string.adoption_empty_description),
+                    action = {
+                        EponaFilledButton(
+                            text = stringResource(R.string.create_type_adoption),
+                            onClick = { onEvent(HomeEvent.CreateAlertClicked) }
+                        )
+                    }
+                )
+            }
+        }
+
+        state.filteredAdoptionPosts.isEmpty() -> item(
+            span = { GridItemSpan(maxLineSpan) },
+            key = "adoption_no_matches"
+        ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                EmptyState(
+                    icon = Icons.Outlined.Pets,
+                    title = stringResource(R.string.home_no_matches_title),
+                    description = stringResource(R.string.home_no_matches_description)
+                )
+            }
+        }
+
+        else -> items(
+            items = state.filteredAdoptionPosts,
+            key = { "adoption_${it.post.id}" }
+        ) { item ->
+            AdoptionGridCard(
+                item = item,
+                onClick = { onEvent(HomeEvent.AdoptionClicked(item.post.id)) },
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
         }
     }
 }

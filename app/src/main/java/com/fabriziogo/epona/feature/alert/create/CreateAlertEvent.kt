@@ -17,6 +17,9 @@ sealed interface CreateAlertEvent {
 
     data class AlertTypeSelected(val type: AlertType) : CreateAlertEvent
 
+    /** Leaves the wizard for the adoption form; adoption posts are not alerts. */
+    data object AdoptionSelected : CreateAlertEvent
+
     data class PetSelected(val pet: Pet) : CreateAlertEvent
     data object AddNewPetClicked : CreateAlertEvent
 
@@ -50,6 +53,7 @@ sealed interface CreateAlertEvent {
 sealed interface CreateAlertNavEvent {
     data object NavigateBack : CreateAlertNavEvent
     data object NavigateToAddPet : CreateAlertNavEvent
+    data object NavigateToCreateAdoption : CreateAlertNavEvent
     data class NavigateToSuccess(val alertId: String) : CreateAlertNavEvent
 
     /**

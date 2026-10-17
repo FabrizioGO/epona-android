@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -34,11 +35,17 @@ import com.fabriziogo.epona.core.ui.theme.EponaTheme
 fun AlertFeedSection(
     onViewMapClick: () -> Unit,
     modifier: Modifier = Modifier,
-    horizontalPadding: Dp = 16.dp
+    horizontalPadding: Dp = 16.dp,
+    showViewMap: Boolean = true,
+    title: String = stringResource(
+        if (showViewMap) R.string.home_nearby_alerts else R.string.home_adoption_section
+    )
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
+            // Same height with or without the map button, so switching segments does not jump.
+            .heightIn(min = 48.dp)
             // TextButton carries its own 12dp inner padding; trim the trailing gutter so the
             // arrow still lines up with the grid's right edge.
             .padding(start = horizontalPadding, end = (horizontalPadding - 12.dp).coerceAtLeast(0.dp)),
@@ -46,21 +53,23 @@ fun AlertFeedSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(R.string.home_nearby_alerts),
+            text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.semantics { heading() }
         )
-        TextButton(
-            onClick = onViewMapClick,
-            contentPadding = ButtonDefaults.TextButtonWithIconContentPadding
-        ) {
-            Text(text = stringResource(R.string.home_view_map))
-            Icon(
-                Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                modifier = Modifier.size(ButtonDefaults.IconSize)
-            )
+        if (showViewMap) {
+            TextButton(
+                onClick = onViewMapClick,
+                contentPadding = ButtonDefaults.TextButtonWithIconContentPadding
+            ) {
+                Text(text = stringResource(R.string.home_view_map))
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.fabriziogo.epona.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.fabriziogo.epona.core.database.EponaDatabase
+import com.fabriziogo.epona.core.database.dao.AdoptionPostDao
 import com.fabriziogo.epona.core.database.dao.AlertDao
 import com.fabriziogo.epona.core.database.dao.NotificationDao
 import com.fabriziogo.epona.core.database.dao.PetDao
@@ -43,6 +44,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAlertDao(db: EponaDatabase): AlertDao = db.alertDao()
+
+    @Provides
+    @Singleton
+    fun provideAdoptionPostDao(db: EponaDatabase): AdoptionPostDao = db.adoptionPostDao()
 
     @Provides
     @Singleton

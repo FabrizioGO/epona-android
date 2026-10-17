@@ -29,6 +29,7 @@ fun NavController.navigateToResolveAlert(
 fun NavGraphBuilder.alertScreens(
     onNavigateBack: () -> Unit,
     onNavigateToAddPet: () -> Unit,
+    onNavigateToCreateAdoption: () -> Unit,
     onNavigateToSuccess: (String) -> Unit,
     onNavigateToMatch: (String) -> Unit,
     onNavigateToHome: () -> Unit,
@@ -38,6 +39,7 @@ fun NavGraphBuilder.alertScreens(
         CreateAlertScreen(
             onNavigateBack = onNavigateBack,
             onNavigateToAddPet = onNavigateToAddPet,
+            onNavigateToCreateAdoption = onNavigateToCreateAdoption,
             onNavigateToSuccess = onNavigateToSuccess,
             onNavigateToMatch = onNavigateToMatch,
             onNavigateToPickLocation = onNavigateToPickLocation,

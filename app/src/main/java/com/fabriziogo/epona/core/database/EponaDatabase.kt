@@ -4,11 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.fabriziogo.epona.core.database.converter.Converters
+import com.fabriziogo.epona.core.database.dao.AdoptionPostDao
 import com.fabriziogo.epona.core.database.dao.AlertDao
 import com.fabriziogo.epona.core.database.dao.NotificationDao
 import com.fabriziogo.epona.core.database.dao.PetDao
 import com.fabriziogo.epona.core.database.dao.SightingDao
 import com.fabriziogo.epona.core.database.dao.UserDao
+import com.fabriziogo.epona.core.database.entity.AdoptionPostEntity
 import com.fabriziogo.epona.core.database.entity.AlertEntity
 import com.fabriziogo.epona.core.database.entity.NotificationEntity
 import com.fabriziogo.epona.core.database.entity.PetEntity
@@ -21,9 +23,10 @@ import com.fabriziogo.epona.core.database.entity.UserEntity
         PetEntity::class,
         AlertEntity::class,
         SightingEntity::class,
-        NotificationEntity::class
+        NotificationEntity::class,
+        AdoptionPostEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -34,6 +37,7 @@ abstract class EponaDatabase : RoomDatabase() {
     abstract fun alertDao(): AlertDao
     abstract fun sightingDao(): SightingDao
     abstract fun notificationDao(): NotificationDao
+    abstract fun adoptionPostDao(): AdoptionPostDao
 
     companion object {
         const val DATABASE_NAME = "epona_db"
