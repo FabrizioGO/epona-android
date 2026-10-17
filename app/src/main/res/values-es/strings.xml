@@ -126,6 +126,10 @@
     <string name="create_matches_none">¿Ninguna coincide? Pulsa Continuar para publicar tu alerta de todos modos</string>
     <string name="create_found_publish">📢 Publicar Alerta de Encontrado</string>
     <string name="create_back">Atras</string>
+    <string name="create_found_section_look">Cómo es</string>
+    <string name="create_error_select_pet">Elige la mascota perdida para continuar</string>
+    <string name="create_error_set_location">Indica la ubicación para continuar</string>
+    <string name="create_error_custody">Cuéntanos dónde está la mascota ahora para continuar</string>
     <string name="create_ready_title">¡Listo para publicar!</string>
     <string name="detail_time">Hora</string>
     <string name="detail_unknown_location">ubicación desconocida</string>
@@ -162,6 +166,8 @@
     <string name="pet_gender_label">Genero</string>
     <string name="pet_optional_placeholder">Opcional</string>
     <string name="pet_save">Guardar Mascota</string>
+    <string name="pet_name_required">El nombre es obligatorio</string>
+    <string name="pet_age_invalid">Introduce una edad entre 0 y 40</string>
     <string name="pet_update">Actualizar Mascota</string>
     <string name="pet_photos_desc">Añade fotos para ayudar a identificar a tu mascota</string>
     <string name="pet_photos_selected_count">%1$d de %2$d fotos</string>
@@ -211,6 +217,7 @@
     <string name="action_edit">Editar</string>
     <string name="action_save">Guardar</string>
     <string name="action_back">Atras</string>
+    <string name="form_label_optional">%1$s (opcional)</string>
     <string name="action_close">Cerrar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
@@ -297,6 +304,7 @@
 
     <!-- Selector de fotos (galería + cámara) -->
     <string name="pet_photos_title">Fotos</string>
+    <string name="photo_hero_add">Añadir fotos</string>
     <string name="photo_source_title">Añadir una foto</string>
     <string name="photo_source_gallery">Elegir de la galería</string>
     <string name="photo_source_camera">Hacer una foto</string>
@@ -456,6 +464,7 @@
     <string name="adoption_field_title_placeholder">p. ej., Cachorros Golden Retriever en adopción</string>
     <string name="adoption_title_required">Escribe un título de al menos 3 caracteres</string>
     <string name="adoption_section_about">Sobre la(s) mascota(s)</string>
+    <string name="adoption_section_contact">Precio y contacto</string>
     <string name="adoption_field_name">Nombre (opcional)</string>
     <string name="adoption_field_age">Edad</string>
     <string name="adoption_field_description">Descripción (opcional)</string>

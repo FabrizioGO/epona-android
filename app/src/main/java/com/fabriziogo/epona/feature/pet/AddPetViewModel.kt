@@ -40,8 +40,10 @@ data class AddPetUiState(
     val isProcessingPhotos: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val nameError: String? = null,
-    val isFormValid: Boolean = false
+    val nameError: Int? = null,
+    val ageError: Int? = null,
+    /** Bumped on every Save tap that fails validation; errors go live once it is above 0. */
+    val submitAttempts: Int = 0
 )
 
 sealed class AddPetEvent {
@@ -79,11 +81,11 @@ class AddPetViewModel @Inject constructor(
     fun onEvent(event: AddPetEvent) {
         when (event) {
             is AddPetEvent.NameChanged -> {
+                val live = _state.value.submitAttempts > 0
                 _state.value = _state.value.copy(
                     petName = event.name,
-                    nameError = if (event.name.isBlank()) "Pet name is required" else null
+                    nameError = if (live) petNameError(event.name) else null
                 )
-                validateForm()
             }
             is AddPetEvent.SpeciesChanged -> {
                 _state.value = _state.value.copy(selectedSpecies = event.species)
@@ -98,7 +100,11 @@ class AddPetViewModel @Inject constructor(
                 _state.value = _state.value.copy(selectedSize = event.size)
             }
             is AddPetEvent.AgeChanged -> {
-                _state.value = _state.value.copy(ageYears = event.age)
+                val live = _state.value.submitAttempts > 0
+                _state.value = _state.value.copy(
+                    ageYears = event.age,
+                    ageError = if (live) petAgeError(event.age) else null
+                )
             }
             is AddPetEvent.GenderChanged -> {
                 _state.value = _state.value.copy(selectedGender = event.gender)
@@ -148,11 +154,6 @@ class AddPetViewModel @Inject constructor(
         )
     }
 
-    private fun validateForm() {
-        val isValid = _state.value.petName.isNotBlank()
-        _state.value = _state.value.copy(isFormValid = isValid)
-    }
-
     private fun savePet() {
         val current = _state.value
 
@@ -162,9 +163,15 @@ class AddPetViewModel @Inject constructor(
             Timber.d("AddPet: save ignored, one is already in flight")
             return
         }
-        if (!current.isFormValid) {
+        val nameError = petNameError(current.petName)
+        val ageError = petAgeError(current.ageYears)
+        if (nameError != null || ageError != null) {
             Timber.d("AddPet: save ignored, form is not valid")
-            _state.value = current.copy(nameError = "Pet name is required")
+            _state.value = current.copy(
+                nameError = nameError,
+                ageError = ageError,
+                submitAttempts = current.submitAttempts + 1
+            )
             return
         }
 

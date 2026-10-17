@@ -1,5 +1,8 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import com.fabriziogo.epona.feature.alert.create.steps.components.StepHeader
+import com.fabriziogo.epona.core.ui.form.SelectableOptionCard
+import com.fabriziogo.epona.core.ui.components.emoji
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.background
@@ -47,19 +50,10 @@ fun PetSelectionStep(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
-        Text(
-            stringResource(R.string.create_step_pet_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.semantics { heading() }
+        StepHeader(
+            title = stringResource(R.string.create_step_pet_title),
+            subtitle = stringResource(R.string.create_step_pet_subtitle)
         )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            stringResource(R.string.create_step_pet_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(24.dp))
 
         when {
             isLoading -> FullScreenProgress()
@@ -99,23 +93,13 @@ fun PetSelectionStep(
                 ) {
                     pets.forEach { pet ->
                         val isSelected = selectedPet?.id == pet.id
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = isSelected,
-                                    onClick = { onPetSelected(pet) },
-                                    role = Role.RadioButton
-                                ),
-                            shape = MaterialTheme.shapes.medium,
-                            color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer
-                            else MaterialTheme.colorScheme.surfaceContainerLow,
-                            border = if (isSelected) androidx.compose.foundation.BorderStroke(
-                                2.dp, MaterialTheme.colorScheme.primary
-                            ) else null
+                        SelectableOptionCard(
+                            selected = isSelected,
+                            onClick = { onPetSelected(pet) },
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Row(
-                                modifier = Modifier.padding(16.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box(
@@ -135,11 +119,7 @@ fun PetSelectionStep(
                                         )
                                     } else {
                                         Text(
-                                            text = when (pet.species.value) {
-                                                "dog" -> "🐕"; "cat" -> "🐈"
-                                                "bird" -> "🐦"; "rabbit" -> "🐇"
-                                                else -> "🐾"
-                                            },
+                                            text = pet.species.emoji(),
                                             style = MaterialTheme.typography.titleMedium,
                                             modifier = Modifier.clearAndSetSemantics {}
                                         )

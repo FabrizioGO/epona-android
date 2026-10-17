@@ -11,19 +11,22 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import com.fabriziogo.epona.core.ui.form.FormBottomBar
+import com.fabriziogo.epona.core.ui.theme.FormSpacing
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -53,8 +56,6 @@ import com.fabriziogo.epona.feature.alert.create.steps.MatchesStep
 import com.fabriziogo.epona.feature.alert.create.steps.PetSelectionStep
 import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
-import com.fabriziogo.epona.core.ui.components.EponaFilledButton
-import com.fabriziogo.epona.core.ui.components.EponaOutlinedButton
 import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
@@ -160,12 +161,12 @@ fun CreateAlertScreen(
     }
 
     // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
-
     val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
 
+    val isFinalStep = state.currentStep == state.totalSteps
 
     Scaffold(
-        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
+        modifier = modifier.nestedScroll(topBarScroll.nestedScrollConnection),
         topBar = {
             EponaTopAppBar(
                 scrollBehavior = topBarScroll,
@@ -176,24 +177,54 @@ fun CreateAlertScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        bottomBar = {
+            FormBottomBar(
+                primaryText = if (isFinalStep) {
+                    stringResource(
+                        if (state.alertType == AlertType.FOUND) {
+                            R.string.create_found_publish
+                        } else {
+                            R.string.create_publish
+                        }
+                    )
+                } else {
+                    stringResource(R.string.create_continue)
+                },
+                onPrimary = {
+                    viewModel.onEvent(
+                        if (isFinalStep) CreateAlertEvent.PublishClicked else CreateAlertEvent.NextStep
+                    )
+                },
+                loading = state.isSubmitting,
+                secondaryText = if (state.currentStep > 1) stringResource(R.string.create_back) else null,
+                onSecondary = { viewModel.onEvent(CreateAlertEvent.PreviousStep) }
+            )
+        }
     ) { padding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .consumeWindowInsets(padding)
-                .imePadding()
         ) {
-            // M3 progress indicator
             val stepDescription = stringResource(
                 R.string.create_step_progress, state.currentStep, state.totalSteps
+            )
+            Text(
+                text = stepDescription,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .constrainedWidth()
+                    .padding(horizontal = FormSpacing.Gutter)
+                    .padding(top = 8.dp, bottom = 8.dp)
             )
             LinearProgressIndicator(
                 progress = { state.progress },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .constrainedWidth()
+                    .padding(horizontal = FormSpacing.Gutter)
                     .semantics { stateDescription = stepDescription },
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
@@ -212,151 +243,131 @@ fun CreateAlertScreen(
                     }
                 },
                 label = "step_animation",
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .constrainedWidth()
-                    .padding(horizontal = 20.dp)
+                modifier = Modifier.weight(1f)
             ) { step ->
-                when (step) {
-                    1 -> AlertTypeStep(
-                        selectedType = state.alertType,
-                        onTypeSelected = {
-                            viewModel.onEvent(CreateAlertEvent.AlertTypeSelected(it))
-                        },
-                        onAdoptionClick = {
-                            viewModel.onEvent(CreateAlertEvent.AdoptionSelected)
-                        }
-                    )
-                    2 -> if (state.alertType == AlertType.LOST) {
-                        PetSelectionStep(
-                            pets = state.myPets,
-                            selectedPet = state.selectedPet,
-                            isLoading = state.isLoadingPets,
-                            onPetSelected = {
-                                viewModel.onEvent(CreateAlertEvent.PetSelected(it))
+                // One scroll state per step, so each starts at the top.
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .constrainedWidth()
+                        .padding(horizontal = FormSpacing.Gutter)
+                ) {
+                    when (step) {
+                        1 -> AlertTypeStep(
+                            selectedType = state.alertType,
+                            onTypeSelected = {
+                                viewModel.onEvent(CreateAlertEvent.AlertTypeSelected(it))
                             },
-                            onAddNewPet = {
-                                viewModel.onEvent(CreateAlertEvent.AddNewPetClicked)
+                            onAdoptionClick = {
+                                viewModel.onEvent(CreateAlertEvent.AdoptionSelected)
                             }
                         )
-                    } else {
-                        FoundPetStep(
-                            form = state.foundPet,
-                            onSpeciesChanged = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPetSpeciesChanged(it))
+                        2 -> if (state.alertType == AlertType.LOST) {
+                            PetSelectionStep(
+                                pets = state.myPets,
+                                selectedPet = state.selectedPet,
+                                isLoading = state.isLoadingPets,
+                                onPetSelected = {
+                                    viewModel.onEvent(CreateAlertEvent.PetSelected(it))
+                                },
+                                onAddNewPet = {
+                                    viewModel.onEvent(CreateAlertEvent.AddNewPetClicked)
+                                }
+                            )
+                        } else {
+                            FoundPetStep(
+                                form = state.foundPet,
+                                onSpeciesChanged = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPetSpeciesChanged(it))
+                                },
+                                onBreedChanged = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPetBreedChanged(it))
+                                },
+                                onColorChanged = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPetColorChanged(it))
+                                },
+                                onSizeChanged = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPetSizeChanged(it))
+                                },
+                                onDescriptionChanged = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPetDescriptionChanged(it))
+                                },
+                                onAddPhotosClick = { photoPicker.open() },
+                                onPhotoRemove = {
+                                    viewModel.onEvent(CreateAlertEvent.FoundPhotoRemoved(it))
+                                }
+                            )
+                        }
+                        3 -> LocationStep(
+                            location = state.location,
+                            address = state.address,
+                            description = state.description,
+                            isLoadingLocation = state.isLoadingLocation,
+                            locationError = state.locationError,
+                            onUseCurrentLocation = {
+                                if (locationPermission.isGranted) {
+                                    viewModel.onEvent(CreateAlertEvent.UseCurrentLocation)
+                                } else {
+                                    locationPermission.requestOrOpenAppSettings()
+                                }
                             },
-                            onBreedChanged = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPetBreedChanged(it))
-                            },
-                            onColorChanged = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPetColorChanged(it))
-                            },
-                            onSizeChanged = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPetSizeChanged(it))
-                            },
+                            onOpenMapPicker = { onNavigateToPickLocation(state.location) },
                             onDescriptionChanged = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPetDescriptionChanged(it))
+                                viewModel.onEvent(CreateAlertEvent.DescriptionChanged(it))
                             },
-                            onAddPhotosClick = { photoPicker.open() },
-                            onPhotoRemove = {
-                                viewModel.onEvent(CreateAlertEvent.FoundPhotoRemoved(it))
+                            showCustody = state.alertType == AlertType.FOUND,
+                            custody = state.custody,
+                            onCustodySelected = {
+                                viewModel.onEvent(CreateAlertEvent.CustodySelected(it))
+                            }
+                        )
+                        4 -> MatchesStep(
+                            matches = state.matches,
+                            isLoading = state.isLoadingMatches,
+                            error = state.matchesError,
+                            lookingFor = if (state.alertType == AlertType.LOST) {
+                                AlertType.FOUND
+                            } else {
+                                AlertType.LOST
+                            },
+                            onMatchClick = {
+                                viewModel.onEvent(CreateAlertEvent.MatchSelected(it))
+                            }
+                        )
+                        5 -> ContactReviewStep(
+                            phone = state.contactPhone,
+                            reward = state.reward,
+                            alertType = state.alertType,
+                            petName = if (state.alertType == AlertType.LOST) {
+                                state.selectedPet?.name ?: ""
+                            } else {
+                                stringResource(state.foundPet.species.foundLabel)
+                            },
+                            address = state.address,
+                            custody = state.custody,
+                            onPhoneChanged = {
+                                viewModel.onEvent(CreateAlertEvent.PhoneChanged(it))
+                            },
+                            onRewardChanged = {
+                                viewModel.onEvent(CreateAlertEvent.RewardChanged(it))
                             }
                         )
                     }
-                    3 -> LocationStep(
-                        location = state.location,
-                        address = state.address,
-                        description = state.description,
-                        isLoadingLocation = state.isLoadingLocation,
-                        locationError = state.locationError,
-                        onUseCurrentLocation = {
-                            if (locationPermission.isGranted) {
-                                viewModel.onEvent(CreateAlertEvent.UseCurrentLocation)
-                            } else {
-                                locationPermission.requestOrOpenAppSettings()
-                            }
-                        },
-                        onOpenMapPicker = { onNavigateToPickLocation(state.location) },
-                        onDescriptionChanged = {
-                            viewModel.onEvent(CreateAlertEvent.DescriptionChanged(it))
-                        },
-                        showCustody = state.alertType == AlertType.FOUND,
-                        custody = state.custody,
-                        onCustodySelected = {
-                            viewModel.onEvent(CreateAlertEvent.CustodySelected(it))
-                        }
-                    )
-                    4 -> MatchesStep(
-                        matches = state.matches,
-                        isLoading = state.isLoadingMatches,
-                        error = state.matchesError,
-                        lookingFor = if (state.alertType == AlertType.LOST) {
-                            AlertType.FOUND
-                        } else {
-                            AlertType.LOST
-                        },
-                        onMatchClick = {
-                            viewModel.onEvent(CreateAlertEvent.MatchSelected(it))
-                        }
-                    )
-                    5 -> ContactReviewStep(
-                        phone = state.contactPhone,
-                        reward = state.reward,
-                        alertType = state.alertType,
-                        petName = if (state.alertType == AlertType.LOST) {
-                            state.selectedPet?.name ?: ""
-                        } else {
-                            stringResource(state.foundPet.species.foundLabel)
-                        },
-                        address = state.address,
-                        custody = state.custody,
-                        onPhoneChanged = {
-                            viewModel.onEvent(CreateAlertEvent.PhoneChanged(it))
-                        },
-                        onRewardChanged = {
-                            viewModel.onEvent(CreateAlertEvent.RewardChanged(it))
-                        }
-                    )
-                }
-            }
 
-            // Bottom action buttons
-            Row(
-                modifier = Modifier
-                    .constrainedWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                if (state.currentStep > 1) {
-                    EponaOutlinedButton(
-                        text = stringResource(R.string.create_back),
-                        onClick = { viewModel.onEvent(CreateAlertEvent.PreviousStep) }
-                    )
-                }
-                if (state.currentStep == state.totalSteps) {
-                    EponaFilledButton(
-                        text = stringResource(
-                            if (state.alertType == AlertType.FOUND) {
-                                R.string.create_found_publish
-                            } else {
-                                R.string.create_publish
-                            }
-                        ),
-                        onClick = { viewModel.onEvent(CreateAlertEvent.PublishClicked) },
-                        loading = state.isSubmitting,
-                        enabled = state.canProceed,
-                        fullWidth = true,
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    EponaFilledButton(
-                        text = stringResource(R.string.create_continue),
-                        onClick = { viewModel.onEvent(CreateAlertEvent.NextStep) },
-                        enabled = state.canProceed,
-                        fullWidth = true,
-                        modifier = Modifier.weight(1f)
-                    )
+                    // Why Continue did nothing; live so a screen reader announces it.
+                    val blocker = state.stepBlocker
+                    if (state.showStepError && blocker != null && step == state.currentStep) {
+                        Text(
+                            text = stringResource(blocker),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .padding(top = FormSpacing.FieldGap)
+                                .semantics { liveRegion = LiveRegionMode.Polite }
+                        )
+                    }
+                    Spacer(Modifier.height(FormSpacing.SectionGap))
                 }
             }
         }

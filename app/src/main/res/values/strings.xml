@@ -145,6 +145,10 @@
     <string name="create_publish">🚨 Publish Alert</string>
     <string name="create_continue">Continue</string>
     <string name="create_back">Back</string>
+    <string name="create_found_section_look">What it looks like</string>
+    <string name="create_error_select_pet">Choose the pet that went missing to continue</string>
+    <string name="create_error_set_location">Set the location to continue</string>
+    <string name="create_error_custody">Tell us where the pet is now to continue</string>
     <string name="create_no_pets_title">No pets registered yet</string>
     <string name="create_no_pets_desc">Add a pet first to create an alert</string>
     <string name="create_add_pet">Add Pet</string>
@@ -338,12 +342,15 @@
     <string name="pet_features_label">Distinguishing features</string>
     <string name="pet_description_placeholder">Markings, scars, microchip, temperament…</string>
     <string name="pet_save">Save Pet</string>
+    <string name="pet_name_required">Pet name is required</string>
+    <string name="pet_age_invalid">Enter an age between 0 and 40</string>
     <string name="pet_update">Update Pet</string>
     <string name="pet_photos_desc">Add photos to help identify your pet</string>
     <string name="pet_photos_selected_count">%1$d of %2$d photos</string>
 
     <!-- Photo picker (gallery + camera) -->
     <string name="pet_photos_title">Photos</string>
+    <string name="photo_hero_add">Add photos</string>
     <string name="photo_source_title">Add a photo</string>
     <string name="photo_source_gallery">Choose from gallery</string>
     <string name="photo_source_camera">Take a photo</string>
@@ -392,6 +399,7 @@
 
     <!-- Common Actions -->
     <string name="action_back">Back</string>
+    <string name="form_label_optional">%1$s (optional)</string>
     <string name="action_close">Close</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
@@ -505,6 +513,7 @@
     <string name="adoption_field_title_placeholder">e.g., Golden Retriever puppies in adoption</string>
     <string name="adoption_title_required">Enter a title of at least 3 characters</string>
     <string name="adoption_section_about">About the pet(s)</string>
+    <string name="adoption_section_contact">Price and contact</string>
     <string name="adoption_field_name">Name (optional)</string>
     <string name="adoption_field_age">Age</string>
     <string name="adoption_field_description">Description (optional)</string>

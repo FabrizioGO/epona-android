@@ -1,7 +1,8 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
 
-import androidx.compose.ui.semantics.semantics
+import com.fabriziogo.epona.core.ui.form.SelectableOptionCard
+import com.fabriziogo.epona.feature.alert.create.steps.components.StepHeader
 import androidx.compose.ui.semantics.heading
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,19 +37,10 @@ fun AlertTypeStep(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
-        Text(
-            text = stringResource(R.string.create_step_type_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.semantics { heading() }
+        StepHeader(
+            title = stringResource(R.string.create_step_type_title),
+            subtitle = stringResource(R.string.create_step_type_subtitle)
         )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            text = stringResource(R.string.create_step_type_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(28.dp))
 
         Row(
             modifier = Modifier
@@ -59,24 +51,15 @@ fun AlertTypeStep(
         ) {
             AlertType.entries.forEach { type ->
                 val selected = selectedType == type
-                Surface(
+                SelectableOptionCard(
+                    selected = selected,
+                    onClick = { onTypeSelected(type) },
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight()
-                        .selectable(
-                            selected = selected,
-                            onClick = { onTypeSelected(type) },
-                            role = Role.RadioButton
-                        ),
-                    shape = MaterialTheme.shapes.medium,
-                    color = if (selected) MaterialTheme.colorScheme.secondaryContainer
-                    else MaterialTheme.colorScheme.surfaceContainerLow,
-                    border = if (selected) androidx.compose.foundation.BorderStroke(
-                        2.dp, MaterialTheme.colorScheme.primary
-                    ) else null
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(

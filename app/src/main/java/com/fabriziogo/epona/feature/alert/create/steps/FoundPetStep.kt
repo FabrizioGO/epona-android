@@ -1,5 +1,10 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import com.fabriziogo.epona.feature.alert.create.steps.components.StepHeader
+import com.fabriziogo.epona.core.ui.form.ChoiceChipGroup
+import com.fabriziogo.epona.core.ui.form.FormFieldLabel
+import com.fabriziogo.epona.core.ui.form.FormSection
+import com.fabriziogo.epona.core.ui.theme.FormSpacing
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
@@ -22,8 +27,7 @@ import com.fabriziogo.epona.core.media.PhotoItem
 import com.fabriziogo.epona.core.ui.components.EponaTextField
 import com.fabriziogo.epona.core.ui.theme.EponaTheme
 import com.fabriziogo.epona.feature.alert.create.FoundPetForm
-import com.fabriziogo.epona.feature.pet.components.PhotoPickerSection
-import com.fabriziogo.epona.feature.pet.components.SelectionChips
+import com.fabriziogo.epona.core.ui.media.PhotoPickerSection
 
 /**
  * Step 2 (FOUND): describe the stray. Deliberately no name, gender, age or
@@ -43,67 +47,10 @@ fun FoundPetStep(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
-        Text(
-            stringResource(R.string.create_step_found_pet_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.semantics { heading() }
+        StepHeader(
+            title = stringResource(R.string.create_step_found_pet_title),
+            subtitle = stringResource(R.string.create_step_found_pet_subtitle)
         )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            stringResource(R.string.create_step_found_pet_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(24.dp))
-
-        Text(
-            stringResource(R.string.pet_species_label),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(Modifier.height(8.dp))
-        SelectionChips(
-            options = Species.entries,
-            selected = form.species,
-            label = { stringResource(it.label) },
-            onSelected = onSpeciesChanged
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        EponaTextField(
-            value = form.breed,
-            onValueChange = onBreedChanged,
-            label = stringResource(R.string.pet_breed_label),
-            placeholder = stringResource(R.string.pet_breed_placeholder)
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        EponaTextField(
-            value = form.color,
-            onValueChange = onColorChanged,
-            label = stringResource(R.string.pet_color_label),
-            placeholder = stringResource(R.string.pet_color_placeholder)
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            stringResource(R.string.pet_size_label),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(Modifier.height(8.dp))
-        SelectionChips(
-            options = PetSize.entries,
-            selected = form.size,
-            label = { stringResource(it.label) },
-            onSelected = onSizeChanged
-        )
-
-        Spacer(Modifier.height(24.dp))
 
         PhotoPickerSection(
             photos = form.photos,
@@ -111,17 +58,55 @@ fun FoundPetStep(
             onRemove = onPhotoRemove
         )
 
-        Spacer(Modifier.height(24.dp))
+        FormSection(title = stringResource(R.string.create_found_section_look)) {
+            FormFieldLabel(stringResource(R.string.pet_species_label))
+            ChoiceChipGroup(
+                options = Species.entries,
+                selected = form.species,
+                onSelect = { it?.let(onSpeciesChanged) },
+                label = { stringResource(it.label) }
+            )
+            Spacer(Modifier.height(FormSpacing.FieldGap))
 
-        EponaTextField(
-            value = form.description,
-            onValueChange = onDescriptionChanged,
-            label = stringResource(R.string.pet_features_label),
-            placeholder = stringResource(R.string.create_found_description_placeholder),
-            singleLine = false,
-            maxLines = 5,
-            imeAction = ImeAction.Done
-        )
+            FormFieldLabel(stringResource(R.string.pet_size_label))
+            ChoiceChipGroup(
+                options = PetSize.entries,
+                selected = form.size,
+                onSelect = { it?.let(onSizeChanged) },
+                label = { stringResource(it.label) }
+            )
+            Spacer(Modifier.height(FormSpacing.FieldGap))
+
+            EponaTextField(
+                value = form.breed,
+                onValueChange = onBreedChanged,
+                label = stringResource(R.string.pet_breed_label),
+                placeholder = stringResource(R.string.pet_breed_placeholder),
+                optional = true
+            )
+            Spacer(Modifier.height(FormSpacing.FieldGap))
+
+            EponaTextField(
+                value = form.color,
+                onValueChange = onColorChanged,
+                label = stringResource(R.string.pet_color_label),
+                placeholder = stringResource(R.string.pet_color_placeholder),
+                optional = true
+            )
+            Spacer(Modifier.height(FormSpacing.FieldGap))
+
+            EponaTextField(
+                value = form.description,
+                onValueChange = onDescriptionChanged,
+                label = stringResource(R.string.pet_features_label),
+                placeholder = stringResource(R.string.create_found_description_placeholder),
+                singleLine = false,
+                minLines = 3,
+                maxLines = 6,
+                optional = true,
+                imeAction = ImeAction.Default
+            )
+        }
     }
 }
 

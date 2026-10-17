@@ -125,8 +125,8 @@ fun LocationPickerCard(
                                 maxLines = 2
                             )
                             Text(
-                                text = "${String.format("%.4f", location.latitude)}, " +
-                                        String.format("%.4f", location.longitude),
+                                text = "${String.format(java.util.Locale.ROOT, "%.4f", location.latitude)}, " +
+                                        String.format(java.util.Locale.ROOT, "%.4f", location.longitude),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -149,14 +149,7 @@ fun LocationPickerCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp)
-                        .background(
-                            brush = androidx.compose.ui.graphics.Brush.linearGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
-                                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.05f)
-                                )
-                            )
-                        )
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .clickable(
                             onClickLabel = stringResource(R.string.sighting_location_tap),
                             role = Role.Button,

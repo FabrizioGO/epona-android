@@ -138,16 +138,19 @@ class CreateAlertViewModel @Inject constructor(
     }
 
     private fun nextStep() {
-        if (!_state.value.canProceed) return
+        if (!_state.value.canProceed) {
+            _state.update { it.copy(showStepError = true) }
+            return
+        }
         if (_state.value.currentStep < _state.value.totalSteps) {
-            _state.update { it.copy(currentStep = it.currentStep + 1) }
+            _state.update { it.copy(currentStep = it.currentStep + 1, showStepError = false) }
             if (_state.value.currentStep == MATCHES_STEP) loadMatches()
         }
     }
 
     private fun previousStep() {
         if (_state.value.currentStep > 1) {
-            _state.update { it.copy(currentStep = it.currentStep - 1) }
+            _state.update { it.copy(currentStep = it.currentStep - 1, showStepError = false) }
         } else {
             emitNav(CreateAlertNavEvent.NavigateBack)
         }

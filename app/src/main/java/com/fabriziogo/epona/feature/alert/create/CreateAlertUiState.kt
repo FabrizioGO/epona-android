@@ -1,5 +1,7 @@
 package com.fabriziogo.epona.feature.alert.create
 
+import androidx.annotation.StringRes
+import com.fabriziogo.epona.R
 import com.fabriziogo.epona.core.domain.model.AlertType
 import com.fabriziogo.epona.core.domain.model.AlertWithDetails
 import com.fabriziogo.epona.core.domain.model.FoundCustody
@@ -60,18 +62,28 @@ data class CreateAlertUiState(
     // Submission
     val isSubmitting: Boolean = false,
     val isSuccess: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+
+    /** Set when Continue is tapped on a blocked step; shows [stepBlocker] under the step. */
+    val showStepError: Boolean = false
 ) {
-    val canProceed: Boolean
+    /** Why the current step cannot advance yet, or null when it can. */
+    @get:StringRes
+    val stepBlocker: Int?
         get() = when (currentStep) {
-            1 -> true
-            2 -> if (alertType == AlertType.LOST) selectedPet != null else true
-            3 -> location != null &&
-                    (alertType == AlertType.LOST || custody != null)
-            4 -> true
-            5 -> !isSubmitting
-            else -> false
+            2 -> if (alertType == AlertType.LOST && selectedPet == null) {
+                R.string.create_error_select_pet
+            } else null
+            3 -> when {
+                location == null -> R.string.create_error_set_location
+                alertType == AlertType.FOUND && custody == null -> R.string.create_error_custody
+                else -> null
+            }
+            else -> null
         }
+
+    val canProceed: Boolean
+        get() = if (currentStep == totalSteps) !isSubmitting else stepBlocker == null
 
     val progress: Float
         get() = currentStep.toFloat() / totalSteps.toFloat()

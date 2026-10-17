@@ -16,6 +16,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.res.stringResource
+import com.fabriziogo.epona.core.ui.form.SelectableOptionCard
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fabriziogo.epona.R
@@ -49,24 +50,12 @@ fun CustodySelector(
         ) {
             FoundCustody.entries.forEach { custody ->
                 val isSelected = selected == custody
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(
-                            selected = isSelected,
-                            onClick = { onSelected(custody) },
-                            role = Role.RadioButton
-                        ),
-                    shape = MaterialTheme.shapes.medium,
-                    color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer
-                    else MaterialTheme.colorScheme.surfaceContainerLow,
-                    border = if (isSelected) {
-                        BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-                    } else {
-                        null
-                    }
+                SelectableOptionCard(
+                    selected = isSelected,
+                    onClick = { onSelected(custody) },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column {
                         Text(
                             text = stringResource(custody.label),
                             style = MaterialTheme.typography.titleSmall,

@@ -1,23 +1,10 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.fabriziogo.epona.feature.sighting.report
 
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +20,20 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fabriziogo.epona.R
-import com.fabriziogo.epona.core.ui.layout.constrainedWidth
 import com.fabriziogo.epona.core.domain.model.Location
 import com.fabriziogo.epona.core.domain.model.MAX_PHOTOS_PER_ENTITY
 import com.fabriziogo.epona.core.ui.components.EponaConfirmDialog
 import com.fabriziogo.epona.core.ui.components.LocationPickerCard
 import com.fabriziogo.epona.feature.sighting.report.components.SightingNoteField
-import com.fabriziogo.epona.feature.sighting.report.components.SubmitSection
-import com.fabriziogo.epona.core.ui.components.EponaTopAppBar
+import com.fabriziogo.epona.feature.sighting.report.components.SightingInfoBanner
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import com.fabriziogo.epona.core.ui.form.FormBottomBar
+import com.fabriziogo.epona.core.ui.form.FormScaffold
+import com.fabriziogo.epona.core.ui.form.FormSection
+import com.fabriziogo.epona.core.ui.theme.FormSpacing
 import com.fabriziogo.epona.core.ui.media.PhotoSourceSheet
 import com.fabriziogo.epona.core.ui.media.PhotoThumbnailRow
 import com.fabriziogo.epona.core.ui.media.rememberMediaPickerState
@@ -48,7 +41,6 @@ import com.fabriziogo.epona.core.ui.permission.RequestLocationPermissionOnEntry
 import com.fabriziogo.epona.core.ui.permission.rememberLocationPermissionState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportSightingScreen(
     onNavigateBack: () -> Unit,
@@ -130,109 +122,76 @@ fun ReportSightingScreen(
         )
     }
 
-    // Pinned bar: picks up its tonal 'scrolled' color as the content scrolls under it.
+    // A failed submit (no location) leaves the error under the card, which is the first field.
+    val scrollState = rememberScrollState()
+    LaunchedEffect(state.locationError) {
+        if (state.locationError != null) scrollState.animateScrollTo(0)
+    }
 
-    val topBarScroll = TopAppBarDefaults.pinnedScrollBehavior()
-
-
-    Scaffold(
-        modifier = Modifier.nestedScroll(topBarScroll.nestedScrollConnection),
-        topBar = {
-            EponaTopAppBar(
-                scrollBehavior = topBarScroll,
-                title = stringResource(R.string.sighting_report_title),
-                onCloseClick = {
-                    if (isDirty && !state.isSubmitting) showDiscardDialog = true
-                    else viewModel.onEvent(ReportSightingEvent.BackClicked)
-                }
-            )
+    FormScaffold(
+        title = stringResource(R.string.sighting_report_title),
+        onClose = {
+            if (isDirty && !state.isSubmitting) showDiscardDialog = true
+            else viewModel.onEvent(ReportSightingEvent.BackClicked)
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding)
-                .consumeWindowInsets(padding)
-                .imePadding()
-                .verticalScroll(rememberScrollState())
-                .constrainedWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Spacer(Modifier.height(8.dp))
+        modifier = modifier,
+        snackbarHostState = snackbarHostState,
+        scrollState = scrollState,
+        bottomBar = {
+            FormBottomBar(
+                primaryText = stringResource(R.string.sighting_submit),
+                onPrimary = { viewModel.onEvent(ReportSightingEvent.SubmitClicked) },
+                primaryIcon = Icons.Outlined.Visibility,
+                loading = state.isSubmitting
+            )
+        }
+    ) {
+        Spacer(Modifier.height(FormSpacing.FieldGap))
 
-            // Context banner
-            if (state.petName.isNotBlank()) {
-                Text(
-                    text = stringResource(R.string.sighting_spotted, state.petName),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(R.string.sighting_add_photo),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
-
-            // Photo capture
+        if (state.petName.isNotBlank()) {
             Text(
-                text = stringResource(R.string.sighting_photos_title),
+                text = stringResource(R.string.sighting_spotted, state.petName),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.semantics { heading() }
             )
-            Text(
-                text = stringResource(R.string.sighting_photos_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(4.dp))
+        }
+        SightingInfoBanner()
+        Spacer(Modifier.height(FormSpacing.SectionGap))
+
+        // The one required field comes first.
+        LocationPickerCard(
+            location = state.location,
+            address = state.address,
+            isLoading = state.isLoadingLocation,
+            errorText = state.locationError,
+            onUseCurrentLocation = {
+                if (locationPermission.isGranted) {
+                    viewModel.onEvent(ReportSightingEvent.UseCurrentLocation)
+                } else {
+                    locationPermission.requestOrOpenAppSettings()
+                }
+            },
+            onOpenMapPicker = { onNavigateToPickLocation(state.location) }
+        )
+        Spacer(Modifier.height(FormSpacing.SectionGap))
+
+        FormSection(
+            title = stringResource(R.string.sighting_photos_title),
+            supporting = stringResource(R.string.sighting_photos_desc)
+        ) {
             PhotoThumbnailRow(
                 photos = state.photos,
                 onAddClick = photoPicker::open,
-                onRemove = { viewModel.onEvent(ReportSightingEvent.PhotoRemoved(it)) },
-                thumbnailSize = 90.dp
+                onRemove = { viewModel.onEvent(ReportSightingEvent.PhotoRemoved(it)) }
             )
-
-            Spacer(Modifier.height(20.dp))
-
-            // Location picker
-            LocationPickerCard(
-                location = state.location,
-                address = state.address,
-                isLoading = state.isLoadingLocation,
-                errorText = state.locationError,
-                onUseCurrentLocation = {
-                    if (locationPermission.isGranted) {
-                        viewModel.onEvent(ReportSightingEvent.UseCurrentLocation)
-                    } else {
-                        locationPermission.requestOrOpenAppSettings()
-                    }
-                },
-                onOpenMapPicker = { onNavigateToPickLocation(state.location) }
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            // Note
-            SightingNoteField(
-                note = state.note,
-                onNoteChanged = { viewModel.onEvent(ReportSightingEvent.NoteChanged(it)) }
-            )
-
-            Spacer(Modifier.height(24.dp))
-
-            // Submit
-            SubmitSection(
-                canSubmit = state.canSubmit,
-                isSubmitting = state.isSubmitting,
-                onSubmit = { viewModel.onEvent(ReportSightingEvent.SubmitClicked) }
-            )
-
-            Spacer(Modifier.height(32.dp))
         }
+
+        SightingNoteField(
+            note = state.note,
+            onNoteChanged = { viewModel.onEvent(ReportSightingEvent.NoteChanged(it)) },
+            enabled = !state.isSubmitting
+        )
     }
 }

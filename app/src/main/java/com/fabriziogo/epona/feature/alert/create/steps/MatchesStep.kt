@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.alert.create.steps
 
+import com.fabriziogo.epona.feature.alert.create.steps.components.StepHeader
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.heading
 import com.fabriziogo.epona.core.ui.preview.EponaPreviews
@@ -51,19 +52,10 @@ fun MatchesStep(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(top = 24.dp)) {
-        Text(
-            stringResource(R.string.create_step_matches_title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.semantics { heading() }
+        StepHeader(
+            title = stringResource(R.string.create_step_matches_title),
+            subtitle = stringResource(R.string.create_step_matches_subtitle)
         )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            stringResource(R.string.create_step_matches_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(24.dp))
 
         when {
             isLoading -> FullScreenProgress(modifier = Modifier.fillMaxWidth())

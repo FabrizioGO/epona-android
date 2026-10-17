@@ -44,8 +44,12 @@ data class EditPetUiState(
     val isProcessingPhotos: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val nameError: String? = null,
-    val isFormValid: Boolean = false
+    val nameError: Int? = null,
+    val ageError: Int? = null,
+    /** True while an update is in flight; [isLoading] covers only the initial load. */
+    val isSaving: Boolean = false,
+    /** Bumped on every Save tap that fails validation; errors go live once it is above 0. */
+    val submitAttempts: Int = 0
 )
 
 sealed class EditPetEvent {
@@ -91,11 +95,11 @@ class EditPetViewModel @Inject constructor(
     fun onEvent(event: EditPetEvent) {
         when (event) {
             is EditPetEvent.NameChanged -> {
+                val live = _state.value.submitAttempts > 0
                 _state.value = _state.value.copy(
                     petName = event.name,
-                    nameError = if (event.name.isBlank()) "Pet name is required" else null
+                    nameError = if (live) petNameError(event.name) else null
                 )
-                validateForm()
             }
             is EditPetEvent.SpeciesChanged -> {
                 _state.value = _state.value.copy(selectedSpecies = event.species)
@@ -110,7 +114,11 @@ class EditPetViewModel @Inject constructor(
                 _state.value = _state.value.copy(selectedSize = event.size)
             }
             is EditPetEvent.AgeChanged -> {
-                _state.value = _state.value.copy(ageYears = event.age)
+                val live = _state.value.submitAttempts > 0
+                _state.value = _state.value.copy(
+                    ageYears = event.age,
+                    ageError = if (live) petAgeError(event.age) else null
+                )
             }
             is EditPetEvent.GenderChanged -> {
                 _state.value = _state.value.copy(selectedGender = event.gender)
@@ -149,8 +157,7 @@ class EditPetViewModel @Inject constructor(
                         microchipId = pet.microchipId ?: "",
                         description = pet.description ?: "",
                         photos = pet.photoUrls.map { PhotoItem.Remote(it) },
-                        isLoading = false,
-                        isFormValid = true
+                        isLoading = false
                     )
                 }.onFailure { exception ->
                     _state.value = _state.value.copy(
@@ -199,29 +206,30 @@ class EditPetViewModel @Inject constructor(
         )
     }
 
-    private fun validateForm() {
-        val isValid = _state.value.petName.isNotBlank()
-        _state.value = _state.value.copy(isFormValid = isValid)
-    }
-
     private fun savePet() {
         val current = _state.value
 
         // Also covers the initial load: isLoading is true until the pet is on screen,
         // and a second tap mid-update would fire a redundant round trip.
-        if (current.isLoading) {
+        if (current.isLoading || current.isSaving) {
             Timber.d("EditPet: save ignored, one is already in flight")
             return
         }
-        if (!current.isFormValid) {
+        val nameError = petNameError(current.petName)
+        val ageError = petAgeError(current.ageYears)
+        if (nameError != null || ageError != null) {
             Timber.d("EditPet: save ignored, form is not valid")
-            _state.value = current.copy(nameError = "Pet name is required")
+            _state.value = current.copy(
+                nameError = nameError,
+                ageError = ageError,
+                submitAttempts = current.submitAttempts + 1
+            )
             return
         }
 
         viewModelScope.launch {
             Timber.d("EditPet: updating id=%s", current.petId)
-            _state.value = current.copy(isLoading = true, error = null)
+            _state.value = current.copy(isSaving = true, error = null)
             try {
                 val pet = Pet(
                     id = current.petId,
@@ -241,19 +249,19 @@ class EditPetViewModel @Inject constructor(
                     // Uploaded and persisted, so the cache copies are dead weight.
                     // Only on success: a failed save keeps them for the retry.
                     imageProcessor.delete(current.photos.localUris())
-                    _state.value = _state.value.copy(isLoading = false)
+                    _state.value = _state.value.copy(isSaving = false)
                     _navEvents.send(EditPetNavEvent.NavigateToSuccess)
                 }.onFailure { exception ->
                     Timber.e(exception, "EditPet: update failed")
                     _state.value = _state.value.copy(
-                        isLoading = false,
+                        isSaving = false,
                         error = exception.message ?: "Failed to save pet"
                     )
                 }
             } catch (e: Exception) {
                 Timber.e(e, "EditPet: update failed")
                 _state.value = _state.value.copy(
-                    isLoading = false,
+                    isSaving = false,
                     error = e.message ?: "Failed to save pet"
                 )
             }
