@@ -48,6 +48,7 @@ import com.fabriziogo.epona.feature.detail.components.DetailPetFeatures
 import com.fabriziogo.epona.feature.detail.components.DetailHero
 import com.fabriziogo.epona.feature.detail.components.DetailInfoCards
 import com.fabriziogo.epona.feature.detail.components.DetailMapPreview
+import com.fabriziogo.epona.feature.detail.components.BlockUserDialog
 import com.fabriziogo.epona.feature.detail.components.DetailSightingsSection
 import com.fabriziogo.epona.feature.detail.components.FlagContentDialog
 import com.fabriziogo.epona.feature.detail.components.ResolveDialog
@@ -151,6 +152,16 @@ fun AlertDetailScreen(
         )
     }
 
+    // Block user confirmation dialog
+    state.blockTarget?.let { target ->
+        BlockUserDialog(
+            userName = target.userName,
+            isBlocking = state.isBlocking,
+            onConfirm = { viewModel.onEvent(AlertDetailEvent.BlockConfirmed) },
+            onDismiss = { viewModel.onEvent(AlertDetailEvent.BlockDismissed) }
+        )
+    }
+
     Scaffold(
         // The hero image runs all the way up behind the transparent status bar, so only
         // the sides and the bottom are padded here; the floating back and share buttons
@@ -230,6 +241,11 @@ fun AlertDetailScreen(
                             isOwner = state.isCurrentUserOwner,
                             onFlagClick = {
                                 viewModel.onEvent(AlertDetailEvent.FlagClicked)
+                            },
+                            onBlockClick = {
+                                viewModel.onEvent(
+                                    AlertDetailEvent.BlockClicked(alert.userId, detail.ownerName)
+                                )
                             }
                         )
                     }
@@ -297,6 +313,10 @@ fun AlertDetailScreen(
                             DetailSightingsSection(
                                 sightings = state.sightings,
                                 isLoading = state.isSightingsLoading,
+                                currentUserId = state.currentUserId,
+                                onBlockReporter = { id, name ->
+                                    viewModel.onEvent(AlertDetailEvent.BlockClicked(id, name))
+                                },
                                 modifier = Modifier.padding(horizontal = 20.dp)
                             )
                         }

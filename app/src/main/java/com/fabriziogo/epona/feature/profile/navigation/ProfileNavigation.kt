@@ -9,6 +9,7 @@ import androidx.navigation.navigation
 import com.fabriziogo.epona.core.ui.navigation.clearSnackbarMessage
 import com.fabriziogo.epona.core.ui.navigation.snackbarMessageAsState
 import com.fabriziogo.epona.feature.profile.ProfileScreen
+import com.fabriziogo.epona.feature.profile.blockedusers.BlockedUsersScreen
 import com.fabriziogo.epona.feature.profile.mypets.MyPetsScreen
 import com.fabriziogo.epona.feature.profile.settings.SettingsScreen
 
@@ -16,6 +17,7 @@ const val PROFILE_GRAPH_ROUTE = "profile_graph"
 const val PROFILE_ROUTE = "profile"
 const val MY_PETS_ROUTE = "profile/my_pets"
 const val SETTINGS_ROUTE = "profile/settings"
+const val BLOCKED_USERS_ROUTE = "profile/blocked_users"
 
 fun NavController.navigateToProfile(navOptions: NavOptions? = null) {
     navigate(PROFILE_ROUTE, navOptions)
@@ -43,6 +45,9 @@ fun NavGraphBuilder.profileGraph(
                     navController.navigate(SETTINGS_ROUTE)
                 },
                 onNavigateToHelp = onNavigateToHelp,
+                onNavigateToBlockedUsers = {
+                    navController.navigate(BLOCKED_USERS_ROUTE)
+                },
                 onNavigateToAuth = onNavigateToAuth
             )
         }
@@ -60,6 +65,12 @@ fun NavGraphBuilder.profileGraph(
 
         composable(route = SETTINGS_ROUTE) {
             SettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = BLOCKED_USERS_ROUTE) {
+            BlockedUsersScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

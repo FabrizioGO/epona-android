@@ -7,6 +7,7 @@ sealed interface ProfileEvent {
     data object MyAlertsClicked : ProfileEvent
     data object SettingsClicked : ProfileEvent
     data object HelpClicked : ProfileEvent
+    data object BlockedUsersClicked : ProfileEvent
     data object SignOutClicked : ProfileEvent
     data object SignOutConfirmed : ProfileEvent
     data object SignOutDismissed : ProfileEvent
@@ -23,5 +24,6 @@ sealed interface ProfileNavEvent {
     data object NavigateToMyAlerts : ProfileNavEvent
     data object NavigateToSettings : ProfileNavEvent
     data object NavigateToHelp : ProfileNavEvent
+    data object NavigateToBlockedUsers : ProfileNavEvent
     data object NavigateToAuth : ProfileNavEvent
 }

@@ -6,6 +6,7 @@ import com.fabriziogo.epona.core.data.repository.AuthRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.LocationRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.NotificationRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.PetRepositoryImpl
+import com.fabriziogo.epona.core.data.repository.BlockRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.ReportRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.SightingRepositoryImpl
 import com.fabriziogo.epona.core.data.repository.UserRepositoryImpl
@@ -15,6 +16,7 @@ import com.fabriziogo.epona.core.domain.repository.AuthRepository
 import com.fabriziogo.epona.core.domain.repository.LocationRepository
 import com.fabriziogo.epona.core.domain.repository.NotificationRepository
 import com.fabriziogo.epona.core.domain.repository.PetRepository
+import com.fabriziogo.epona.core.domain.repository.BlockRepository
 import com.fabriziogo.epona.core.domain.repository.ReportRepository
 import com.fabriziogo.epona.core.domain.repository.SightingRepository
 import com.fabriziogo.epona.core.domain.repository.UserRepository
@@ -81,4 +83,10 @@ abstract class DataModule {
     abstract fun bindReportRepository(
         impl: ReportRepositoryImpl
     ): ReportRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBlockRepository(
+        impl: BlockRepositoryImpl
+    ): BlockRepository
 }

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Campaign
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Pets
 import androidx.compose.material.icons.outlined.Settings
@@ -66,6 +67,7 @@ fun ProfileScreen(
     onNavigateToMyAlerts: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToHelp: () -> Unit,
+    onNavigateToBlockedUsers: () -> Unit,
     onNavigateToAuth: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
@@ -107,6 +109,7 @@ fun ProfileScreen(
                 ProfileNavEvent.NavigateToMyAlerts -> onNavigateToMyAlerts()
                 ProfileNavEvent.NavigateToSettings -> onNavigateToSettings()
                 ProfileNavEvent.NavigateToHelp -> onNavigateToHelp()
+                ProfileNavEvent.NavigateToBlockedUsers -> onNavigateToBlockedUsers()
                 ProfileNavEvent.NavigateToAuth -> onNavigateToAuth()
             }
         }
@@ -247,6 +250,11 @@ private fun ProfileSections(
                 icon = Icons.AutoMirrored.Outlined.HelpOutline,
                 label = stringResource(R.string.profile_help),
                 onClick = { onEvent(ProfileEvent.HelpClicked) }
+            )
+            SettingsItem(
+                icon = Icons.Outlined.Block,
+                label = stringResource(R.string.profile_blocked_users),
+                onClick = { onEvent(ProfileEvent.BlockedUsersClicked) }
             )
         }
 

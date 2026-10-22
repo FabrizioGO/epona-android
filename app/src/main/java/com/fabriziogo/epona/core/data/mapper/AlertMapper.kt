@@ -23,6 +23,7 @@ import com.fabriziogo.epona.core.domain.model.Species
 fun NearbyAlertDto.toDomain(): AlertWithDetails = AlertWithDetails(
     alert = Alert(
         id = alertId,
+        userId = ownerId ?: "",
         type = AlertType.fromValue(type),
         status = AlertStatus.ACTIVE,
         foundCustody = FoundCustody.fromValue(foundCustody),

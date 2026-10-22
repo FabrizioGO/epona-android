@@ -1,5 +1,6 @@
 package com.fabriziogo.epona.feature.detail
 
+import com.fabriziogo.epona.core.ui.text.UiText
 import com.fabriziogo.epona.core.ui.text.uiTextOf
 import com.fabriziogo.epona.R
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +12,7 @@ import com.fabriziogo.epona.core.domain.repository.AuthRepository
 import com.fabriziogo.epona.core.domain.usecase.alert.DeleteAlertUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.GetAlertDetailUseCase
 import com.fabriziogo.epona.core.domain.usecase.alert.ResolveAlertUseCase
+import com.fabriziogo.epona.core.domain.usecase.block.BlockUserUseCase
 import com.fabriziogo.epona.core.domain.usecase.report.ReportContentUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.GetSightingTrailUseCase
 import com.fabriziogo.epona.core.domain.usecase.sighting.ObserveSightingsUseCase
@@ -34,6 +36,7 @@ class AlertDetailViewModel @Inject constructor(
     private val resolveAlert: ResolveAlertUseCase,
     private val deleteAlert: DeleteAlertUseCase,
     private val reportContent: ReportContentUseCase,
+    private val blockUser: BlockUserUseCase,
     private val authRepo: AuthRepository
 ) : ViewModel() {
 
@@ -98,6 +101,16 @@ class AlertDetailViewModel @Inject constructor(
             AlertDetailEvent.FlagSuccessMessageShown ->
                 _state.update { it.copy(flagSuccessMessage = null) }
 
+            is AlertDetailEvent.BlockClicked ->
+                _state.update {
+                    it.copy(blockTarget = BlockTarget(event.userId, event.userName))
+                }
+
+            AlertDetailEvent.BlockConfirmed -> blockSelectedUser()
+
+            AlertDetailEvent.BlockDismissed ->
+                _state.update { it.copy(blockTarget = null) }
+
             // Only the detail: it is what decides whether there is a trail to load.
             AlertDetailEvent.RetryLoad -> loadAlertDetail()
 
@@ -117,7 +130,8 @@ class AlertDetailViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             alertDetail = detail,
-                            isCurrentUserOwner = detail.alert.userId == currentUserId
+                            isCurrentUserOwner = detail.alert.userId == currentUserId,
+                            currentUserId = currentUserId
                         )
                     }
                     if (detail.alert.acceptsSightings) startSightingsOnce()
@@ -236,6 +250,36 @@ class AlertDetailViewModel @Inject constructor(
                         it.copy(
                             isSubmittingFlag = false,
                             error = uiTextOf(err.message, R.string.error_submit_report)
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun blockSelectedUser() {
+        val target = _state.value.blockTarget ?: return
+        viewModelScope.launch {
+            _state.update { it.copy(isBlocking = true) }
+            blockUser(target.userId)
+                .onSuccess {
+                    val blockedAuthor =
+                        target.userId == _state.value.alertDetail?.alert?.userId
+                    _state.update {
+                        it.copy(
+                            isBlocking = false,
+                            blockTarget = null,
+                            flagSuccessMessage = UiText.StringResource(R.string.block_success, listOf(target.userName))
+                        )
+                    }
+                    // The alert itself is now hidden from them, so there is nothing to stay on.
+                    if (blockedAuthor) emitNav(DetailNavEvent.NavigateBack) else loadSightings()
+                }
+                .onFailure { err ->
+                    _state.update {
+                        it.copy(
+                            isBlocking = false,
+                            blockTarget = null,
+                            error = uiTextOf(err.message, R.string.error_block_user)
                         )
                     }
                 }

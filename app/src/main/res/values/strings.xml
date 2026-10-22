@@ -571,4 +571,20 @@
     <string name="error_delete_account">Failed to delete account</string>
     <string name="error_update_photo">Could not update your photo. Please try again.</string>
     <string name="detail_report_thanks">Thanks, we\'ll review it</string>
+
+    <!-- Blocking users -->
+    <string name="block_user_action">Block user</string>
+    <string name="block_dialog_title">Block %1$s?</string>
+    <string name="block_dialog_message">You won\'t see their alerts, sightings or adoption posts, and they won\'t see yours. You\'ll stop getting notifications about each other. You can unblock them any time from Profile.</string>
+    <string name="block_dialog_confirm">Block</string>
+    <string name="block_success">%1$s blocked</string>
+    <string name="error_block_user">Couldn\'t block this user. Try again.</string>
+    <string name="error_unblock_user">Couldn\'t unblock this user. Try again.</string>
+    <string name="error_load_blocked_users">Couldn\'t load your blocked users.</string>
+    <string name="profile_blocked_users">Blocked users</string>
+    <string name="blocked_users_title">Blocked users</string>
+    <string name="blocked_users_empty_title">No blocked users</string>
+    <string name="blocked_users_empty_description">People you block will appear here.</string>
+    <string name="blocked_users_unknown_name">Unknown user</string>
+    <string name="blocked_users_unblock">Unblock</string>
 </resources>

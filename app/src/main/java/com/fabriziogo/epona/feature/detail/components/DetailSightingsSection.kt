@@ -25,6 +25,8 @@ import com.fabriziogo.epona.core.ui.components.SightingCard
 fun DetailSightingsSection(
     sightings: List<SightingWithReporter>,
     isLoading: Boolean,
+    currentUserId: String? = null,
+    onBlockReporter: ((reporterId: String, reporterName: String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -70,7 +72,14 @@ fun DetailSightingsSection(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     sightings.forEach { sighting ->
-                        SightingCard(sighting = sighting)
+                        SightingCard(
+                            sighting = sighting,
+                            onBlockClick = onBlockReporter
+                                ?.takeIf { sighting.sighting.reporterId != currentUserId }
+                                ?.let { block ->
+                                    { block(sighting.sighting.reporterId, sighting.reporterName) }
+                                }
+                        )
                     }
                 }
             }

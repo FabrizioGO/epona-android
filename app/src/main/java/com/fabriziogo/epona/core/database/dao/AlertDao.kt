@@ -110,6 +110,9 @@ interface AlertDao {
     @Query("DELETE FROM alerts WHERE id = :alertId")
     suspend fun deleteAlert(alertId: String)
 
+    @Query("DELETE FROM alerts WHERE user_id = :userId")
+    suspend fun deleteByUser(userId: String)
+
     @Query("DELETE FROM alerts WHERE status = 'expired'")
     suspend fun deleteExpiredAlerts()
 

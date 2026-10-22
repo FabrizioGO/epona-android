@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Flag
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.DropdownMenu
@@ -55,7 +56,8 @@ fun DetailHero(
     onShareClick: () -> Unit,
     modifier: Modifier = Modifier,
     isOwner: Boolean = false,
-    onFlagClick: (() -> Unit)? = null
+    onFlagClick: (() -> Unit)? = null,
+    onBlockClick: (() -> Unit)? = null
 ) {
     val bgColor = if (alertType == AlertType.LOST)
         MaterialTheme.extendedColors.lostContainer else MaterialTheme.extendedColors.foundContainer
@@ -169,6 +171,16 @@ fun DetailHero(
                             onFlagClick()
                         }
                     )
+                    if (onBlockClick != null) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.block_user_action)) },
+                            leadingIcon = { Icon(Icons.Outlined.Block, contentDescription = null) },
+                            onClick = {
+                                menuExpanded = false
+                                onBlockClick()
+                            }
+                        )
+                    }
                 }
             }
         }

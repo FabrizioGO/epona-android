@@ -37,5 +37,8 @@ data class NearbyAlertDto(
     @SerialName("owner_name")
     val ownerName: String,
     @SerialName("created_at")
-    val createdAt: String? = null
+    val createdAt: String? = null,
+    /** The alert's author; lets the client act on (block) or filter by them. */
+    @SerialName("owner_id")
+    val ownerId: String? = null
 )

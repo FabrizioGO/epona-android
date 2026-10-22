@@ -19,6 +19,9 @@ sealed interface AlertDetailEvent {
     data class FlagSubmitted(val reason: ReportReason, val details: String?) : AlertDetailEvent
     data object FlagDismissed : AlertDetailEvent
     data object FlagSuccessMessageShown : AlertDetailEvent
+    data class BlockClicked(val userId: String, val userName: String) : AlertDetailEvent
+    data object BlockConfirmed : AlertDetailEvent
+    data object BlockDismissed : AlertDetailEvent
     data object RetryLoad : AlertDetailEvent
     data object ErrorDismissed : AlertDetailEvent
 }

@@ -521,4 +521,20 @@
     <string name="error_delete_account">No se pudo eliminar la cuenta</string>
     <string name="error_update_photo">No se pudo actualizar tu foto. Inténtalo de nuevo.</string>
     <string name="detail_report_thanks">Gracias, lo revisaremos</string>
+
+    <!-- Bloqueo de usuarios -->
+    <string name="block_user_action">Bloquear usuario</string>
+    <string name="block_dialog_title">¿Bloquear a %1$s?</string>
+    <string name="block_dialog_message">No verás sus alertas, avistamientos ni publicaciones de adopción, y tampoco verán las tuyas. Dejarán de llegarse notificaciones entre ustedes. Puedes desbloquearlo cuando quieras desde Perfil.</string>
+    <string name="block_dialog_confirm">Bloquear</string>
+    <string name="block_success">%1$s bloqueado</string>
+    <string name="error_block_user">No se pudo bloquear a este usuario. Inténtalo de nuevo.</string>
+    <string name="error_unblock_user">No se pudo desbloquear a este usuario. Inténtalo de nuevo.</string>
+    <string name="error_load_blocked_users">No se pudieron cargar tus usuarios bloqueados.</string>
+    <string name="profile_blocked_users">Usuarios bloqueados</string>
+    <string name="blocked_users_title">Usuarios bloqueados</string>
+    <string name="blocked_users_empty_title">No hay usuarios bloqueados</string>
+    <string name="blocked_users_empty_description">Las personas que bloquees aparecerán aquí.</string>
+    <string name="blocked_users_unknown_name">Usuario desconocido</string>
+    <string name="blocked_users_unblock">Desbloquear</string>
 </resources>

@@ -26,6 +26,9 @@ interface AdoptionPostDao {
     @Query("UPDATE adoption_posts SET status = 'adopted', adopted_at = :adoptedAt, updated_at = :adoptedAt WHERE id = :postId")
     suspend fun markAdopted(postId: String, adoptedAt: Long)
 
+    @Query("DELETE FROM adoption_posts WHERE user_id = :userId")
+    suspend fun deleteByUser(userId: String)
+
     @Query("DELETE FROM adoption_posts WHERE id = :postId")
     suspend fun delete(postId: String)
 }

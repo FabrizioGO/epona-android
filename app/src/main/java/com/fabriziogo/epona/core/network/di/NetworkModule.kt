@@ -6,6 +6,7 @@ import com.fabriziogo.epona.core.network.service.AlertService
 import com.fabriziogo.epona.core.network.service.AuthService
 import com.fabriziogo.epona.core.network.service.NotificationService
 import com.fabriziogo.epona.core.network.service.PetService
+import com.fabriziogo.epona.core.network.service.BlockService
 import com.fabriziogo.epona.core.network.service.ReportService
 import com.fabriziogo.epona.core.network.service.SightingService
 import com.fabriziogo.epona.core.network.service.StorageService
@@ -78,4 +79,10 @@ object NetworkModule {
     fun provideReportService(
         supabase: SupabaseProvider
     ): ReportService = ReportService(supabase)
+
+    @Provides
+    @Singleton
+    fun provideBlockService(
+        supabase: SupabaseProvider
+    ): BlockService = BlockService(supabase)
 }

@@ -10,7 +10,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.IconButton
+import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,7 +37,8 @@ import com.fabriziogo.epona.core.domain.model.SightingWithReporter
 @Composable
 fun SightingCard(
     sighting: SightingWithReporter,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBlockClick: (() -> Unit)? = null
 ) {
     val context = LocalContext.current
     EponaCard(modifier = modifier.fillMaxWidth()) {
@@ -42,11 +53,39 @@ fun SightingCard(
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
-                    text = formatTimeAgo(sighting.sighting.spottedAt),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = formatTimeAgo(sighting.sighting.spottedAt),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (onBlockClick != null) {
+                        var menuExpanded by remember { mutableStateOf(false) }
+                        Box {
+                            IconButton(onClick = { menuExpanded = true }) {
+                                Icon(
+                                    Icons.Outlined.MoreVert,
+                                    contentDescription = stringResource(R.string.action_more_options)
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = menuExpanded,
+                                onDismissRequest = { menuExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.block_user_action)) },
+                                    leadingIcon = {
+                                        Icon(Icons.Outlined.Block, contentDescription = null)
+                                    },
+                                    onClick = {
+                                        menuExpanded = false
+                                        onBlockClick()
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             sighting.sighting.note?.let { note ->

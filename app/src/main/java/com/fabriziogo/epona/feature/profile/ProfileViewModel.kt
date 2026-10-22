@@ -46,6 +46,7 @@ class ProfileViewModel @Inject constructor(
             ProfileEvent.MyAlertsClicked -> emitNav(ProfileNavEvent.NavigateToMyAlerts)
             ProfileEvent.SettingsClicked -> emitNav(ProfileNavEvent.NavigateToSettings)
             ProfileEvent.HelpClicked -> emitNav(ProfileNavEvent.NavigateToHelp)
+            ProfileEvent.BlockedUsersClicked -> emitNav(ProfileNavEvent.NavigateToBlockedUsers)
             ProfileEvent.SignOutClicked -> _state.update { it.copy(showSignOutDialog = true) }
             ProfileEvent.SignOutConfirmed -> performSignOut()
             ProfileEvent.SignOutDismissed -> _state.update { it.copy(showSignOutDialog = false) }

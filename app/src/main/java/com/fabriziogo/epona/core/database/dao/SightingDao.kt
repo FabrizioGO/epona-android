@@ -39,6 +39,9 @@ interface SightingDao {
     @Query("DELETE FROM sightings WHERE alert_id = :alertId")
     suspend fun deleteAllForAlert(alertId: String)
 
+    @Query("DELETE FROM sightings WHERE reporter_id = :reporterId")
+    suspend fun deleteByReporter(reporterId: String)
+
     @Query("SELECT COUNT(*) FROM sightings WHERE alert_id = :alertId")
     suspend fun getSightingCount(alertId: String): Int
 
